@@ -12,7 +12,6 @@ import org.andengine.extension.tmx.TMXTile;
 import com.testgame.scene.GameScene;
 
 import android.util.Log;
-import android.view.MotionEvent;
 
 public class HighlightedSquare extends Rectangle {
 

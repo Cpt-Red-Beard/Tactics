@@ -33,7 +33,7 @@ public class SetupScene extends BaseScene {
 	/**
 	* Random text fields we need.
 	*/
-	private Text setupText, opponentText, mapText;
+	private Text setupText, mapText;
 	
 	private ButtonSprite play, reset, jock, nerd, ditz;
 	
