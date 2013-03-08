@@ -365,7 +365,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		textDialog.show();
 	}
 	
-	public void createAcceptDialog(JSONObject object){
+	public void createAcceptDialog(final JSONObject object){
 		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
 		try {
 			dia.setTitle(object.getString("name")+ " accepted the invitation!");
@@ -375,7 +375,17 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		}
 		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-           	 acceptDialog.dismiss();
+            	resourcesManager.inGame = true;
+            	try {
+					if(object.getString("turn").equals("true")){
+						resourcesManager.turn = true;
+					}
+					else 
+						resourcesManager.turn = false;
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+           	acceptDialog.dismiss();
            	SceneManager.getInstance().loadSetupScene(engine);
             }
         });

@@ -111,16 +111,12 @@ public class MainActivity extends BaseGameActivity {
                		
       				@Override
       				public void onReceive(Context context, Intent intent) {
-      					resourcesManager.inGame = true;
+      					
       					JSONObject json;
     					try {
     						
     						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
-    						if(json.getString("turn").equals("true")){
-    							resourcesManager.turn = true;
-    						}
-    						else 
-    							resourcesManager.turn = false;
+    						
     						
     						
     						((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createAcceptDialog(json);
