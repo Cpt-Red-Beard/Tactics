@@ -434,7 +434,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void nextTurn() {
 		
 		ParseObject turns = new ParseObject("Turns");
-		turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+game.getCount());
+		turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+game.getCount());
 		turns.put("Moves", moves);
 		turns.saveInBackground();
 		try {
@@ -639,7 +639,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void startCompTurn(){
 		Log.d("Turn", game.getCount()+"");
 		ParseQuery query = new ParseQuery("Turns");
-		query.whereEqualTo("Player", "user_"+resourcesManager.opponentString+game.getCount());
+		query.whereEqualTo("Player", "user_"+resourcesManager.opponentString+"_"+game.getCount());
 		query.findInBackground(new FindCallback() {
 		    public void done(List<ParseObject> itemList, ParseException e) {
 		        if (e == null) {
