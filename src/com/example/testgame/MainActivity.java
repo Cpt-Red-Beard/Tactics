@@ -119,13 +119,13 @@ public class MainActivity extends BaseGameActivity {
     						if(json.getString("turn").equals("true")){
     							resourcesManager.turn = true;
     						}
-    						else
+    						else 
     							resourcesManager.turn = false;
     						
     						
     						((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createAcceptDialog(json);
     					} catch (JSONException e) {
-    						// TODO Auto-generated catch block
+    						
     						e.printStackTrace();
     					}
  	
