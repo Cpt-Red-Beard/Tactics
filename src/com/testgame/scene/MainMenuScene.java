@@ -391,6 +391,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		}
 		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+            
            	 acceptDialog.dismiss();
            	SceneManager.getInstance().loadSetupScene(engine);
             }

@@ -817,6 +817,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		dia.setTitle("Are you sure you wish to quit the game? All progress will be lost!");
 		dia.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+            	
             	try {
 					JSONObject data = new JSONObject("{\"alert\": \"Game Ended\", \"action\": \"com.testgame.QUIT\"}");
 					 ParsePush push = new ParsePush();
