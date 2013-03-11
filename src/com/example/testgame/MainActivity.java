@@ -63,8 +63,8 @@ public class MainActivity extends BaseGameActivity {
      				public void onReceive(Context context, Intent intent) {
      					
      					
-     					
-     					((GameScene) SceneManager.getInstance().getGameScene()).startCompTurn();
+     					if(SceneManager.getInstance().getGameScene() != null)
+     						((GameScene) SceneManager.getInstance().getGameScene()).startCompTurn();
      					
      				}
               		
@@ -77,7 +77,8 @@ public class MainActivity extends BaseGameActivity {
   					JSONObject json;
 					try {
 						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
-						((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createInvite(json);
+						if(SceneManager.getInstance().getMainMenuScene() != null)
+							((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createInvite(json);
 					} catch (JSONException e) {
 						
 						e.printStackTrace();
@@ -97,7 +98,8 @@ public class MainActivity extends BaseGameActivity {
       					JSONObject json;
     					try {
     						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
-    						((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createDialog(json.getString("name")+ "does not wish to play.");
+    						if(SceneManager.getInstance().getMainMenuScene() != null)
+    							((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createDialog(json.getString("name")+ "does not wish to play.");
     					} catch (JSONException e) {
     						
     						e.printStackTrace();
@@ -122,7 +124,7 @@ public class MainActivity extends BaseGameActivity {
     						else 
     							resourcesManager.turn = false;
     						
-    						
+    						if(SceneManager.getInstance().getMainMenuScene() != null)
     						((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createAcceptDialog(json);
     					} catch (JSONException e) {
     						
@@ -139,7 +141,7 @@ public class MainActivity extends BaseGameActivity {
       				public void onReceive(Context context, Intent intent) {
       					
     						
-    						
+      					if(SceneManager.getInstance().getGameScene() != null)
     						((GameScene) SceneManager.getInstance().getGameScene()).quitDialog();
     					
  	
@@ -221,6 +223,7 @@ public class MainActivity extends BaseGameActivity {
              protected void onDestroy()
              {
                  super.onDestroy();
+                 
               //   PushService.unsubscribe(this, "user_"+ParseUser.getCurrentUser().getObjectId());
                 // ParseUser.logOut();
                  System.exit(0);
