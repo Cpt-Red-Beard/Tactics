@@ -278,9 +278,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 	
 	public void ComputerAttack(AUnit unit, int attack, int energy, ComputerPlayer player){
 		this.reduceEnergy(energy);
-		unit.reduceHealth(this.attack);
 		
-		unit.attackedAnimate(player);
+		
+		unit.attackedAnimate(player, unit, attack);
 		
 		if (unit.getHealth() > 0) this.game.setEventText("Did "+this.attack+" damage!\n Unit health "+unit.getHealth()+"/"+unit.getMaxHealth());
 		
@@ -292,7 +292,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		int dist = manhattanDistance(this.x, this.y, unit.getMapX(), unit.getMapY());
 		if(dist <= this.attackrange && this.attackenergy <= this.energy){
 			this.reduceEnergy(this.attackenergy);
-			unit.reduceHealth(this.attack); // unit being attacked
+			
 			JSONObject temp = new JSONObject();
 			try {
 				temp.put("MoveType", "ATTACK");
@@ -308,7 +308,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 			}
 			
 			this.game.addMove(temp);
-			unit.attackedAnimate(null);
+			unit.attackedAnimate(null, unit, this.attack);
 			
 			
 			if (unit.getHealth() > 0) this.game.setEventText("Did "+this.attack+" damage!\n Enemy health "+unit.getHealth()+"/"+unit.getMaxHealth());
@@ -503,7 +503,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		this.setCurrentTileIndex(start_frame + GUARD_FRAME);
 	}
 	
-	public void attackedAnimate(final ComputerPlayer computerPlayer) {
+	public void attackedAnimate(final ComputerPlayer computerPlayer, final AUnit unit, final int attack) {
 		this.animate(new long[] { 100, 100 }, start_frame + ATTACKED_START_FRAME, start_frame + ATTACKED_END_FRAME, true);
 		
 		final AUnit u = this;
@@ -514,6 +514,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	            {
 	                u.stopAnimation();
 	                u.setCurrentTileIndex(start_frame);
+	                unit.reduceHealth(attack);
 	                computerPlayer.performNext();
 	                
 	            }
@@ -524,7 +525,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 	            public void onTimePassed(final TimerHandler pTimerHandler) 
 	            {
 	                u.stopAnimation();
+	                
 	                u.setCurrentTileIndex(start_frame);
+	                unit.reduceHealth(attack);
 	            }
 	        }));
 		}

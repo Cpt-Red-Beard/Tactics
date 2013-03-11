@@ -674,7 +674,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	private void pauseMenu(){
 		final Dialog pausemenu = new Dialog(activity);
-		pausemenu.setTitle("Paused!");
+		pausemenu.setTitle("Paused! Turn: "+game.getCount());
 		LinearLayout ll = new LinearLayout(activity);
 		ll.setOrientation(LinearLayout.VERTICAL);
 		
