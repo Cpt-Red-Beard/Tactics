@@ -164,13 +164,13 @@ public class MainActivity extends BaseGameActivity {
               	registerReceiver(deny, denyFilter);
               	registerReceiver(accept, acceptFilter);
               	registerReceiver(quit, quitFilter);
-            	 Parse.initialize(this, "QFJ1DxJol0sSIq068kUDgbE5IVDnADHO2tJbiRQH", "ARuOWkguSH0ndGjMVCDcDc39hBsNQ3J6g6X7slpY");  
-            	 ParseFacebookUtils.initialize("248250035306788");
-            	 mCamera = new SmoothCamera(0, 0, mCameraWidth, mCameraHeight, 500, 500, 50.0f);
-                 final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new FillResolutionPolicy(), this.mCamera);
-                 engineOptions.getAudioOptions().setNeedsMusic(true).setNeedsSound(true);
-                 engineOptions.setWakeLockOptions(WakeLockOptions.SCREEN_ON); 
-                 return engineOptions;
+            	Parse.initialize(this, "QFJ1DxJol0sSIq068kUDgbE5IVDnADHO2tJbiRQH", "ARuOWkguSH0ndGjMVCDcDc39hBsNQ3J6g6X7slpY");  
+            	ParseFacebookUtils.initialize("248250035306788");
+            	mCamera = new SmoothCamera(0, 0, mCameraWidth, mCameraHeight, 500, 500, 50.0f);
+                final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new FillResolutionPolicy(), this.mCamera);
+                engineOptions.getAudioOptions().setNeedsMusic(true).setNeedsSound(true);
+                engineOptions.setWakeLockOptions(WakeLockOptions.SCREEN_ON); 
+                return engineOptions;
              }
             
              @Override
@@ -223,9 +223,6 @@ public class MainActivity extends BaseGameActivity {
              protected void onDestroy()
              {
                  super.onDestroy();
-                 
-              //   PushService.unsubscribe(this, "user_"+ParseUser.getCurrentUser().getObjectId());
-                // ParseUser.logOut();
                  System.exit(0);
              }
              

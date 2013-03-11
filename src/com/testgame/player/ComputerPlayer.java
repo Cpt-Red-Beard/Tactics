@@ -32,10 +32,19 @@ public class ComputerPlayer extends APlayer {
 			game.incrementCount();
 		game.getPlayer().beginTurn(); // this calls turn init on all the units
 		this.endTurn();
+		
 	}
 	
 	public void performNext() {
-		
+		if(actionsToPerform.length() == 0){
+			game.getGameScene().activity.runOnUiThread(new Runnable() {
+        	    @Override
+        	    public void run() {
+        	    	game.getGameScene().textMenu("Your Turn!");
+          			 
+        	    }
+        	});
+		}
 		for (int i = 0; i < actionsToPerform.length(); i++) {
 			
 			Log.d("AndEngine", "[PerformNext] i = "+i);

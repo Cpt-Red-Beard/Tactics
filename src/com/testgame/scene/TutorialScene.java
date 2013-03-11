@@ -7,6 +7,7 @@ import android.util.Log;
 import com.testgame.scene.SceneManager.SceneType;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
@@ -33,7 +34,7 @@ public class TutorialScene extends BaseScene {
 	@Override
 	public void createScene() {
 		this.setBackgroundEnabled(false);
-		
+		((SmoothCamera) this.camera).setZoomFactor(1.0f);
 		this.camera.setCenter(240, 400);
 		this.camera.setHUD(null);
 		

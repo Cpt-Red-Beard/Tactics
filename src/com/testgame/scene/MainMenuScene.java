@@ -26,6 +26,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.model.GraphUser;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.LogInCallback;
 import com.parse.ParseFacebookUtils;
@@ -65,6 +66,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void onBackKeyPressed() {
+		PushService.unsubscribe(activity, resourcesManager.userString);
 		loggedin = false;
 		Session.getActiveSession().closeAndClearTokenInformation();
 		//System.exit(0);

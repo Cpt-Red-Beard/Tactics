@@ -430,7 +430,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	public void nextTurn() {
-		
+		Log.d("Turn", game.getCount()+"");
 		ParseObject turns = new ParseObject("Turns");
 		turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+game.getCount());
 		turns.put("Moves", moves);
