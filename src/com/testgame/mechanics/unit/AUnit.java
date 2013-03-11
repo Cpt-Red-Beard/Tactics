@@ -1,8 +1,6 @@
 package com.testgame.mechanics.unit;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.IEntity;
@@ -20,8 +18,6 @@ import android.util.Log;
 import com.testgame.mechanics.map.GameMap;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
-import com.testgame.resource.ResourcesManager;
-import com.testgame.scene.GameScene;
 import com.testgame.sprite.CharacterSprite;
 import com.testgame.sprite.WalkMoveModifier;
 

@@ -2,8 +2,6 @@ package com.testgame;
 
 import java.util.Random;
 
-import android.util.Log;
-
 import com.testgame.mechanics.map.GameMap;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.mechanics.unit.Ditz;
