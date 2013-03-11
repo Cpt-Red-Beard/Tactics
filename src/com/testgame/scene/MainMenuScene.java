@@ -35,7 +35,6 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.PushService;
-import com.parse.SaveCallback;
 import com.testgame.scene.SceneManager.SceneType;
 
 public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener {

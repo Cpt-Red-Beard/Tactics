@@ -2,7 +2,6 @@ package com.testgame.mechanics.unit;
 
 import com.testgame.mechanics.map.GameMap;
 import com.testgame.scene.GameScene;
-import android.util.Log;
 
 /**
  * The nerd unit.

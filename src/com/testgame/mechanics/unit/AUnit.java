@@ -306,18 +306,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			final AUnit temp2 = this;
+			
 			this.game.addMove(temp);
 			unit.attackedAnimate(null);
-			/* 
-			game.activity.runOnUiThread(new Runnable() {
-        	    @Override
-        	    public void run() {
-        	    	game.textMenu(temp2.toString() +" attacked " + unit.toString() + " for " + attack + " damage.");
-          			 
-        	    }
-        	});
-        	*/ // TODO: Add message in an entity here.
+			
 			
 			if (unit.getHealth() > 0) this.game.setEventText("Did "+this.attack+" damage!\n Enemy health "+unit.getHealth()+"/"+unit.getMaxHealth());
 		}
