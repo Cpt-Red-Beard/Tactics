@@ -93,6 +93,7 @@ public class SetupScene extends BaseScene {
 				}
 				
 				ParseObject turns = new ParseObject("Turns");
+				turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
 				turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+0);
 				turns.put("Init", object);
 				turns.saveInBackground();

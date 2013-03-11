@@ -14,6 +14,7 @@ import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.util.GLState;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -328,34 +329,50 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 		invite.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-            	Random rand = new Random();
-            	boolean h;
-            	if (rand.nextDouble() > 0.5)
-        			h = true;
-        		else{
-        			h = false;
-        			resourcesManager.turn = true;
-        		}
+            	ParseQuery query = new ParseQuery("Turns");
+        		query.whereEqualTo("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
+        		query.findInBackground(new FindCallback() {
+        		    public void done(List<ParseObject> itemList, ParseException e) {
+        		        if (e == null) {
+        		        	for(int i = 0; i < itemList.size(); i++){
+        		        		itemList.get(i).deleteInBackground();
+        		        	}
+        		        	Random rand = new Random();
+        	            	boolean h;
+        	            	if (rand.nextDouble() > 0.5)
+        	        			h = true;
+        	        		else{
+        	        			h = false;
+        	        			resourcesManager.turn = true;
+        	        		}
+        	            	
+        	            	try {
+        	            		resourcesManager.opponent = object.getString("name");
+        						resourcesManager.opponentString = object.getString("userid");
+        					} catch (JSONException e1) {
+        						// TODO Auto-generated catch block
+        						e1.printStackTrace();
+        					}
+        	            	try {
+        						JSONObject data = new JSONObject("{\"alert\": \"Invitation Accepted\", \"action\": \"com.testgame.ACCEPT\", \"turn\": \""+h+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
+        						 ParsePush push = new ParsePush();
+        			             push.setChannel("user_"+object.getString("userid"));
+        			             push.setData(data);
+        			             push.sendInBackground();
+        	                } catch (JSONException t) {
+        						t.printStackTrace();
+        					}	 
+        	            	
+        	           	 invitation.dismiss();
+        	           	 SceneManager.getInstance().loadSetupScene(engine);
+        		            
+        		            
+        		        } else {
+        		            Log.d("score", "Error: " + e.getMessage());
+        		        }
+        		    }
+        		});
             	
-            	try {
-            		resourcesManager.opponent = object.getString("name");
-					resourcesManager.opponentString = object.getString("userid");
-				} catch (JSONException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-            	try {
-					JSONObject data = new JSONObject("{\"alert\": \"Invitation Accepted\", \"action\": \"com.testgame.ACCEPT\", \"turn\": \""+h+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
-					 ParsePush push = new ParsePush();
-		             push.setChannel("user_"+object.getString("userid"));
-		             push.setData(data);
-		             push.sendInBackground();
-                } catch (JSONException e) {
-					e.printStackTrace();
-				}	 
-            	
-           	 invitation.dismiss();
-           	 SceneManager.getInstance().loadSetupScene(engine);
             }
         });
 		
@@ -391,9 +408,24 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		}
 		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-            
-           	 acceptDialog.dismiss();
-           	SceneManager.getInstance().loadSetupScene(engine);
+            	ParseQuery query = new ParseQuery("Turns");
+        		query.whereEqualTo("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
+        		query.findInBackground(new FindCallback() {
+        		    public void done(List<ParseObject> itemList, ParseException e) {
+        		        if (e == null) {
+        		        	for(int i = 0; i < itemList.size(); i++){
+        		        		itemList.get(i).deleteInBackground();
+        		        	}
+        		        	acceptDialog.dismiss();
+        		           	SceneManager.getInstance().loadSetupScene(engine);
+        		            
+        		            
+        		        } else {
+        		            Log.d("score", "Error: " + e.getMessage());
+        		        }
+        		    }
+        		});
+           	 
             }
         });
 		
