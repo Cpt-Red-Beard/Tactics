@@ -178,6 +178,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		        	        createDialog("Please Log In!");
 		        	    }
 		        	});
+	        		return true;
 	        	}
 	        		
 	        	activity.runOnUiThread(new Runnable() {
