@@ -23,6 +23,7 @@ import android.util.Log;
 import com.example.testgame.MainActivity;
 import com.facebook.Request;
 import com.facebook.Response;
+import com.facebook.Session;
 import com.facebook.model.GraphUser;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -34,6 +35,7 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.PushService;
+import com.parse.SaveCallback;
 import com.testgame.scene.SceneManager.SceneType;
 
 public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener {
@@ -63,7 +65,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void onBackKeyPressed() {
-		System.exit(0);
+		Session.getActiveSession().closeAndClearTokenInformation();
+		//System.exit(0);
 
 	}
 
