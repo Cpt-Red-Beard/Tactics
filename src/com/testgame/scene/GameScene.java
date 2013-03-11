@@ -1,7 +1,6 @@
 package com.testgame.scene;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.andengine.entity.IEntity;
@@ -53,7 +52,6 @@ import com.testgame.AGame;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
-import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.SceneManager.SceneType;
 import com.testgame.sprite.CharacterSprite;
 import com.testgame.sprite.HighlightedSquare;
@@ -196,7 +194,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		camera.setCenter(0, 0);
 		
 		// Initialize the game.
-		this.game = new AGame(new APlayer("One"), new ComputerPlayer("Two"), widthInTiles, heightInTiles, this, resourcesManager.turn);
+		this.game = new AGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn);
 		
 		createHUD();
 	    
