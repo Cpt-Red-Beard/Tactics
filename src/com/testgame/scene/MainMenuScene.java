@@ -52,6 +52,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static AlertDialog textDialog;
 	private static AlertDialog acceptDialog;
 	private static Map<String, String> usernames;
+	private static boolean loggedin = false;
 	
 
 	
@@ -65,6 +66,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void onBackKeyPressed() {
+		loggedin = false;
 		Session.getActiveSession().closeAndClearTokenInformation();
 		//System.exit(0);
 
@@ -170,6 +172,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	            return true;
 	        case MENU_PLAY:
+	        	if(!loggedin)
+	        		return true;
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
@@ -224,7 +228,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				            		  userslist.add(u.getString("Name"));
 				            		  usernames.put(u.getString("Name"), u.getObjectId());
 				            	  }
-				            	 
+				            	  loggedin = true;
 				            	  loading.dismiss();
 				                  Log.d("friends", friendUsers.toString());
 				              } else {
