@@ -172,8 +172,15 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	            return true;
 	        case MENU_PLAY:
-	        	if(!loggedin)
-	        		return true;
+	        	if(!loggedin){
+	        		activity.runOnUiThread(new Runnable() {
+		        	    @Override
+		        	    public void run() {
+		        	        createDialog("Please Log In!");
+		        	    }
+		        	});
+	        	}
+	        		
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
