@@ -150,7 +150,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
 	        		      Log.d("Push", resourcesManager.userString);
 	        		      Log.d("Installation", ParseInstallation.getCurrentInstallation().getInstallationId());
-	        		      PushService.subscribe(activity, "user_"+resourcesManager.userString, MainActivity.class);
+	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
 	        		      getFacebookIdInBackground();
 	        		      
 	        		     
@@ -159,7 +159,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
 	        		      Log.d("Push", resourcesManager.userString);
 	        		      Log.d("Installation", ParseInstallation.getCurrentInstallation().getInstallationId());
-	        		      PushService.subscribe(activity, "user_"+resourcesManager.userString, MainActivity.class);
+	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
 	        		      getFacebookIdInBackground();
 	        		     
 	        		    }

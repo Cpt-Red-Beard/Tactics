@@ -591,11 +591,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	public void showBar() {
-		bottomBar.registerEntityModifier(new MoveModifier(.5f, 240, -300, 240, 25));
+		bottomBar.registerEntityModifier(new MoveModifier(.5f, 240, -300, 240, -25));
 	}
 
 	public static String attackStatusString(int power, int range, int cost){
-		return "Attack:\n\tPower: "+power+"\n\tRange: "+range+"\n\tCost: "+cost;
+		return "Power: "+power+"\nRange: "+range+"\nCost: "+cost;
 	}
 	
 	public void deselectCharacter(boolean andHideBar){
@@ -613,7 +613,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	public void hideBar() {
-		bottomBar.registerEntityModifier(new MoveModifier(.5f, 240, 25, 240, -300));
+		bottomBar.registerEntityModifier(new MoveModifier(.5f, 240, -25, 240, -300));
 	}
 
 	private TMXTile placeSelectionRectangle(CharacterSprite sprite){

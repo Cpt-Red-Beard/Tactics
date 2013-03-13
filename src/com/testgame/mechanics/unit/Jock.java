@@ -49,7 +49,7 @@ public class Jock extends AUnit {
 		this.WALK_LEFT_END_FRAME = 12;
 		
 		this.WALK_UP_START_FRAME = 5;
-		this.WALK_UP_END_FRAME = 8;
+		this.WALK_UP_END_FRAME = 7;
 		
 		this.WALK_RIGHT_START_FRAME = 13;
 		this.WALK_RIGHT_END_FRAME = 15;

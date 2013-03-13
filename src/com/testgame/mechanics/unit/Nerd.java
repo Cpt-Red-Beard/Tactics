@@ -43,7 +43,7 @@ public class Nerd extends AUnit {
 		this.IDLE_START_FRAME = 0;
 		this.IDLE_END_FRAME = 1;
 		
-		this.WALK_DOWN_START_FRAME = 2;
+		this.WALK_DOWN_START_FRAME = 1;
 		this.WALK_DOWN_END_FRAME = 3;
 		
 		this.WALK_LEFT_START_FRAME = 13;
@@ -58,7 +58,7 @@ public class Nerd extends AUnit {
 		this.GUARD_FRAME = 4;
 		
 		this.ATTACKED_START_FRAME = 20;
-		this.ATTACKED_END_FRAME = 23;
+		this.ATTACKED_END_FRAME = 21;
 	}
 
 }
