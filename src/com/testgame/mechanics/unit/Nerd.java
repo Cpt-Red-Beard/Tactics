@@ -39,6 +39,26 @@ public class Nerd extends AUnit {
 		}
 		//Log.d("AndEngine", "start frame of " + color + " is " + start_frame);
 		this.setCurrentTileIndex(start_frame);
+		
+		this.IDLE_START_FRAME = 0;
+		this.IDLE_END_FRAME = 1;
+		
+		this.WALK_DOWN_START_FRAME = 2;
+		this.WALK_DOWN_END_FRAME = 3;
+		
+		this.WALK_LEFT_START_FRAME = 13;
+		this.WALK_LEFT_END_FRAME = 15;
+		
+		this.WALK_UP_START_FRAME = 10;
+		this.WALK_UP_END_FRAME = 12;
+		
+		this.WALK_RIGHT_START_FRAME = 16;
+		this.WALK_RIGHT_END_FRAME = 18;
+		
+		this.GUARD_FRAME = 4;
+		
+		this.ATTACKED_START_FRAME = 20;
+		this.ATTACKED_END_FRAME = 23;
 	}
 
 }

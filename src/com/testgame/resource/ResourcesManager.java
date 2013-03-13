@@ -109,7 +109,7 @@ public class ResourcesManager {
     	tutorialAtlas.load();
     	
     	units_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR);
-    	units_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(units_atlas, activity, "unitsbottom.png", 0, 0);
+    	units_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(units_atlas, activity, "unitsbutton.png", 0, 0);
     	units_atlas.load();
     	
     	controls_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR);

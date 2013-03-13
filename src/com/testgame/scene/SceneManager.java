@@ -107,7 +107,6 @@ public class SceneManager {
         disposeSplashScene();
     }
     
-    
     public void createSplashScene(OnCreateSceneCallback pOnCreateSceneCallback)
     {
         ResourcesManager.getInstance().loadSplashScreen();
@@ -133,8 +132,8 @@ public class SceneManager {
             {
                 mEngine.unregisterUpdateHandler(pTimerHandler);
                 ResourcesManager.getInstance().loadGameResources();
-                setGameScene(new GameScene());
-                setScene(getGameScene());
+                gameScene = new GameScene();
+                setScene(gameScene);
             }
         }));
     }
@@ -142,8 +141,6 @@ public class SceneManager {
     public void loadMenuScene(final Engine mEngine)
     {
         setScene(loadingScene);
-        //getGameScene().disposeScene();
-        //ResourcesManager.getInstance().unloadGameTextures();
         mEngine.registerUpdateHandler(new TimerHandler(0.1f, new ITimerCallback() 
         {
             public void onTimePassed(final TimerHandler pTimerHandler) 
@@ -174,13 +171,12 @@ public class SceneManager {
     
     public void loadTutorialScene(final Engine mEngine) {
     	setScene(loadingScene);
-    	ResourcesManager.getInstance().loadTutorialResources();
     	mEngine.registerUpdateHandler(new TimerHandler(0.1f, new ITimerCallback() 
         {
             public void onTimePassed(final TimerHandler pTimerHandler) 
             {
                 mEngine.unregisterUpdateHandler(pTimerHandler);
-                ResourcesManager.getInstance().loadMenuResources();
+                ResourcesManager.getInstance().loadTutorialResources();
                 tutorialScene = new TutorialScene();
                 setScene(tutorialScene);
             }
@@ -190,16 +186,12 @@ public class SceneManager {
     public BaseScene getMainMenuScene(){
     	return menuScene;
     }
-    
-	public BaseScene getGameScene() {
-		return gameScene;
-	}
-
-	public void setGameScene(BaseScene gameScene) {
-		this.gameScene = gameScene;
-	}
 
 	public void restorePrevious() {
 		this.setScene(previousScene);
+	}
+
+	public BaseScene getGameScene() {
+		return gameScene;
 	}
 }

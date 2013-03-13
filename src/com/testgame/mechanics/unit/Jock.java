@@ -38,6 +38,26 @@ public class Jock extends AUnit {
 			this.start_frame = redStart;
 		}
 		this.setCurrentTileIndex(start_frame);
+		
+		this.IDLE_START_FRAME = 0;
+		this.IDLE_END_FRAME = 1;
+		
+		this.WALK_DOWN_START_FRAME = 2;
+		this.WALK_DOWN_END_FRAME = 4;
+		
+		this.WALK_LEFT_START_FRAME = 10;
+		this.WALK_LEFT_END_FRAME = 12;
+		
+		this.WALK_UP_START_FRAME = 5;
+		this.WALK_UP_END_FRAME = 8;
+		
+		this.WALK_RIGHT_START_FRAME = 13;
+		this.WALK_RIGHT_END_FRAME = 15;
+		
+		this.GUARD_FRAME = 16;
+		
+		this.ATTACKED_START_FRAME = 20;
+		this.ATTACKED_END_FRAME = 21;
 	}
 
 }

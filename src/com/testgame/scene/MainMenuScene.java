@@ -55,14 +55,11 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static Map<String, String> usernames;
 	private static boolean loggedin = false;
 	
-
-	
 	@Override
 	public void createScene() {
 		createBackground();
 		createMenuChildScene();
 		usernames = new HashMap<String, String>();
-
 	}
 
 	@Override
@@ -81,8 +78,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void disposeScene() {
-		// TODO Auto-generated method stub
-
+		// TODO Unload all of the resources.
 	}
 	
 	private void createBackground()
@@ -256,6 +252,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		  
 		 
 		}
+	
 	private void showDialog(){
 		final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle("Friends");
@@ -294,7 +291,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
         
 		dialog.show();
 	}
-	
 	
 	private void createLoad(){
 		final AlertDialog.Builder load = new AlertDialog.Builder(activity);
@@ -439,7 +435,5 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		// TODO Auto-generated method stub
 		
 	}
-	
-	
 	
 }

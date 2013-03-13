@@ -35,28 +35,25 @@ public class AUnit extends CharacterSprite implements IUnit {
 	
 	public int start_frame = 0;
 	
-	protected static int IDLE_START_FRAME = 0;
-	protected static int IDLE_END_FRAME = 1;
+	protected int IDLE_START_FRAME;
+	protected int IDLE_END_FRAME;
 	
-	protected static int WALK_RIGHT_START_FRAME = 13;
-	protected static int WALK_RIGHT_END_FRAME = 15;
+	protected int WALK_RIGHT_START_FRAME;
+	protected int WALK_RIGHT_END_FRAME;
 	
-	protected static int WALK_LEFT_START_FRAME = 10;
-	protected static int WALK_LEFT_END_FRAME = 12;
+	protected int WALK_LEFT_START_FRAME;
+	protected int WALK_LEFT_END_FRAME;
 	
-	protected static int WALK_UP_START_FRAME = 5;
-	protected static int WALK_UP_END_FRAME = 7;
+	protected int WALK_UP_START_FRAME;
+	protected int WALK_UP_END_FRAME;
 	
-	protected static int WALK_DOWN_START_FRAME = 2;
-	protected static int WALK_DOWN_END_FRAME = 4;
+	protected int WALK_DOWN_START_FRAME;
+	protected int WALK_DOWN_END_FRAME;
 	
-	protected static int ATTACK_START_FRAME;
-	protected static int ATTACK_END_FRAME;
+	protected int GUARD_FRAME;
 	
-	protected static int GUARD_FRAME = 19;
-	
-	protected static int ATTACKED_START_FRAME = 20;
-	protected static int ATTACKED_END_FRAME = 21;
+	protected int ATTACKED_START_FRAME;
+	protected int ATTACKED_END_FRAME;
 	
 	protected String unitType;
 

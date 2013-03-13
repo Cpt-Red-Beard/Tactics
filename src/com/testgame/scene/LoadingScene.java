@@ -15,26 +15,22 @@ public class LoadingScene extends BaseScene {
 	}
 
 	@Override
-	public void onBackKeyPressed() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public SceneType getSceneType() {
 		return SceneType.SCENE_LOADING;
 	}
 
 	@Override
 	public void disposeScene() {
-		// TODO Auto-generated method stub
-
+		// also doesn't need to do anything
 	}
 
 	@Override
 	public void onHomeKeyPressed() {
-		// TODO Auto-generated method stub
-		
+		// shouldn't do anything
 	}
-
+	
+	@Override
+	public void onBackKeyPressed() { 
+		// Shouldn't do anything 
+	}
 }
