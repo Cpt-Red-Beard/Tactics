@@ -346,6 +346,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 					game.unregisterTouchArea(u);
 				}
 			});
+			game.getGame().endGame();
 			this.game.setEventText(this.toString() + " died!");
 		}
 		//this.setText(this.energy, this.currentHealth);
