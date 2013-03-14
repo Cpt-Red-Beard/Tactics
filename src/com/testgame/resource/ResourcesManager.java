@@ -344,4 +344,14 @@ public class ResourcesManager {
         
     }
 
+	public void resetGame() {
+		unitArray = null;
+		gameId = null;
+		turn = false;
+		inGame = false;
+		opponent = null;
+		opponentString = null;
+		
+	}
+
 }
