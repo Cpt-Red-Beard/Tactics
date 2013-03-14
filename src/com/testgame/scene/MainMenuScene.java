@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.scene.menu.MenuScene;
@@ -14,7 +15,6 @@ import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.opengl.util.GLState;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +27,6 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.model.GraphUser;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.LogInCallback;
 import com.parse.ParseFacebookUtils;
@@ -64,7 +63,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void onBackKeyPressed() {
-		PushService.unsubscribe(activity, "user_"+resourcesManager.userString);
+		PushService.unsubscribe(activity, resourcesManager.userString);
 		loggedin = false;
 		Session.getActiveSession().closeAndClearTokenInformation();
 		//System.exit(0);
@@ -325,14 +324,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 		invite.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-            	ParseQuery query = new ParseQuery("Turns");
-        		query.whereEqualTo("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
-        		query.findInBackground(new FindCallback() {
-        		    public void done(List<ParseObject> itemList, ParseException e) {
-        		        if (e == null) {
-        		        	for(int i = 0; i < itemList.size(); i++){
-        		        		itemList.get(i).deleteInBackground();
-        		        	}
+        		        	resourcesManager.gameId = UUID.randomUUID().toString();
         		        	Random rand = new Random();
         	            	boolean h;
         	            	if (rand.nextDouble() > 0.5)
@@ -350,7 +342,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
         						e1.printStackTrace();
         					}
         	            	try {
-        						JSONObject data = new JSONObject("{\"alert\": \"Invitation Accepted\", \"action\": \"com.testgame.ACCEPT\", \"turn\": \""+h+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
+        						JSONObject data = new JSONObject("{\"alert\": \"Invitation Accepted\", \"action\": \"com.testgame.ACCEPT\", \"GameId\": \""+resourcesManager.gameId+"\", \"turn\": \""+h+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
         						 ParsePush push = new ParsePush();
         			             push.setChannel("user_"+object.getString("userid"));
         			             push.setData(data);
@@ -361,14 +353,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
         	            	
         	           	 invitation.dismiss();
         	           	 SceneManager.getInstance().loadSetupScene(engine);
-        		            
-        		            
-        		        } else {
-        		            Log.d("score", "Error: " + e.getMessage());
-        		        }
-        		    }
-        		});
-            	
+		          
+
             }
         });
 		
@@ -403,25 +389,10 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 			e.printStackTrace();
 		}
 		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-            	ParseQuery query = new ParseQuery("Turns");
-        		query.whereEqualTo("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
-        		query.findInBackground(new FindCallback() {
-        		    public void done(List<ParseObject> itemList, ParseException e) {
-        		        if (e == null) {
-        		        	for(int i = 0; i < itemList.size(); i++){
-        		        		itemList.get(i).deleteInBackground();
-        		        	}
+            public void onClick(DialogInterface dialog, int whichButton) {    	
         		        	acceptDialog.dismiss();
         		           	SceneManager.getInstance().loadSetupScene(engine);
-        		            
-        		            
-        		        } else {
-        		            Log.d("score", "Error: " + e.getMessage());
-        		        }
-        		    }
-        		});
-           	 
+
             }
         });
 		
