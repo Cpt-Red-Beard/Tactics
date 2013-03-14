@@ -124,6 +124,8 @@ public class MainActivity extends BaseGameActivity {
     						else 
     							resourcesManager.turn = false;
     						
+    						resourcesManager.gameId = json.getString("GameId");
+    						
     						if(SceneManager.getInstance().getMainMenuScene() != null)
     						((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createAcceptDialog(json);
     					} catch (JSONException e) {

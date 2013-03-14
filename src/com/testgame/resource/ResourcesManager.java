@@ -42,6 +42,7 @@ public class ResourcesManager {
     public boolean inGame;
     public ArrayList<Integer> unitArray;
     private static final ResourcesManager INSTANCE = new ResourcesManager();
+    public String gameId;
 	
 	public Engine engine;
 	public MainActivity activity;

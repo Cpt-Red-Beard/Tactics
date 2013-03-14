@@ -434,6 +434,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		ParseObject turns = new ParseObject("Turns");
 		turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
 		turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+game.getCount());
+		turns.put("GameId", resourcesManager.gameId);
 		turns.put("Moves", moves);
 		turns.saveInBackground();
 		try {
@@ -643,28 +644,29 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		    public void done(List<ParseObject> itemList, ParseException e) {
 		        if (e == null) {
 		            Log.d("score", "Retrieved " + itemList.size() + " scores");
-		            if(itemList.size() != 1){
-		        		Log.d("Error", "Did not get correct results");
-		        		//return;
-		        		startCompTurn(); 
-		        	}
-		        		
-		        	else if(game.getCount() != 0){
-		        		JSONArray array = itemList.get(0).getJSONArray("Moves");
-		        		Log.d("Turn", "Starting computer turn");
-		        		deselectCharacter(false);
-		            	game.getCompPlayer().startTurn(game, array);
-		            	itemList.get(0).deleteInBackground();
-		        	}
-		        	else{
-		        		JSONObject object = itemList.get(0).getJSONObject("Init");
-		        		Log.d("Turn", "Starting Init turn");
-		        		deselectCharacter(false);
-		            	game.getCompPlayer().init(game, object);
-		            	itemList.get(0).deleteInBackground();
-		        		
-		        	}
-		            
+		            for(ParseObject ob : itemList){
+		            	if(ob.getString("GameId") == resourcesManager.gameId){
+		            		if(game.getCount() != 0){
+				        		JSONArray array = ob.getJSONArray("Moves");
+				        		Log.d("Turn", "Starting computer turn");
+				        		deselectCharacter(false);
+				            	game.getCompPlayer().startTurn(game, array);
+				            	ob.deleteInBackground();
+				            	return;
+				        	}
+				        	else{
+				        		JSONObject object = ob.getJSONObject("Init");
+				        		Log.d("Turn", "Starting Init turn");
+				        		deselectCharacter(false);
+				            	game.getCompPlayer().init(game, object);
+				            	ob.deleteInBackground();
+				            	return;
+				        		
+				        	}
+		            	}
+		            	ob.deleteInBackground();
+		            }
+		            startCompTurn();   
 		        } else {
 		            Log.d("score", "Error: " + e.getMessage());
 		        }
