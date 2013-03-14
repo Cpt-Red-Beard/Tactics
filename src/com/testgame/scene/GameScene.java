@@ -11,6 +11,8 @@ import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -54,6 +56,7 @@ import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
 import com.testgame.scene.SceneManager.SceneType;
 import com.testgame.sprite.CharacterSprite;
+import com.testgame.sprite.GameDialogBox;
 import com.testgame.sprite.HighlightedSquare;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinchZoomDetectorListener {
@@ -109,6 +112,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	private float mPinchZoomStartedCameraZoomFactor;
 	
 	private Sprite bottomBar;
+	
+	private GameDialogBox dialogBox;
 	
 	@Override
 	public void onBackKeyPressed() {
@@ -233,7 +238,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		final GameScene game = this;
 		
-		tutorialButton = new ButtonSprite(480 - 40, 800 - 40, resourcesManager.question_region, vbom, new OnClickListener() {
+		tutorialButton = new ButtonSprite(480 - 40, 800 - 40, resourcesManager.gear_region, vbom, new OnClickListener() {
 
 			@Override
 			public void onClick(ButtonSprite pButtonSprite,float pTouchAreaLocalX, float pTouchAreaLocalY) {
@@ -786,6 +791,20 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	public void textMenu(String text){
+		
+		final GameScene gameScene = this;
+		
+		/*ButtonSprite okButton = new ButtonSprite(0, 0, resourcesManager.continue_region, vbom, new OnClickListener() {
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				gameScene.dismissDialog();
+			}
+		});*/
+		
+		//this.setChildScene(new GameDialogBox(this, "Your Turn!", ((ButtonSprite[]) null)), false, true, true);
+		
+		/*
+		
 		final Dialog pausemenu = new Dialog(activity);
 		pausemenu.setTitle(text);
 		LinearLayout ll = new LinearLayout(activity);
@@ -807,12 +826,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
         
         pausemenu.setContentView(ll);      
         pausemenu.setCanceledOnTouchOutside(false);
-        pausemenu.show();        
-		
+        pausemenu.show(); 
+        
+               
+        */
 		
 	}
-	
-	
+
 	public void createQuitDialog(){
 		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
 		dia.setTitle("Are you sure you wish to quit the game? All progress will be lost!");

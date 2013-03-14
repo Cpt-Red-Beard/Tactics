@@ -7,12 +7,17 @@ import java.util.Map;
 import java.util.Random;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.hud.HUD;
+import org.andengine.entity.scene.IOnAreaTouchListener;
+import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
+import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +43,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.PushService;
 import com.testgame.scene.SceneManager.SceneType;
+import com.testgame.sprite.GameDialogBox;
 
 public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener {
 
@@ -46,6 +52,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private final int MENU_PLAY = 1;
 	private final int MENU_CONTINUE = 2;
 	private static IMenuItem playMenuItem;
+	private static String name;
 	private static List<String> userslist = new ArrayList<String>();
 	private AlertDialog dialog;
 	private static AlertDialog loading;
@@ -54,6 +61,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static AlertDialog acceptDialog;
 	private static Map<String, String> usernames;
 	private static boolean loggedin = false;
+	
+	private GameDialogBox gameDialog;
 	
 	@Override
 	public void createScene() {
@@ -114,11 +123,9 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    playMenuItem.setPosition(0, 75);
 	    conintueMenuItem.setPosition(0, -25);
 	    //optionsMenuItem.disabled(true);
-	   
 	    
 	    menuChildScene.setOnMenuItemClickListener(this);
-	    
-	    setChildScene(menuChildScene);
+	    setChildScene(menuChildScene, false, false, false);
 	}
 	
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY)
@@ -196,11 +203,13 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	//SceneManager.getInstance().loadSetupScene(engine);
 	        	return true;
 	        default:
+	        	Log.d("AndEngine", "touch not on a button..?");
 	            return false;
 	    }
 	}
 	
-	private static void getFacebookIdInBackground() {
+	// NOTE!: I removed static here so that I can popup up a message dialog. Will put it back in if this breaks networking.
+	private void getFacebookIdInBackground() {
 		
 		  Request.executeMeRequestAsync(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
 		    @Override
@@ -210,6 +219,9 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		    	ParseUser.getCurrentUser().put("Name", user.getName());
 		        ParseUser.getCurrentUser().put("fbId", user.getId());
 		        ParseUser.getCurrentUser().saveInBackground();
+		        name =  user.getName();
+		        welcomeDialog();
+
 		      }
 		      Request.executeMyFriendsRequestAsync(ParseFacebookUtils.getSession(), new Request.GraphUserListCallback() {
 
@@ -252,6 +264,11 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		  
 		 
 		}
+	
+	private void welcomeDialog() {
+		camera.setHUD(new HUD());
+		GameDialogBox box = new GameDialogBox(camera.getHUD(), "Welcome "+name+"!", ((ButtonSprite[]) null));
+	}
 	
 	private void showDialog(){
 		final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -435,5 +452,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		// TODO Auto-generated method stub
 		
 	}
+
+
 	
 }
