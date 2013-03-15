@@ -44,7 +44,10 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private final int MENU_LOGIN = 0;
 	private final int MENU_PLAY = 1;
 	private final int MENU_CONTINUE = 2;
+	private final int MENU_LOGOUT = 3;
+	private static IMenuItem loginMenuItem;
 	private static IMenuItem playMenuItem;
+	private static IMenuItem logoutMenuItem;
 	private static List<String> userslist = new ArrayList<String>();
 	private AlertDialog dialog;
 	private static AlertDialog loading;
@@ -102,12 +105,14 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    menuChildScene = new MenuScene(camera);
 	    menuChildScene.setPosition(240, 400);
 	    
-	    final IMenuItem loginMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGIN, resourcesManager.login_region, vbom), 1.2f, 1);
+	    logoutMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGOUT, resourcesManager.logout_region, vbom), 1.2f, 1);
+	    loginMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGIN, resourcesManager.login_region, vbom), 1.2f, 1);
 	    playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.newgame_region, vbom), 1.2f, 1);
 	    final IMenuItem conintueMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_CONTINUE, resourcesManager.options_region, vbom), 1.2f, 1);
 	    
 	    menuChildScene.addMenuItem(loginMenuItem);
 	    menuChildScene.addMenuItem(playMenuItem);
+	    menuChildScene.addMenuItem(logoutMenuItem);
 	    menuChildScene.addMenuItem(conintueMenuItem);
 	    
 	    menuChildScene.buildAnimations();
@@ -116,6 +121,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    loginMenuItem.setPosition(0, 175); 
 	    playMenuItem.setPosition(0, 75);
 	    conintueMenuItem.setPosition(0, -25);
+	    logoutMenuItem.setPosition(0, -125);
 	    //optionsMenuItem.disabled(true);
 	   
 	    
@@ -138,7 +144,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	});
 	        	usernames.clear();
 	        	userslist.clear();
-	        	//SceneManager.getInstance().loadUnitSelectionScene(engine);
 	        	ParseFacebookUtils.logIn(activity, new LogInCallback() {
 	        		  @Override
 	        		  public void done(ParseUser user, ParseException err) {
