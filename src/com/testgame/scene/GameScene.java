@@ -640,13 +640,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void startCompTurn(){
 		Log.d("Turn", getGame().getCount()+"");
 		ParseQuery query = new ParseQuery("Turns");
-		query.whereEqualTo("Player", resourcesManager.opponentString+"_"+getGame().getCount());
+		Log.d("Player", resourcesManager.opponentString+"_"+getGame().getCount());
+		query.whereEqualTo("Player", "user_"+resourcesManager.opponentString+"_"+getGame().getCount());
 		query.findInBackground(new FindCallback() {
 		    public void done(List<ParseObject> itemList, ParseException e) {
 		        if (e == null) {
 		            Log.d("score", "Retrieved " + itemList.size() + " scores");
 		            for(ParseObject ob : itemList){
-		            	if(ob.getString("GameId") == resourcesManager.gameId){
+		            	Log.d("GameId", resourcesManager.gameId);
+		            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
 		            		if(getGame().getCount() != 0){
 				        		JSONArray array = ob.getJSONArray("Moves");
 				        		Log.d("Turn", "Starting computer turn");
@@ -821,7 +823,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		dia.setTitle("Are you sure you wish to quit the game? All progress will be lost!");
 		dia.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-            	resourcesManager.resetGame();
+            	
             	try {
 					JSONObject data = new JSONObject("{\"alert\": \"Game Ended\", \"action\": \"com.testgame.QUIT\"}");
 					 ParsePush push = new ParsePush();
@@ -833,6 +835,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				}	
             	quitDialog.dismiss();
             	disposeScene();
+            	resourcesManager.resetGame();
 		    	SceneManager.getInstance().loadMenuScene(engine);
             	
             }
