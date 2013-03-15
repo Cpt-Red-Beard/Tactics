@@ -199,6 +199,14 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	SceneManager.getInstance().loadTutorialScene(engine);
 	        	//SceneManager.getInstance().loadSetupScene(engine);
 	        	return true;
+	        	
+	        case MENU_LOGOUT:
+	        	PushService.unsubscribe(activity, resourcesManager.userString);
+	    		loggedin = false;
+	    		Session.getActiveSession().closeAndClearTokenInformation();
+	        	return true;
+	        	
+	        	
 	        default:
 	            return false;
 	    }
