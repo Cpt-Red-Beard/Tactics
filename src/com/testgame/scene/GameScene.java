@@ -640,7 +640,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void startCompTurn(){
 		Log.d("Turn", getGame().getCount()+"");
 		ParseQuery query = new ParseQuery("Turns");
-		query.whereEqualTo("Player", "user_"+resourcesManager.opponentString+"_"+getGame().getCount());
+		query.whereEqualTo("Player", resourcesManager.opponentString+"_"+getGame().getCount());
 		query.findInBackground(new FindCallback() {
 		    public void done(List<ParseObject> itemList, ParseException e) {
 		        if (e == null) {
