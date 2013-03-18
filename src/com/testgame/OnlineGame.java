@@ -23,10 +23,6 @@ public class OnlineGame extends AGame{
 	
 	public JSONArray moves;
 	
-	/**
-	 * Player 1.
-	 */
-	protected APlayer player;
 	
 	/**
 	 * Player 2.
@@ -97,11 +93,14 @@ public class OnlineGame extends AGame{
 	}
 	
 	public void nextTurn() {
+		if(!getPlayer().isTurn())
+			return;
 		Log.d("Turn", getCount()+"");
 		ParseObject turns = new ParseObject("Turns");
 		turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
 		turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+getCount());
 		turns.put("GameId", resourcesManager.gameId);
+		turns.put("Device", resourcesManager.deviceID);
 		turns.put("Moves", moves);
 		turns.saveInBackground();
 		try {

@@ -142,6 +142,7 @@ public class MainActivity extends BaseGameActivity {
     							resourcesManager.turn = false;
     						
     						resourcesManager.gameId = json.getString("GameId");
+    						resourcesManager.opponentDeviceID = json.getString("deviceId");
     						
     						if(SceneManager.getInstance().getMainMenuScene() != null)
     						((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createAcceptDialog(json);

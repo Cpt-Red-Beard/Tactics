@@ -42,6 +42,8 @@ public class ResourcesManager {
     public boolean inGame;
     public boolean isLocal;
     public ArrayList<Integer> unitArray;
+    public String deviceID;
+    public String opponentDeviceID;
     private static final ResourcesManager INSTANCE = new ResourcesManager();
     public String gameId;
 	

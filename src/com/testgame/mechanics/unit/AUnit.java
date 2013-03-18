@@ -306,6 +306,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 			}
 			
 			((OnlineGame)this.game.getGame()).addMove(temp);
+			
 			unit.attackedAnimate(null, unit, this.attack);
 			
 			

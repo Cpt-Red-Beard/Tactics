@@ -194,7 +194,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		camera.setCenter(0, 0);
 		
 		// Initialize the game.
-		this.setGame(new OnlineGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn));
+		if(!resourcesManager.isLocal){
+			this.setGame(new OnlineGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn));
+		}
 		
 		createHUD();
 	    
@@ -203,7 +205,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		currentTileRectangle.setOffsetCenter(0, 0);
 		currentTileRectangle.setColor(1, 0, 0, 0);
 		attachChild(currentTileRectangle);
-		startCompTurn();
+		if(!resourcesManager.isLocal){
+			startCompTurn();
+		}
 		
 	}
 	
@@ -665,9 +669,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				if(getSelectedCharacter() != null){
 					deselectCharacter(true);
 				}
-				if(getGame().getPlayer().isTurn()){
 					getGame().nextTurn();
-				}
 				pausemenu.dismiss();
 				
 			}
@@ -795,16 +797,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		dia.setTitle("Are you sure you wish to quit the game? All progress will be lost!");
 		dia.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-            	
-            	try {
-					JSONObject data = new JSONObject("{\"alert\": \"Game Ended\", \"action\": \"com.testgame.QUIT\"}");
-					 ParsePush push = new ParsePush();
-		             push.setChannel("user_"+resourcesManager.opponentString); 
-		             push.setData(data);
-		             push.sendInBackground();
-                } catch (JSONException e) { 
-					e.printStackTrace();
-				}	
+            	if(!resourcesManager.isLocal){
+	            	try {
+						JSONObject data = new JSONObject("{\"alert\": \"Game Ended\", \"action\": \"com.testgame.QUIT\"}");
+						 ParsePush push = new ParsePush();
+			             push.setChannel("user_"+resourcesManager.opponentString); 
+			             push.setData(data);
+			             push.sendInBackground();
+	                } catch (JSONException e) { 
+						e.printStackTrace();
+					}	
+            	}
             	quitDialog.dismiss();
             	disposeScene();
             	resourcesManager.resetGame();
