@@ -1,11 +1,13 @@
 package com.testgame.mechanics.unit;
 
 import java.util.ArrayList;
+import java.util.Random;
+
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
+import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.modifier.IModifier;
@@ -113,6 +115,11 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 * Whether the unit is currently defending.
 	 */
 	protected boolean isDefending;
+	
+	/**
+	 * Random number generator.
+	 */
+	protected Random rand;
 	
 	@Override
 	public void setPlayer(APlayer player) {
@@ -288,8 +295,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void attack(final AUnit unit) {
 		int dist = manhattanDistance(this.x, this.y, unit.getMapX(), unit.getMapY());
 		if(dist <= this.attackrange && this.attackenergy <= this.energy){
+			rand = new Random(System.currentTimeMillis()); // new rng with random seed
+			int realAttack = this.attack + ((int) (0.05*this.attack*rand.nextGaussian())); // randomize attack
 			this.reduceEnergy(this.attackenergy);
-			
+			unit.reduceHealth(realAttack); // unit being attacked
 			JSONObject temp = new JSONObject();
 			try {
 				temp.put("MoveType", "ATTACK");
@@ -298,7 +307,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 				temp.put("Energy", this.attackenergy);
 				temp.put("OppX", unit.x);
 				temp.put("OppY", unit.y);
-				temp.put("Attack",this.attack);
+				temp.put("Attack", realAttack);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

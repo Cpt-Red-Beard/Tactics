@@ -5,10 +5,11 @@ import java.util.ArrayList;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.sprite.ButtonSprite;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
+import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.adt.align.HorizontalAlign;
 import org.json.JSONException;
@@ -35,7 +36,10 @@ public class SetupScene extends BaseScene {
 	*/
 	private Text setupText, mapText;
 	
-	private ButtonSprite play, reset, jock, nerd, ditz;
+	// TODO Need some sort of scrollable or drop-downn menu for level selection; hard-coding buttons for now
+	private ButtonSprite play, reset, jock, nerd, ditz, defaultMapBtn;
+	
+	private TMXTiledMap chosenMap = resourcesManager.tiledMap; // the default option
 	
 	private int MAX_UNITS = 10;
 	
@@ -101,6 +105,7 @@ public class SetupScene extends BaseScene {
 				
 				
 				resourcesManager.unitArray = unitList;
+				resourcesManager.selectedMap = chosenMap; // Set the selected map in the resources manager
 				SceneManager.getInstance().loadGameScene(engine);
 			}
 			
@@ -152,17 +157,27 @@ public class SetupScene extends BaseScene {
 			
 		});
 	
+		defaultMapBtn = new ButtonSprite (100, 300, resourcesManager.blank_region, vbom, new OnClickListener() {
+
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				chosenMap = resourcesManager.tiledMap;
+			}
+		});
+	
 		attachChild(play);
 		attachChild(reset);
 		attachChild(jock);
 		attachChild(nerd);
 		attachChild(ditz);
+		attachChild(defaultMapBtn);
 		
 		registerTouchArea(play);
 		registerTouchArea(reset);
 		registerTouchArea(jock);
 		registerTouchArea(nerd);
 		registerTouchArea(ditz);
+		registerTouchArea(defaultMapBtn);
 	}
 
 	protected void updateText() {
