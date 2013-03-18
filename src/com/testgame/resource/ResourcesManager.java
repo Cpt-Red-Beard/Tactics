@@ -347,7 +347,7 @@ public class ResourcesManager {
 			walking_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "running.wav");
 			walking_sound.setLooping(true);
 			attack_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "whack.wav");
-			touch_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "tick.wav");
+			touch_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "touch.mp3");
 		} catch (IllegalStateException e) {
 			Debug.e("Error", e);
 		} catch (IOException e) {

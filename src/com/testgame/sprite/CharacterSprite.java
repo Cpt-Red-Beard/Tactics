@@ -55,7 +55,7 @@ public class CharacterSprite extends AnimatedSprite {
 		
 		if (pSceneTouchEvent.getAction() == MotionEvent.ACTION_DOWN) {
 			
-			ResourcesManager.getInstance().select_sound.play();
+			ResourcesManager.getInstance().touch_sound.play();
 			
 			if (isTurn) {
 				Log.d("AndEngine", "Our turn, calling activate and select");

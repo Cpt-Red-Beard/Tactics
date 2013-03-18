@@ -50,7 +50,7 @@ public class HighlightedSquare extends Rectangle {
 		
 		if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN) {
 			
-			ResourcesManager.getInstance().select_sound.play();
+			ResourcesManager.getInstance().touch_sound.play();
 			
 			if (touched) {
 				Log.d("AndEngine", "already selected, calling gamescne");

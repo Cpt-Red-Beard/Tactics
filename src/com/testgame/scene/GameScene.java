@@ -252,10 +252,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				SceneManager.getInstance().loadTutorialScene(game.engine);
 			}
 		});
-		
-		tutorialButton.setScale(.5f);
-		
-		
+
 		pauseButton = new ButtonSprite(40, 760, resourcesManager.pause_region, vbom, new OnClickListener(){
             
             @Override
@@ -274,8 +271,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             				
             }
 		});
-		
-		pauseButton.setScale(2.3f);
+
 	
 	    //hud.attachChild(turnMessage);
 	    //hud.attachChild(nextTurnButton);
