@@ -199,7 +199,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		camera.setCenter(0, 0);
 		
 		// Initialize the game.
-		this.game = new AGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn);
+		this.setGame(new AGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn));
 		
 		createHUD();
 	    
@@ -431,10 +431,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	public void nextTurn() {
-		Log.d("Turn", game.getCount()+"");
+		Log.d("Turn", getGame().getCount()+"");
 		ParseObject turns = new ParseObject("Turns");
 		turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
-		turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+game.getCount());
+		turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+getGame().getCount());
+		turns.put("GameId", resourcesManager.gameId);
 		turns.put("Moves", moves);
 		turns.saveInBackground();
 		try {
@@ -451,9 +452,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		
 		moves = new JSONArray();
-		if(!this.game.isFirstTurn()) 
-			this.game.incrementCount(); 
-		this.game.getPlayer().endTurn();
+		if(!this.getGame().isFirstTurn()) 
+			this.getGame().incrementCount(); 
+		this.getGame().getPlayer().endTurn();
+		
 	}
 	
 	public void clearSquares() {
@@ -637,35 +639,38 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	public void startCompTurn(){
-		Log.d("Turn", game.getCount()+"");
+		Log.d("Turn", getGame().getCount()+"");
 		ParseQuery query = new ParseQuery("Turns");
-		query.whereEqualTo("Player", "user_"+resourcesManager.opponentString+"_"+game.getCount());
+		Log.d("Player", resourcesManager.opponentString+"_"+getGame().getCount());
+		query.whereEqualTo("Player", "user_"+resourcesManager.opponentString+"_"+getGame().getCount());
 		query.findInBackground(new FindCallback() {
 		    public void done(List<ParseObject> itemList, ParseException e) {
 		        if (e == null) {
 		            Log.d("score", "Retrieved " + itemList.size() + " scores");
-		            if(itemList.size() != 1){
-		        		Log.d("Error", "Did not get correct results");
-		        		//return;
-		        		startCompTurn(); 
-		        	}
-		        		
-		        	else if(game.getCount() != 0){
-		        		JSONArray array = itemList.get(0).getJSONArray("Moves");
-		        		Log.d("Turn", "Starting computer turn");
-		        		deselectCharacter(false);
-		            	game.getCompPlayer().startTurn(game, array);
-		            	itemList.get(0).deleteInBackground();
-		        	}
-		        	else{
-		        		JSONObject object = itemList.get(0).getJSONObject("Init");
-		        		Log.d("Turn", "Starting Init turn");
-		        		deselectCharacter(false);
-		            	game.getCompPlayer().init(game, object);
-		            	itemList.get(0).deleteInBackground();
-		        		
-		        	}
-		            
+		            for(ParseObject ob : itemList){
+		            	Log.d("GameId", resourcesManager.gameId);
+		            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
+		            		if(getGame().getCount() != 0){
+				        		JSONArray array = ob.getJSONArray("Moves");
+				        		Log.d("Turn", "Starting computer turn");
+				        		deselectCharacter(false);
+				            	getGame().getCompPlayer().startTurn(getGame(), array);
+				            	ob.deleteInBackground();
+				            	return;
+				        	}
+				        	else{
+				        		JSONObject object = ob.getJSONObject("Init");
+				        		Log.d("Turn", "Starting Init turn");
+				        		deselectCharacter(false);
+				            	getGame().getCompPlayer().init(getGame(), object);
+				            	ob.deleteInBackground();
+				            	return;
+				        		
+				        	}
+		            	}
+		            	ob.deleteInBackground();
+		            }
+		            startCompTurn();   
 		        } else {
 		            Log.d("score", "Error: " + e.getMessage());
 		        }
@@ -676,7 +681,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	private void pauseMenu(){
 		final Dialog pausemenu = new Dialog(activity);
-		pausemenu.setTitle("Paused! Turn: "+game.getCount());
+		pausemenu.setTitle("Paused! Turn: "+getGame().getCount());
 		LinearLayout ll = new LinearLayout(activity);
 		ll.setOrientation(LinearLayout.VERTICAL);
 		
@@ -689,7 +694,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				if(getSelectedCharacter() != null){
 					deselectCharacter(true);
 				}
-				if(game.getPlayer().isTurn()){
+				if(getGame().getPlayer().isTurn()){
 					nextTurn();
 				}
 				pausemenu.dismiss();
@@ -843,6 +848,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				}	
             	quitDialog.dismiss();
             	disposeScene();
+            	resourcesManager.resetGame();
 		    	SceneManager.getInstance().loadMenuScene(engine);
             	
             }
@@ -874,6 +880,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				pausemenu.dismiss();
 				disposeScene();
 		    	SceneManager.getInstance().loadMenuScene(engine);
+		    	resourcesManager.resetGame();
 				
 			}
         });        
@@ -891,6 +898,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void onHomeKeyPressed() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public AGame getGame() {
+		return game;
+	}
+
+	public void setGame(AGame game) {
+		this.game = game;
 	}
 	
 	

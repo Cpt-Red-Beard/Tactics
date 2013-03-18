@@ -135,9 +135,16 @@ public class AGame implements IGame {
 	/**
 	 * Ends the game.
 	 */
-	private void endGame(APlayer winner) {
-		// TODO: Send notification to the players
-		this.gameScene.setEndGameText(winner);
+	public void endGame() {
+		if(player.getActiveUnits().size() == 0){
+			this.gameScene.setEndGameText(compPlayer);
+			
+		}
+		else if(compPlayer.getActiveUnits().size() == 0){
+			this.gameScene.setEndGameText(player);
+			gameScene.nextTurn();
+		}
+		
 	}
 	
 	public APlayer getPlayer() {

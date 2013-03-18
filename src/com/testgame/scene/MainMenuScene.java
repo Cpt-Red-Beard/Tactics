@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.HUD;
@@ -19,7 +20,6 @@ import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,7 +32,6 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.model.GraphUser;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.LogInCallback;
 import com.parse.ParseFacebookUtils;
@@ -51,8 +50,14 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private final int MENU_LOGIN = 0;
 	private final int MENU_PLAY = 1;
 	private final int MENU_CONTINUE = 2;
+	private final int MENU_LOGOUT = 3;
+	private static IMenuItem loginMenuItem;
 	private static IMenuItem playMenuItem;
+<<<<<<< HEAD
 	private static String name;
+=======
+	private static IMenuItem logoutMenuItem;
+>>>>>>> origin/master
 	private static List<String> userslist = new ArrayList<String>();
 	private AlertDialog dialog;
 	private static AlertDialog loading;
@@ -110,12 +115,14 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    menuChildScene = new MenuScene(camera);
 	    menuChildScene.setPosition(240, 400);
 	    
-	    final IMenuItem loginMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGIN, resourcesManager.login_region, vbom), 1.2f, 1);
+	    logoutMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGOUT, resourcesManager.logout_region, vbom), 1.2f, 1);
+	    loginMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGIN, resourcesManager.login_region, vbom), 1.2f, 1);
 	    playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.newgame_region, vbom), 1.2f, 1);
 	    final IMenuItem conintueMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_CONTINUE, resourcesManager.howtoplay_region, vbom), 1.2f, 1);
 	    
 	    menuChildScene.addMenuItem(loginMenuItem);
 	    menuChildScene.addMenuItem(playMenuItem);
+	    menuChildScene.addMenuItem(logoutMenuItem);
 	    menuChildScene.addMenuItem(conintueMenuItem);
 	    
 	    menuChildScene.buildAnimations();
@@ -124,6 +131,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    loginMenuItem.setPosition(0, 175); 
 	    playMenuItem.setPosition(0, 75);
 	    conintueMenuItem.setPosition(0, -25);
+	    logoutMenuItem.setPosition(0, -125);
 	    //optionsMenuItem.disabled(true);
 	    
 	    menuChildScene.setOnMenuItemClickListener(this);
@@ -146,7 +154,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	});
 	        	usernames.clear();
 	        	userslist.clear();
-	        	//SceneManager.getInstance().loadUnitSelectionScene(engine);
 	        	ParseFacebookUtils.logIn(activity, new LogInCallback() {
 	        		  @Override
 	        		  public void done(ParseUser user, ParseException err) {
@@ -206,6 +213,14 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	SceneManager.getInstance().loadTutorialScene(engine);
 	        	//SceneManager.getInstance().loadSetupScene(engine);
 	        	return true;
+	        	
+	        case MENU_LOGOUT:
+	        	PushService.unsubscribe(activity, resourcesManager.userString);
+	    		loggedin = false;
+	    		Session.getActiveSession().closeAndClearTokenInformation();
+	        	return true;
+	        	
+	        	
 	        default:
 	        	Log.d("AndEngine", "touch not on a button..?");
 	            return false;
@@ -346,14 +361,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 		invite.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-            	ParseQuery query = new ParseQuery("Turns");
-        		query.whereEqualTo("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
-        		query.findInBackground(new FindCallback() {
-        		    public void done(List<ParseObject> itemList, ParseException e) {
-        		        if (e == null) {
-        		        	for(int i = 0; i < itemList.size(); i++){
-        		        		itemList.get(i).deleteInBackground();
-        		        	}
+        		        	resourcesManager.gameId = UUID.randomUUID().toString();
         		        	Random rand = new Random();
         	            	boolean h;
         	            	if (rand.nextDouble() > 0.5)
@@ -371,7 +379,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
         						e1.printStackTrace();
         					}
         	            	try {
-        						JSONObject data = new JSONObject("{\"alert\": \"Invitation Accepted\", \"action\": \"com.testgame.ACCEPT\", \"turn\": \""+h+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
+        						JSONObject data = new JSONObject("{\"alert\": \"Invitation Accepted\", \"action\": \"com.testgame.ACCEPT\", \"GameId\": \""+resourcesManager.gameId+"\", \"turn\": \""+h+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
         						 ParsePush push = new ParsePush();
         			             push.setChannel("user_"+object.getString("userid"));
         			             push.setData(data);
@@ -382,14 +390,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
         	            	
         	           	 invitation.dismiss();
         	           	 SceneManager.getInstance().loadSetupScene(engine);
-        		            
-        		            
-        		        } else {
-        		            Log.d("score", "Error: " + e.getMessage());
-        		        }
-        		    }
-        		});
-            	
+		          
+
             }
         });
 		
@@ -424,25 +426,10 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 			e.printStackTrace();
 		}
 		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-            	ParseQuery query = new ParseQuery("Turns");
-        		query.whereEqualTo("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
-        		query.findInBackground(new FindCallback() {
-        		    public void done(List<ParseObject> itemList, ParseException e) {
-        		        if (e == null) {
-        		        	for(int i = 0; i < itemList.size(); i++){
-        		        		itemList.get(i).deleteInBackground();
-        		        	}
+            public void onClick(DialogInterface dialog, int whichButton) {    	
         		        	acceptDialog.dismiss();
         		           	SceneManager.getInstance().loadSetupScene(engine);
-        		            
-        		            
-        		        } else {
-        		            Log.d("score", "Error: " + e.getMessage());
-        		        }
-        		    }
-        		});
-           	 
+
             }
         });
 		

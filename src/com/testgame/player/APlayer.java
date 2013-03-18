@@ -67,7 +67,6 @@ public class APlayer implements IPlayer {
 	@Override
 	public void removeUnit(AUnit unit) {
 		getActiveUnits().remove(unit);
-		//this.Gam
 	}
 	
 	@Override
