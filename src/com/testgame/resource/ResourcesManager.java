@@ -40,6 +40,7 @@ public class ResourcesManager {
     public String opponentString;
     public boolean turn;
     public boolean inGame;
+    public boolean isLocal;
     public ArrayList<Integer> unitArray;
     private static final ResourcesManager INSTANCE = new ResourcesManager();
     public String gameId;
@@ -352,6 +353,7 @@ public class ResourcesManager {
 		inGame = false;
 		opponent = null;
 		opponentString = null;
+		isLocal = false;
 		
 	}
 

@@ -1,5 +1,14 @@
 package com.testgame;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.util.Log;
+
+import com.parse.ParseObject;
+import com.parse.ParsePush;
+import com.parse.ParseUser;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.mechanics.unit.Ditz;
 import com.testgame.mechanics.unit.Jock;
@@ -10,6 +19,9 @@ import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
 
 public class OnlineGame extends AGame{
+	
+	
+	public JSONArray moves;
 	
 	/**
 	 * Player 1.
@@ -25,8 +37,10 @@ public class OnlineGame extends AGame{
 	private boolean firstTurn;
 	
 	public OnlineGame(APlayer pOne, ComputerPlayer pTwo, int xDim, int yDim, GameScene game, boolean turn) {
-		super(xDim, yDim, game);
+		super(pOne,xDim, yDim, game);
 		this.setFirstTurn(turn);
+		moves = new JSONArray();
+		this.setCompPlayer(pTwo);
 		init();
 		
 	}
@@ -34,7 +48,7 @@ public class OnlineGame extends AGame{
 	/**
 	 * Performs initialization needed to begin the game.
 	 */
-	private void init() {
+	public void init() {
 		
 		int jocks = resourcesManager.unitArray.get(0);
 		int nerds = resourcesManager.unitArray.get(1);
@@ -42,6 +56,7 @@ public class OnlineGame extends AGame{
 		int j = 0;
 		if(isFirstTurn())
 			j = 10;
+		
 		for(int i = 0; i < 10; i++){
 				if(nerds > 0){
 					AUnit unit = new Nerd(gameMap, i, j, gameScene, "blue");
@@ -62,6 +77,72 @@ public class OnlineGame extends AGame{
 					jocks--;
 				}
 			}
+	}
+	
+	/**
+	 * Ends the game.
+	 */
+	public void endGame() {
+		if(player.getActiveUnits().size() == 0){
+			this.gameScene.quitDialog("You Lose!");
+			this.gameScene.setEndGameText(compPlayer);
+			
+		}
+		else if(compPlayer.getActiveUnits().size() == 0){
+			this.gameScene.quitDialog("You Win!");
+			this.gameScene.setEndGameText(player);
+			
+		}
+		
+	}
+	
+	public void nextTurn() {
+		Log.d("Turn", getCount()+"");
+		ParseObject turns = new ParseObject("Turns");
+		turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
+		turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+getCount());
+		turns.put("GameId", resourcesManager.gameId);
+		turns.put("Moves", moves);
+		turns.saveInBackground();
+		try {
+			JSONObject data = new JSONObject("{\"alert\": \"Next Turn\", \"action\": \"com.testgame.NEXT_TURN\"}");
+			 ParsePush push = new ParsePush();
+			 push.setChannel("user_"+resourcesManager.opponentString);
+             push.setData(data);
+			 
+             push.sendInBackground();
+        } catch (JSONException e) {
+			e.printStackTrace();
+		}
+		 
+		
+		
+		moves = new JSONArray();
+		if(!this.isFirstTurn()) 
+			this.incrementCount(); 
+		this.getPlayer().endTurn();
+		
+	}
+	
+	@Override
+	public void addMove(JSONObject move){ 
+		moves.put(move);
+	}
+	
+	public ComputerPlayer getCompPlayer() {
+		return compPlayer;
+	}
+
+	public void setCompPlayer(ComputerPlayer compPlayer) {
+		this.compPlayer = compPlayer;
+	}
+
+	public boolean isFirstTurn() {
+		return firstTurn;
+	}
+
+	public void setFirstTurn(boolean firstTurn) {
+		this.firstTurn = firstTurn;
 	}
 	
 }

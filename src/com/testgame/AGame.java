@@ -2,6 +2,8 @@ package com.testgame;
 
 import java.util.Random;
 
+import org.json.JSONObject;
+
 import com.testgame.mechanics.map.GameMap;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.mechanics.unit.Ditz;
@@ -17,7 +19,7 @@ import com.testgame.scene.GameScene;
  * @author Alen Lukic
  *
  */
-public class AGame implements IGame {
+public abstract class AGame implements IGame {
 
 	
 	public ResourcesManager resourcesManager;
@@ -68,7 +70,7 @@ public class AGame implements IGame {
 	 * @param xDim The size of the x-dimension of the map.
 	 * @param yDim The size of the y-dimension of the map.
 	 */
-	public AGame(int xDim, int yDim, GameScene game) {
+	public AGame(APlayer pOne, int xDim, int yDim, GameScene game) {
 		this.resourcesManager = ResourcesManager.getInstance();
 		this.gameScene = game;
 		this.gameMap = new GameMap(xDim, yDim);
@@ -77,11 +79,16 @@ public class AGame implements IGame {
 		this.divider = yDim / 2;
 		this.rand = new Random();
 		this.turnOver = false;
+		this.player = pOne;
 		turncount = 0;
 		
 	}
 
+	public abstract void init();
 	
+	public abstract void endGame();
+	
+	public abstract void nextTurn();
 
 	public int getCount(){
 		return turncount;
@@ -91,41 +98,11 @@ public class AGame implements IGame {
 		turncount++;
 	}
 
-	/**
-	 * Ends the game.
-	 */
-	public void endGame() {
-		if(player.getActiveUnits().size() == 0){
-			this.gameScene.quitDialog("You Lose!");
-			this.gameScene.setEndGameText(compPlayer);
-			
-		}
-		else if(compPlayer.getActiveUnits().size() == 0){
-			this.gameScene.quitDialog("You Win!");
-			this.gameScene.setEndGameText(player);
-			
-		}
-		
-	}
-	
 	public APlayer getPlayer() {
 		return this.player;
 	}
 
-	public ComputerPlayer getCompPlayer() {
-		return compPlayer;
-	}
-
-	public void setCompPlayer(ComputerPlayer compPlayer) {
-		this.compPlayer = compPlayer;
-	}
-
-	public boolean isFirstTurn() {
-		return firstTurn;
-	}
-
-	public void setFirstTurn(boolean firstTurn) {
-		this.firstTurn = firstTurn;
+	public void addMove(JSONObject move){ 
 	}
 
 	public GameScene getGameScene() {

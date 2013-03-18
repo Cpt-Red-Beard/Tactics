@@ -337,6 +337,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 		invite.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+            				resourcesManager.isLocal = true;
             				resourcesManager.inGame = true;
         		        	resourcesManager.gameId = UUID.randomUUID().toString();
         		        	Random rand = new Random();
@@ -404,6 +405,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		}
 		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) { 
+            				resourcesManager.isLocal = true;
             				resourcesManager.inGame = true;
         		        	acceptDialog.dismiss();
         		           	SceneManager.getInstance().loadSetupScene(engine);
