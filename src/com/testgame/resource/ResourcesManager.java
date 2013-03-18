@@ -136,13 +136,9 @@ public class ResourcesManager {
     public ITextureRegion menu_background_region;
     // Button texture regions
     private BuildableBitmapTextureAtlas menuTextureAtlas;
-<<<<<<< HEAD
-    public ITextureRegion newgame_region, options_region, continue_region, login_region, reset_region, blank_region, howtoplay_region;
+    public ITextureRegion newgame_region, options_region, continue_region, login_region, reset_region, blank_region, howtoplay_region, logout_region;
     public Music menu_background_music, select_sound;
-=======
-    public ITextureRegion newgame_region, options_region, continue_region, login_region, reset_region, blank_region, logout_region;
-    public Music menu_background_music;
->>>>>>> origin/master
+
     public Font font;
     
     public void loadMenuResources()
@@ -178,11 +174,8 @@ public class ResourcesManager {
     	continue_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "continuebutton.png");
     	reset_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "resetbutton.png");
     	blank_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "blankbutton.png");
-<<<<<<< HEAD
     	howtoplay_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "howtoplaybutton.png");
-=======
     	logout_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "logoutbutton.png");
->>>>>>> origin/master
 
     	try {
     	    this.menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
@@ -378,14 +371,15 @@ public class ResourcesManager {
         
     }
 
-<<<<<<< HEAD
+
 	public void play_music() {
 		if (menu_background_music != null) menu_background_music.play();	
 	}
 
 	public void pause_music() {
 		if (menu_background_music != null) menu_background_music.pause();
-=======
+	}
+	
 	public void resetGame() {
 		unitArray = null;
 		gameId = null;
@@ -393,8 +387,7 @@ public class ResourcesManager {
 		inGame = false;
 		opponent = null;
 		opponentString = null;
->>>>>>> origin/master
-		
+
 	}
 
 }

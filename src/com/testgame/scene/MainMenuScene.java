@@ -53,11 +53,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private final int MENU_LOGOUT = 3;
 	private static IMenuItem loginMenuItem;
 	private static IMenuItem playMenuItem;
-<<<<<<< HEAD
 	private static String name;
-=======
 	private static IMenuItem logoutMenuItem;
->>>>>>> origin/master
 	private static List<String> userslist = new ArrayList<String>();
 	private AlertDialog dialog;
 	private static AlertDialog loading;
