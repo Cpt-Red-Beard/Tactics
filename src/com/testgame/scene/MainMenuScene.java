@@ -69,12 +69,14 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		createBackground();
 		createMenuChildScene();
 		usernames = new HashMap<String, String>();
+		resourcesManager.menu_background_music.play();
 	}
 
 	@Override
 	public void onBackKeyPressed() {
 		PushService.unsubscribe(activity, "user_"+resourcesManager.userString);
 		loggedin = false;
+		resourcesManager.menu_background_music.pause();
 		Session.getActiveSession().closeAndClearTokenInformation();
 		//System.exit(0);
 
@@ -110,7 +112,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    
 	    final IMenuItem loginMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGIN, resourcesManager.login_region, vbom), 1.2f, 1);
 	    playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.newgame_region, vbom), 1.2f, 1);
-	    final IMenuItem conintueMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_CONTINUE, resourcesManager.options_region, vbom), 1.2f, 1);
+	    final IMenuItem conintueMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_CONTINUE, resourcesManager.howtoplay_region, vbom), 1.2f, 1.5f);
 	    
 	    menuChildScene.addMenuItem(loginMenuItem);
 	    menuChildScene.addMenuItem(playMenuItem);
@@ -130,6 +132,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY)
 	{
+			resourcesManager.select_sound.play();
+		
 	        switch(pMenuItem.getID())
 	        {
 	        case MENU_LOGIN:
@@ -267,7 +271,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	
 	private void welcomeDialog() {
 		camera.setHUD(new HUD());
-		GameDialogBox box = new GameDialogBox(camera.getHUD(), "Welcome "+name+"!", ((ButtonSprite[]) null));
+		GameDialogBox box = new GameDialogBox(camera.getHUD(), "Welcome \n"+name+"!", ((ButtonSprite[]) null));
 	}
 	
 	private void showDialog(){

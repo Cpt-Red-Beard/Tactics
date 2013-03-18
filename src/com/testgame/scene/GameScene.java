@@ -803,7 +803,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		//this.setChildScene(new GameDialogBox(this, "Your Turn!", ((ButtonSprite[]) null)), false, true, true);
 		
-		/*
+		
 		
 		final Dialog pausemenu = new Dialog(activity);
 		pausemenu.setTitle(text);
@@ -827,9 +827,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
         pausemenu.setContentView(ll);      
         pausemenu.setCanceledOnTouchOutside(false);
         pausemenu.show(); 
-        
-               
-        */
 		
 	}
 

@@ -36,9 +36,9 @@ public class GameDialogBox {
 		
 		// Attach Background
 		hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background, resourcesManager.vbom));
-		
+		backgroundSprite.setScale(1.75f);
 		// TODO position text
-		hud.attachChild(messageText = new Text(240, 400, resourcesManager.font, message, resourcesManager.vbom));
+		hud.attachChild(messageText = new Text(240, 450, resourcesManager.font, message, resourcesManager.vbom));
 		
 		/*
 		int startY = 0;
@@ -54,10 +54,11 @@ public class GameDialogBox {
 		// default attach an okay button which dismisses the window.
 		final GameDialogBox box = this;
 		
-		hud.attachChild(okayButton = new ButtonSprite(240, 300, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
+		hud.attachChild(okayButton = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				Log.d("AndEngine", "dismissing dialog box");
+				ResourcesManager.getInstance().select_sound.play();
 				box.dismiss();
 			}
 		}));
@@ -71,6 +72,7 @@ public class GameDialogBox {
 			@Override
 			public void run() {
 				hud.detachChild(backgroundSprite);
+				hud.unregisterTouchArea(okayButton);
 				hud.detachChild(messageText);
 				hud.detachChild(okayButton);
 			}

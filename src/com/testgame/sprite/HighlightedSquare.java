@@ -9,6 +9,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 import org.andengine.extension.tmx.TMXTile;
 
+import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
 
 import android.util.Log;
@@ -48,6 +49,9 @@ public class HighlightedSquare extends Rectangle {
 		Log.d("AndEngine", "Square touched!");
 		
 		if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN) {
+			
+			ResourcesManager.getInstance().select_sound.play();
+			
 			if (touched) {
 				Log.d("AndEngine", "already selected, calling gamescne");
 				this.removeBorder();

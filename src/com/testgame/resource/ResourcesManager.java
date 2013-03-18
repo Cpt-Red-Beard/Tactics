@@ -135,8 +135,8 @@ public class ResourcesManager {
     public ITextureRegion menu_background_region;
     // Button texture regions
     private BuildableBitmapTextureAtlas menuTextureAtlas;
-    public ITextureRegion newgame_region, options_region, continue_region, login_region, reset_region, blank_region;
-    public Music menu_background_music;
+    public ITextureRegion newgame_region, options_region, continue_region, login_region, reset_region, blank_region, howtoplay_region;
+    public Music menu_background_music, select_sound;
     public Font font;
     
     public void loadMenuResources()
@@ -149,9 +149,11 @@ public class ResourcesManager {
     private void loadMenuMusic() {
    	 	MusicFactory.setAssetBasePath("mfx/");
         try {
-                this.menu_background_music = MusicFactory.createMusicFromAsset(this.engine.getMusicManager(), activity, "school.wav");
+                this.menu_background_music = MusicFactory.createMusicFromAsset(this.engine.getMusicManager(), activity, "background.wav");
                 this.menu_background_music.setLooping(true);
                 this.menu_background_music.setVolume(.25f);
+                
+                this.select_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "buttonpush.wav");
         } catch (final IOException e) {
                 Debug.e("Error", e);
         }
@@ -170,6 +172,7 @@ public class ResourcesManager {
     	continue_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "continuebutton.png");
     	reset_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "resetbutton.png");
     	blank_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "blankbutton.png");
+    	howtoplay_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "howtoplaybutton.png");
 
     	try {
     	    this.menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
@@ -179,10 +182,10 @@ public class ResourcesManager {
     	    Debug.e(e);
     	}
     	
-    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/");
+    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
     	
     	dialog_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-    	dialog_background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "temp_background.png", 0, 0);
+    	dialog_background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "dialogbackground.png", 0, 0);
     	dialog_atlas.load();
     	
     }
@@ -261,6 +264,8 @@ public class ResourcesManager {
     public Music footsteps;
     public Music hit;
     
+    public Music walking_sound, attack_sound, touch_sound;
+    
     private BitmapTextureAtlas dialog_atlas;
     public ITextureRegion dialog_background;
     
@@ -302,7 +307,7 @@ public class ResourcesManager {
     	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/");
     	
     	gear_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 128, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-    	gear_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gear_atlas, activity, "settinggeat.png", 0, 0);
+    	gear_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gear_atlas, activity, "settinggear.png", 0, 0);
     	gear_atlas.load();
     	
     	bottom_bar_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
@@ -337,6 +342,17 @@ public class ResourcesManager {
     
     private void loadGameAudio()
     {
+        MusicFactory.setAssetBasePath("mfx/");
+        try {
+			walking_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "running.wav");
+			walking_sound.setLooping(true);
+			attack_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "whack.wav");
+			touch_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "tick.wav");
+		} catch (IllegalStateException e) {
+			Debug.e("Error", e);
+		} catch (IOException e) {
+			Debug.e("Error", e);
+		}
         
     }
     
@@ -351,5 +367,14 @@ public class ResourcesManager {
     	top_bar_atlas.unload();
         
     }
+
+	public void play_music() {
+		if (menu_background_music != null) menu_background_music.play();	
+	}
+
+	public void pause_music() {
+		if (menu_background_music != null) menu_background_music.pause();
+		
+	}
 
 }

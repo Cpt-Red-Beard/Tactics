@@ -14,6 +14,8 @@ import org.andengine.util.adt.align.HorizontalAlign;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.testgame.scene.SceneManager.SceneType;
@@ -74,10 +76,11 @@ public class SetupScene extends BaseScene {
 	}
 
 	private void createButtons() {
-		play = new ButtonSprite(240, 350, resourcesManager.continue_region, vbom, new OnClickListener() {
+		play = new ButtonSprite(240, 360, resourcesManager.blank_region, vbom, new OnClickListener() {
 
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				Log.d("AndEngine", "setupmenu : clicked continue.");
 				JSONObject object = new JSONObject();
 				ArrayList<Integer> unitList = new ArrayList<Integer>();
 				unitList.add(jocks);
