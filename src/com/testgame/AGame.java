@@ -32,13 +32,6 @@ public class AGame implements IGame {
 	protected int turncount;
 
 	/**
-	 * Player 2.
-	 */
-	private ComputerPlayer compPlayer;
-	
-	private boolean firstTurn;
-	
-	/**
 	 * Signal for the end of a player's turn.
 	 */
 	protected boolean turnOver;
@@ -75,12 +68,9 @@ public class AGame implements IGame {
 	 * @param xDim The size of the x-dimension of the map.
 	 * @param yDim The size of the y-dimension of the map.
 	 */
-	public AGame(APlayer pOne, ComputerPlayer pTwo, int xDim, int yDim, GameScene game, boolean turn) {
+	public AGame(int xDim, int yDim, GameScene game) {
 		this.resourcesManager = ResourcesManager.getInstance();
-		this.setFirstTurn(turn);
 		this.gameScene = game;
-		this.player = pOne;
-		this.setCompPlayer(pTwo);
 		this.gameMap = new GameMap(xDim, yDim);
 		this.xDim = xDim;
 		this.yDim = yDim;
@@ -88,41 +78,10 @@ public class AGame implements IGame {
 		this.rand = new Random();
 		this.turnOver = false;
 		turncount = 0;
-		init();
+		
 	}
 
-	/**
-	 * Performs initialization needed to begin the game.
-	 */
-	private void init() {
-		
-		int jocks = resourcesManager.unitArray.get(0);
-		int nerds = resourcesManager.unitArray.get(1);
-		int ditz = resourcesManager.unitArray.get(2);
-		int j = 0;
-		if(isFirstTurn())
-			j = 10;
-		for(int i = 0; i < 10; i++){
-				if(nerds > 0){
-					AUnit unit = new Nerd(gameMap, i, j, gameScene, "blue");
-					unit.init(); 
-					player.addUnit(unit);
-					nerds--;
-				}
-				else if(ditz > 0){
-					AUnit unit = new Ditz(gameMap, i, j, gameScene, "blue");
-					unit.init(); 
-					player.addUnit(unit);
-					ditz--;
-				}
-				else if(jocks > 0){
-					AUnit unit = new Jock(gameMap, i, j, gameScene, "blue");
-					unit.init(); 
-					player.addUnit(unit);
-					jocks--;
-				}
-			}
-	}
+	
 
 	public int getCount(){
 		return turncount;
@@ -137,12 +96,14 @@ public class AGame implements IGame {
 	 */
 	public void endGame() {
 		if(player.getActiveUnits().size() == 0){
+			this.gameScene.quitDialog("You Lose!");
 			this.gameScene.setEndGameText(compPlayer);
 			
 		}
 		else if(compPlayer.getActiveUnits().size() == 0){
+			this.gameScene.quitDialog("You Win!");
 			this.gameScene.setEndGameText(player);
-			gameScene.nextTurn();
+			
 		}
 		
 	}

@@ -194,7 +194,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		camera.setCenter(0, 0);
 		
 		// Initialize the game.
-		this.setGame(new AGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn));
+		this.setGame(new OnlineGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn));
 		
 		createHUD();
 	    
@@ -852,9 +852,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	
-	public void quitDialog(){
+	public void quitDialog(String Text){
 		final Dialog pausemenu = new Dialog(activity);
-		pausemenu.setTitle("Opponent has quit the game! You win!");
+		pausemenu.setTitle(Text);
 		LinearLayout ll = new LinearLayout(activity);
 		ll.setOrientation(LinearLayout.VERTICAL);
 		

@@ -34,6 +34,8 @@ import android.view.KeyEvent;
 
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
+import com.parse.ParsePush;
+import com.parse.ParseUser;
 import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.SceneManager;
 
@@ -74,9 +76,24 @@ public class MainActivity extends BaseGameActivity {
 
   				@Override
   				public void onReceive(Context context, Intent intent) {
+  					
+  					
+  					
   					JSONObject json;
 					try {
 						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
+						if(resourcesManager.inGame == true){
+	  						try {
+	  							JSONObject data = new JSONObject("{\"alert\": \"Invitation Denied\", \"action\": \"com.testgame.CANCEL\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
+	  							 ParsePush push = new ParsePush();
+	  				             push.setChannel("user_"+json.getString("userid")); 
+	  				             push.setData(data);
+	  				             push.sendInBackground();
+	  				             return;
+	  		                } catch (JSONException e) { 
+	  							e.printStackTrace();
+	  						}	
+	  					}
 						if(SceneManager.getInstance().getMainMenuScene() != null)
 							((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createInvite(json);
 					} catch (JSONException e) {
@@ -144,7 +161,7 @@ public class MainActivity extends BaseGameActivity {
       					
     						
       					if(SceneManager.getInstance().getGameScene() != null)
-    						((GameScene) SceneManager.getInstance().getGameScene()).quitDialog();
+    						((GameScene) SceneManager.getInstance().getGameScene()).quitDialog("Opponent has quit the game! You win!");
     					
  	
       				}
