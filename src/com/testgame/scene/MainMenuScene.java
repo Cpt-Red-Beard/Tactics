@@ -248,6 +248,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				            	  for(ParseObject u : friendUsers){
 				            		  userslist.add(u.getString("Name"));
 				            		  usernames.put(u.getString("Name"), u.getObjectId());
+				            		  
 				            	  }
 				            	  loggedin = true;
 				            	  loading.dismiss();
