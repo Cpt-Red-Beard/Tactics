@@ -56,6 +56,7 @@ import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
 import com.testgame.scene.SceneManager.SceneType;
 import com.testgame.sprite.CharacterSprite;
+import com.testgame.sprite.GameDialogBox;
 import com.testgame.sprite.HighlightedSquare;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinchZoomDetectorListener {
@@ -228,7 +229,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.endGameMessage = new Text(240, 400, resourcesManager.font, "", 50, new TextOptions(HorizontalAlign.CENTER), vbom);
 		
 		// Initialize HUD and its entities.
-		this.curUnitAttack = new Text(300, 130, resourcesManager.handwriting_font, "Attack: " , 75, new TextOptions(HorizontalAlign.LEFT), vbom);
+		this.curUnitAttack = new Text(300, 200, resourcesManager.handwriting_font, "Attack: " , 75, new TextOptions(HorizontalAlign.LEFT), vbom);
 		this.curUnitAttack.setOffsetCenter(0, 0);
 		this.curUnitEnergy = new Text(50, 250, resourcesManager.handwriting_font, "Energy: ", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
 		this.curUnitEnergy.setOffsetCenter(0,0);
@@ -241,7 +242,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		final GameScene game = this;
 		
-		tutorialButton = new ButtonSprite(480 - 40, 800 - 40, resourcesManager.question_region, vbom, new OnClickListener() {
+		tutorialButton = new ButtonSprite(480 - 40, 800 - 40, resourcesManager.gear_region, vbom, new OnClickListener() {
 
 			@Override
 			public void onClick(ButtonSprite pButtonSprite,float pTouchAreaLocalX, float pTouchAreaLocalY) {
@@ -255,10 +256,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				SceneManager.getInstance().loadTutorialScene(game.engine);
 			}
 		});
-		
-		tutorialButton.setScale(.5f);
-		
-		
+
 		pauseButton = new ButtonSprite(40, 760, resourcesManager.pause_region, vbom, new OnClickListener(){
             
             @Override
@@ -277,8 +275,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             				
             }
 		});
-		
-		pauseButton.setScale(2.3f);
+
 	
 	    //hud.attachChild(turnMessage);
 	    //hud.attachChild(nextTurnButton);
@@ -316,7 +313,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	public void activateAndSelect(final CharacterSprite sprite) {
 		
-		if (this.selectedCharacter == null) { 
+		if (this.selectedCharacter == sprite) { 
+			
+			Log.d("AndEngine", "[In activateAndSelect] we were activated, deselecting now");
+			
+			this.deselectCharacter(true);
+			return;
+			
+		} else {
 			
 			Log.d("AndEngine", "[In ActivateAndSelect] no one selected before, setting character.");
 			// no character selected, select the character we touched.
@@ -324,55 +328,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			// Set selected character - displays information on HUD.
 			this.setSelectedCharacter((AUnit) sprite);
 			
-			activity.runOnUiThread(new Runnable() {
-        	    @Override
-        	    public void run() {
-        	    	 unitOptions((AUnit)sprite);
-          			 
-        	    }
-        	});
+			highlightAvailableTargets(sprite);
+			highlightAvailableMoves(sprite);
 			
 			return;
 		}
-
-		else if (this.selectedCharacter == sprite) { // clicked same character, deselect
-			
-			Log.d("AndEngine", "[In activateAndSelect] we were activated, deselecting now");
-			
-			this.deselectCharacter(true);
-			return;
-			
-		}
-		
-		else { // clicked different sprite.
-			Log.d("AndEngine", "[In ActivateAndSelect] other team selected before, setting character.");
-			
-			// Set selected character - displays information on HUD.
-			this.setSelectedCharacter((AUnit) sprite);
-			
-			
-			
-			activity.runOnUiThread(new Runnable() {
-        	    @Override
-        	    public void run() {
-        	    	 unitOptions((AUnit)sprite);
-          			 
-        	    }
-        	});
-			return;
-		}
-		
-		
-		/*else { // clicked another enemy, attack!
-			
-			((AUnit) sprite).attack(this.getSelectedCharacter());
-			this.attackNotification.setText(this.game.getCurrentPlayer().getName() + " is attacking " + this.game.getOtherPlayer().getName() + "!");
-			hud.attachChild(attackNotification);
-			
-		}*/
 	}
 	
-	public void highlightAvailableTargets(TMXTile startTile, CharacterSprite sprite, boolean type) {
+	public void highlightAvailableTargets(CharacterSprite sprite) {
+				
 		ArrayList<AUnit> targets = ((AUnit)sprite).availableTargets();
 		
 		for (AUnit target: targets){
@@ -382,7 +346,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 			TMXTile t = this.tmxLayer.getTMXTileAt(x, y);
 				
-			HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, target);
+			HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, getSelectedCharacter());
 			
 			this.highlightedSquares.add(availableMove);
 			availableMove.setOffsetCenter(0, 0);
@@ -405,7 +369,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	 * @param sprite The unit itself.
 	 */
 	//TODO: Clean UP Code here for attack and moves.
-	public void highlightAvailableMoves(TMXTile startTile, CharacterSprite sprite, boolean type) {
+	public void highlightAvailableMoves(CharacterSprite sprite) {
 
 		ArrayList<Point> moves = ((AUnit)sprite).availableMoves();
 		
@@ -419,7 +383,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			//if(resourcesManager.tiledMap.getTMXTileProperties(t.getGlobalTileID()) != null)
 		    //    if (resourcesManager.tiledMap.getTMXTileProperties(t.getGlobalTileID()).containsTMXProperty("obstacle", "1")) continue;
 						
-			HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, null);
+			HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, getSelectedCharacter());
 			
 			this.highlightedSquares.add(availableMove);
 			availableMove.setOffsetCenter(0, 0);
@@ -565,6 +529,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		else showBar();
 		this.selectedCharacter = selectedCharacter;
 		
+		placeSelectionRectangle(selectedCharacter);
+		
 		this.camera.setCenter(this.selectedCharacter.getX(), this.selectedCharacter.getY());
 		
 		this.selectedCharacter.idleAnimate();
@@ -627,27 +593,29 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		        if (e == null) {
 		            Log.d("score", "Retrieved " + itemList.size() + " scores");
 		            for(ParseObject ob : itemList){
-		            	Log.d("GameId", resourcesManager.gameId);
-		            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
-		            		if(getGame().getCount() != 0){
-				        		JSONArray array = ob.getJSONArray("Moves");
-				        		Log.d("Turn", "Starting computer turn");
-				        		deselectCharacter(false);
-				            	((OnlineGame)getGame()).getCompPlayer().startTurn((OnlineGame)getGame(), array);
-				            	ob.deleteInBackground();
-				            	return;
-				        	}
-				        	else{
-				        		JSONObject object = ob.getJSONObject("Init");
-				        		Log.d("Turn", "Starting Init turn");
-				        		deselectCharacter(false);
-				            	((OnlineGame)getGame()).getCompPlayer().init((OnlineGame)getGame(), object);
-				            	ob.deleteInBackground();
-				            	return;
-				        		
-				        	}
-		            	}
-		            	ob.deleteInBackground();
+		            	if (ob.getString("Device").equals(resourcesManager.opponentDeviceID)) {
+			            	Log.d("GameId", resourcesManager.gameId);
+			            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
+			            		if(getGame().getCount() != 0){
+					        		JSONArray array = ob.getJSONArray("Moves");
+					        		Log.d("Turn", "Starting computer turn");
+					        		deselectCharacter(false);
+					            	((OnlineGame)getGame()).getCompPlayer().startTurn((OnlineGame)getGame(), array);
+					            	ob.deleteInBackground();
+					            	return;
+					        	}
+					        	else{
+					        		JSONObject object = ob.getJSONObject("Init");
+					        		Log.d("Turn", "Starting Init turn");
+					        		deselectCharacter(false);
+					            	((OnlineGame)getGame()).getCompPlayer().init((OnlineGame)getGame(), object);
+					            	ob.deleteInBackground();
+					            	return;
+					        		
+					        	}
+			            	}
+			            	ob.deleteInBackground();
+		            	} 
 		            }
 		            startCompTurn();   
 		        } else {
@@ -711,64 +679,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		
 	}
-	
-	private void unitOptions(final AUnit sprite){
-		final Dialog dialog = new Dialog(activity);
-		dialog.setTitle("HP: " + sprite.getHealth() + "  En: "+sprite.getEnergy());
-		LinearLayout ll = new LinearLayout(activity);
-		ll.setOrientation(LinearLayout.VERTICAL);
-		
-		Button b1 = new Button(activity);
-        b1.setText("Move");
-        b1.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				TMXTile tmxTile = placeSelectionRectangle(sprite);
-				highlightAvailableMoves(tmxTile, sprite, true);
-				dialog.dismiss();
-				
-			}
-        });        
-        ll.addView(b1);
-
-        Button b2 = new Button(activity);
-        b2.setText("Attack");
-        b2.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	TMXTile tmxTile = placeSelectionRectangle(sprite);
-				highlightAvailableTargets(tmxTile, sprite, false);
-				dialog.dismiss();
-                dialog.dismiss();
-            }
-        });
-        ll.addView(b2);
-        
-       
-        
-        Button b3 = new Button(activity);
-        b3.setText("Cancel");
-        b3.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	
-            		deselectCharacter(true);
-            	
-                dialog.dismiss();
-            }
-        });
-        ll.addView(b3);
-        
-        
-        
-        
-        dialog.setContentView(ll);      
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();        
-		
-		
-	}
-	
 	public void textMenu(String text){
+		
+		
+		
+		/*ButtonSprite okButton = new ButtonSprite(0, 0, resourcesManager.continue_region, vbom, new OnClickListener() {
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				gameScene.dismissDialog();
+			}
+		});*/
+		
+		//this.setChildScene(new GameDialogBox(this, "Your Turn!", ((ButtonSprite[]) null)), false, true, true);
+		
+		
+		
 		final Dialog pausemenu = new Dialog(activity);
 		pausemenu.setTitle(text);
 		LinearLayout ll = new LinearLayout(activity);
@@ -790,12 +716,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
         
         pausemenu.setContentView(ll);      
         pausemenu.setCanceledOnTouchOutside(false);
-        pausemenu.show();        
-		
+        pausemenu.show(); 
 		
 	}
-	
-	
+
 	public void createQuitDialog(){
 		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
 		dia.setTitle("Are you sure you wish to quit the game? All progress will be lost!");
@@ -873,11 +797,5 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void setGame(AGame game) {
 		this.game = game;
 	}
-	
-	
-	
-	
-	
-	
 	
 }

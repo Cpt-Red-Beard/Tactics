@@ -1,7 +1,5 @@
 package com.testgame.resource;
 
-//hullo
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -127,7 +125,7 @@ public class ResourcesManager {
     	
     	final ITexture secFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         
-        handwriting_font = FontFactory.createStrokeFromAsset(activity.getFontManager(), secFontTexture, activity.getAssets(), "Gilles_Handwriting.ttf", 36, true, Color.WHITE, 1, Color.BLACK);
+        handwriting_font = FontFactory.createStrokeFromAsset(activity.getFontManager(), secFontTexture, activity.getAssets(), "cartoonfont.ttf", 36, true, Color.WHITE, 1, Color.BLACK);
         handwriting_font.load();	
     }
     
@@ -142,8 +140,9 @@ public class ResourcesManager {
     public ITextureRegion menu_background_region;
     // Button texture regions
     private BuildableBitmapTextureAtlas menuTextureAtlas;
-    public ITextureRegion newgame_region, options_region, continue_region, login_region, reset_region, blank_region, logout_region;
-    public Music menu_background_music;
+    public ITextureRegion newgame_region, options_region, continue_region, login_region, reset_region, blank_region, howtoplay_region, logout_region, play_region;
+    public Music menu_background_music, select_sound;
+
     public Font font;
     
     public void loadMenuResources()
@@ -156,9 +155,11 @@ public class ResourcesManager {
     private void loadMenuMusic() {
    	 	MusicFactory.setAssetBasePath("mfx/");
         try {
-                this.menu_background_music = MusicFactory.createMusicFromAsset(this.engine.getMusicManager(), activity, "school.wav");
+                this.menu_background_music = MusicFactory.createMusicFromAsset(this.engine.getMusicManager(), activity, "background.wav");
                 this.menu_background_music.setLooping(true);
                 this.menu_background_music.setVolume(.25f);
+                
+                this.select_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "buttonpush.wav");
         } catch (final IOException e) {
                 Debug.e("Error", e);
         }
@@ -177,7 +178,14 @@ public class ResourcesManager {
     	continue_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "continuebutton.png");
     	reset_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "resetbutton.png");
     	blank_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "blankbutton.png");
+
+    	howtoplay_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "howtoplaybutton.png");
+
     	logout_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "logoutbutton.png");
+    	
+    	play_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "playbutton.png");
+    	
+    	
 
     	try {
     	    this.menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
@@ -186,6 +194,12 @@ public class ResourcesManager {
     	catch (final TextureAtlasBuilderException e){
     	    Debug.e(e);
     	}
+    	
+    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
+    	
+    	dialog_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+    	dialog_background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "dialogbackground.png", 0, 0);
+    	dialog_atlas.load();
     	
     }
     
@@ -250,8 +264,8 @@ public class ResourcesManager {
     private BitmapTextureAtlas jock_tileset_atlas, ditz_tileset_atlas, nerd_tileset_atlas;
     public TiledTextureRegion jock_tileset, ditz_tileset, nerd_tileset;
     
-    private BitmapTextureAtlas question_atlas;
-    public ITextureRegion question_region;
+    private BitmapTextureAtlas gear_atlas;
+    public ITextureRegion gear_region;
     
     private BitmapTextureAtlas top_bar_atlas, bottom_bar_atlas;
     public ITextureRegion top_bar, bottom_bar;
@@ -262,6 +276,11 @@ public class ResourcesManager {
     
     public Music footsteps;
     public Music hit;
+    
+    public Music walking_sound, attack_sound, touch_sound;
+    
+    private BitmapTextureAtlas dialog_atlas;
+    public ITextureRegion dialog_background;
     
     public void loadGameResources()
     {
@@ -292,7 +311,7 @@ public class ResourcesManager {
     	
     	jock_tileset = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(jock_tileset_atlas, activity, "jock_tileset.png", 0, 0, 10, 6);
     	ditz_tileset = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(ditz_tileset_atlas, activity, "ditz_tileset.png", 0, 0, 10, 6);
-    	nerd_tileset = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(nerd_tileset_atlas, activity, "nerd_tileset.png", 0, 0, 9, 6);
+    	nerd_tileset = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(nerd_tileset_atlas, activity, "nerd_tileset.png", 0, 0, 10, 6);
 
     	jock_tileset_atlas.load();
     	ditz_tileset_atlas.load();
@@ -300,9 +319,9 @@ public class ResourcesManager {
     	
     	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/");
     	
-    	question_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 128, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-    	question_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(question_atlas, activity, "gear.png", 0, 0);
-    	question_atlas.load();
+    	gear_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 128, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+    	gear_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gear_atlas, activity, "settinggear.png", 0, 0);
+    	gear_atlas.load();
     	
     	bottom_bar_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
     	bottom_bar = BitmapTextureAtlasTextureRegionFactory.createFromAsset(bottom_bar_atlas, activity, "bottombar.png", 0, 0);
@@ -313,8 +332,10 @@ public class ResourcesManager {
     	top_bar_atlas.load();
     	
     	pause_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-    	pause_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(pause_atlas, activity, "pause.png", 0, 0);
+    	pause_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(pause_atlas, activity, "pausebutton.png", 0, 0);
     	pause_atlas.load();
+    	
+    	
     }
     
     private void loadGameFonts()
@@ -334,6 +355,18 @@ public class ResourcesManager {
     
     private void loadGameAudio()
     {
+        MusicFactory.setAssetBasePath("mfx/");
+        try {
+			walking_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "running.wav");
+			walking_sound.setLooping(true);
+			walking_sound.setVolume(2f);
+			attack_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "whack.wav");
+			touch_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "touch.mp3");
+		} catch (IllegalStateException e) {
+			Debug.e("Error", e);
+		} catch (IOException e) {
+			Debug.e("Error", e);
+		}
         
     }
     
@@ -342,13 +375,22 @@ public class ResourcesManager {
     	jock_tileset_atlas.unload();
     	ditz_tileset_atlas.unload();
     	nerd_tileset_atlas.unload();
-    	question_atlas.unload();
+    	gear_atlas.unload();
     	pause_atlas.unload();
     	bottom_bar_atlas.unload();
     	top_bar_atlas.unload();
         
     }
 
+
+	public void play_music() {
+		if (menu_background_music != null) menu_background_music.play();	
+	}
+
+	public void pause_music() {
+		if (menu_background_music != null) menu_background_music.pause();
+	}
+	
 	public void resetGame() {
 		unitArray = null;
 		gameId = null;
@@ -356,8 +398,8 @@ public class ResourcesManager {
 		inGame = false;
 		opponent = null;
 		opponentString = null;
+
 		isLocal = false;
-		
 	}
 
 }

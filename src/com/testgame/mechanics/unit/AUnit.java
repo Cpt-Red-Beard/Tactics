@@ -18,6 +18,7 @@ import android.util.Log;
 import com.testgame.mechanics.map.GameMap;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
+import com.testgame.resource.ResourcesManager;
 import com.testgame.sprite.CharacterSprite;
 import com.testgame.sprite.WalkMoveModifier;
 import com.testgame.OnlineGame;
@@ -190,12 +191,14 @@ public class AUnit extends CharacterSprite implements IUnit {
 					IEntity pItem) {
 				game.animating = true;
 				game.camera.setChaseEntity(pItem);
+				ResourcesManager.getInstance().walking_sound.play();
 				
 			}
 			@Override
 			public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
 				game.animating = false;
 				game.camera.setChaseEntity(null);
+				ResourcesManager.getInstance().walking_sound.pause();
 				((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
 				game.setEventText("Moved using "+energy+" energy.");
 				Log.d("AndEngine", "[ComputerMove] calling perform next on player.");
@@ -483,7 +486,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 	
 	public void walkAnimate(int xDirection, int yDirection) {
 		// TODO: Should work, but we don't have the correct graphics yet to do this.
-		
 		if (xDirection == 0) { // walking up or down
 			if (yDirection > 0) { // walking up
 				this.animate(new long[] { 100, 100, 100 }, start_frame + WALK_UP_START_FRAME, start_frame + WALK_UP_END_FRAME, true);
@@ -504,6 +506,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void attackedAnimate(final ComputerPlayer computerPlayer, final AUnit unit, final int attack) {
+		ResourcesManager.getInstance().attack_sound.play();
 		this.animate(new long[] { 100, 100 }, start_frame + ATTACKED_START_FRAME, start_frame + ATTACKED_END_FRAME, true);
 		
 		final AUnit u = this;
