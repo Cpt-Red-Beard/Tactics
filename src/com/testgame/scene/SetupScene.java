@@ -30,6 +30,8 @@ public class SetupScene extends BaseScene {
 	 */
 	private Text jockText, nerdText, ditzText, totText;
 
+	private boolean twice = false;
+	
 	/**
 	* Random text fields we need.
 	*/
@@ -78,31 +80,46 @@ public class SetupScene extends BaseScene {
 
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				JSONObject object = new JSONObject();
+				
 				ArrayList<Integer> unitList = new ArrayList<Integer>();
 				unitList.add(jocks);
 				unitList.add(nerds);
 				unitList.add(ditzes);
-				try {
-					object.put("Nerds", nerds);
-					object.put("Jocks", jocks);
-					object.put("Ditzes", ditzes);
-				} catch (JSONException e) {
+				
+				if(!resourcesManager.isLocal){
+					JSONObject object = new JSONObject();
 					
-					e.printStackTrace();
+					
+					try {
+						object.put("Nerds", nerds);
+						object.put("Jocks", jocks);
+						object.put("Ditzes", ditzes);
+					} catch (JSONException e) {
+						
+						e.printStackTrace();
+					}
+					
+					ParseObject turns = new ParseObject("Turns");
+					turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
+					turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+0);
+					turns.put("GameId", resourcesManager.gameId);
+					turns.put("Device", resourcesManager.deviceID);
+					turns.put("Init", object);
+					turns.saveInBackground();
 				}
-				
-				ParseObject turns = new ParseObject("Turns");
-				turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
-				turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+0);
-				turns.put("GameId", resourcesManager.gameId);
-				turns.put("Device", resourcesManager.deviceID);
-				turns.put("Init", object);
-				turns.saveInBackground();
-				
-				
-				resourcesManager.unitArray = unitList;
-				SceneManager.getInstance().loadGameScene(engine);
+				if(!twice){
+					resourcesManager.unitArray = unitList;
+					twice = true;
+					tot = 0; jocks = 0; nerds = 0; ditzes = 0;
+					updateText();
+					if(!resourcesManager.isLocal){
+						SceneManager.getInstance().loadGameScene(engine);
+					}
+				}
+				else{
+					resourcesManager.unitArray2 = unitList;
+					SceneManager.getInstance().loadGameScene(engine);
+				}
 			}
 			
 		});

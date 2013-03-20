@@ -49,6 +49,7 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.testgame.AGame;
+import com.testgame.LocalGame;
 import com.testgame.OnlineGame;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.player.APlayer;
@@ -196,6 +197,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		// Initialize the game.
 		if(!resourcesManager.isLocal){
 			this.setGame(new OnlineGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn));
+		}
+		else{
+			this.setGame(new LocalGame(new APlayer("One's"), new APlayer("Two"), widthInTiles, heightInTiles, this));
 		}
 		
 		createHUD();
