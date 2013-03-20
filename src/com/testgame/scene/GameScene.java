@@ -49,6 +49,7 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.testgame.AGame;
+import com.testgame.OnlineGame;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
@@ -80,7 +81,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public int widthInTiles;
 	public int heightInTiles;
 	
-	private JSONArray moves;
 	
 	private ButtonSprite pauseButton;
 	private ButtonSprite tutorialButton;
@@ -176,7 +176,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		Log.d("AndEngine", "" + resourcesManager.tiledMap.getTMXLayers().size());
 		
 		this.tmxLayer = resourcesManager.tiledMap.getTMXLayers().get(0);  
-		moves = new JSONArray();
+		
 		
 		this.tileSize = resourcesManager.tiledMap.getTileHeight();
 		this.heightInTiles = resourcesManager.tiledMap.getTileRows();
@@ -195,7 +195,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		camera.setCenter(0, 0);
 		
 		// Initialize the game.
-		this.setGame(new AGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn));
+		if(!resourcesManager.isLocal){
+			this.setGame(new OnlineGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn));
+		}
 		
 		createHUD();
 	    
@@ -204,7 +206,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		currentTileRectangle.setOffsetCenter(0, 0);
 		currentTileRectangle.setColor(1, 0, 0, 0);
 		attachChild(currentTileRectangle);
-		startCompTurn();
+		if(!resourcesManager.isLocal){
+			startCompTurn();
+		}
 		
 	}
 	
@@ -393,33 +397,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		}
 	}
 	
-	public void nextTurn() {
-		Log.d("Turn", getGame().getCount()+"");
-		ParseObject turns = new ParseObject("Turns");
-		turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
-		turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+getGame().getCount());
-		turns.put("GameId", resourcesManager.gameId);
-		turns.put("Moves", moves);
-		turns.saveInBackground();
-		try {
-			JSONObject data = new JSONObject("{\"alert\": \"Next Turn\", \"action\": \"com.testgame.NEXT_TURN\"}");
-			 ParsePush push = new ParsePush();
-			 push.setChannel("user_"+resourcesManager.opponentString);
-             push.setData(data);
-			 
-             push.sendInBackground();
-        } catch (JSONException e) {
-			e.printStackTrace();
-		}
-		 
-		
-		
-		moves = new JSONArray();
-		if(!this.getGame().isFirstTurn()) 
-			this.getGame().incrementCount(); 
-		this.getGame().getPlayer().endTurn();
-		
-	}
+	
 	
 	public void clearSquares() {
 		if(highlightedSquares == null)
@@ -599,9 +577,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		return tmxTile;
 	}
 	
-	public void addMove(JSONObject move){ 
-		moves.put(move);
-	}
+	
 	
 	public void startCompTurn(){
 		Log.d("Turn", getGame().getCount()+"");
@@ -619,7 +595,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				        		JSONArray array = ob.getJSONArray("Moves");
 				        		Log.d("Turn", "Starting computer turn");
 				        		deselectCharacter(false);
-				            	getGame().getCompPlayer().startTurn(getGame(), array);
+				            	((OnlineGame)getGame()).getCompPlayer().startTurn((OnlineGame)getGame(), array);
 				            	ob.deleteInBackground();
 				            	return;
 				        	}
@@ -627,7 +603,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				        		JSONObject object = ob.getJSONObject("Init");
 				        		Log.d("Turn", "Starting Init turn");
 				        		deselectCharacter(false);
-				            	getGame().getCompPlayer().init(getGame(), object);
+				            	((OnlineGame)getGame()).getCompPlayer().init((OnlineGame)getGame(), object);
 				            	ob.deleteInBackground();
 				            	return;
 				        		
@@ -659,9 +635,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				if(getSelectedCharacter() != null){
 					deselectCharacter(true);
 				}
-				if(getGame().getPlayer().isTurn()){
-					nextTurn();
-				}
+					getGame().nextTurn();
 				pausemenu.dismiss();
 				
 			}
@@ -745,16 +719,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		dia.setTitle("Are you sure you wish to quit the game? All progress will be lost!");
 		dia.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-            	
-            	try {
-					JSONObject data = new JSONObject("{\"alert\": \"Game Ended\", \"action\": \"com.testgame.QUIT\"}");
-					 ParsePush push = new ParsePush();
-		             push.setChannel("user_"+resourcesManager.opponentString); 
-		             push.setData(data);
-		             push.sendInBackground();
-                } catch (JSONException e) { 
-					e.printStackTrace();
-				}	
+            	if(!resourcesManager.isLocal){
+	            	try {
+						JSONObject data = new JSONObject("{\"alert\": \"Game Ended\", \"action\": \"com.testgame.QUIT\"}");
+						 ParsePush push = new ParsePush();
+			             push.setChannel("user_"+resourcesManager.opponentString); 
+			             push.setData(data);
+			             push.sendInBackground();
+	                } catch (JSONException e) { 
+						e.printStackTrace();
+					}	
+            	}
             	quitDialog.dismiss();
             	disposeScene();
             	resourcesManager.resetGame();
@@ -774,9 +749,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	
-	public void quitDialog(){
+	public void quitDialog(String Text){
 		final Dialog pausemenu = new Dialog(activity);
-		pausemenu.setTitle("Opponent has quit the game! You win!");
+		pausemenu.setTitle(Text);
 		LinearLayout ll = new LinearLayout(activity);
 		ll.setOrientation(LinearLayout.VERTICAL);
 		

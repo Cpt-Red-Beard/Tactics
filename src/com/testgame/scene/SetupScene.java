@@ -99,6 +99,7 @@ public class SetupScene extends BaseScene {
 				turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
 				turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+0);
 				turns.put("GameId", resourcesManager.gameId);
+				turns.put("Device", resourcesManager.deviceID);
 				turns.put("Init", object);
 				turns.saveInBackground();
 				

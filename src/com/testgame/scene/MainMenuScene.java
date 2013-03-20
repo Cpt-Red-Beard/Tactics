@@ -32,6 +32,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.model.GraphUser;
 import com.parse.FindCallback;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.LogInCallback;
 import com.parse.ParseFacebookUtils;
@@ -163,6 +164,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		    } else if (user.isNew()) {
 	        		      Log.d("MyApp", "User signed up and logged in through Facebook!");
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
+	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getObjectId();
 	        		      Log.d("Push", resourcesManager.userString);
 	        		      Log.d("Installation", ParseInstallation.getCurrentInstallation().getInstallationId());
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
@@ -172,6 +174,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		    } else {
 	        		      Log.d("MyApp", "User logged in through Facebook!");
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
+	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getObjectId();
 	        		      Log.d("Push", resourcesManager.userString);
 	        		      Log.d("Installation", ParseInstallation.getCurrentInstallation().getInstallationId());
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
@@ -261,6 +264,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				            	  for(ParseObject u : friendUsers){
 				            		  userslist.add(u.getString("Name"));
 				            		  usernames.put(u.getString("Name"), u.getObjectId());
+				            		  
 				            	  }
 				            	  loggedin = true;
 				            	  loading.dismiss();
@@ -358,6 +362,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 		invite.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
+            				resourcesManager.isLocal = true;
+            				resourcesManager.inGame = true;
         		        	resourcesManager.gameId = UUID.randomUUID().toString();
         		        	Random rand = new Random();
         	            	boolean h;
@@ -376,7 +382,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
         						e1.printStackTrace();
         					}
         	            	try {
-        						JSONObject data = new JSONObject("{\"alert\": \"Invitation Accepted\", \"action\": \"com.testgame.ACCEPT\", \"GameId\": \""+resourcesManager.gameId+"\", \"turn\": \""+h+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
+        						JSONObject data = new JSONObject("{\"alert\": \"Invitation Accepted\", \"action\": \"com.testgame.ACCEPT\", \"GameId\": \""+resourcesManager.gameId+"\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"turn\": \""+h+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
         						 ParsePush push = new ParsePush();
         			             push.setChannel("user_"+object.getString("userid"));
         			             push.setData(data);
@@ -423,7 +429,9 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 			e.printStackTrace();
 		}
 		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {    	
+            public void onClick(DialogInterface dialog, int whichButton) { 
+            				resourcesManager.isLocal = true;
+            				resourcesManager.inGame = true;
         		        	acceptDialog.dismiss();
         		           	SceneManager.getInstance().loadSetupScene(engine);
 
