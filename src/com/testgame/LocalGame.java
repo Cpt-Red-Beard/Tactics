@@ -1,5 +1,9 @@
 package com.testgame;
 
+import com.testgame.mechanics.unit.AUnit;
+import com.testgame.mechanics.unit.Ditz;
+import com.testgame.mechanics.unit.Jock;
+import com.testgame.mechanics.unit.Nerd;
 import com.testgame.player.APlayer;
 import com.testgame.scene.GameScene;
 
@@ -30,13 +34,68 @@ public class LocalGame extends AGame {
 
 	@Override
 	public void nextTurn() {
-		// TODO Auto-generated method stub
+		if(this.getPlayer().isTurn()){
+			this.getPlayer().endTurn();
+			this.player2.beginTurn();
+		}
+		else{
+			this.player2.endTurn();
+			this.getPlayer().beginTurn();
+		}
 
 	}
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
+		int jocks = resourcesManager.unitArray.get(0);
+		int nerds = resourcesManager.unitArray.get(1);
+		int ditz = resourcesManager.unitArray.get(2);
+		int j = 0;
+		for(int i = 0; i < 10; i++){
+				if(nerds > 0){
+					AUnit unit = new Nerd(gameMap, i, j, gameScene, "blue");
+					unit.init(); 
+					player.addUnit(unit);
+					nerds--;
+				}
+				else if(ditz > 0){
+					AUnit unit = new Ditz(gameMap, i, j, gameScene, "blue");
+					unit.init(); 
+					player.addUnit(unit);
+					ditz--;
+				}
+				else if(jocks > 0){
+					AUnit unit = new Jock(gameMap, i, j, gameScene, "blue");
+					unit.init(); 
+					player.addUnit(unit);
+					jocks--;
+				}
+			}
+		
+		jocks = resourcesManager.unitArray2.get(0);
+		nerds = resourcesManager.unitArray2.get(1);
+		ditz = resourcesManager.unitArray2.get(2);
+		j = 0;
+		for(int i = 0; i < 10; i++){
+				if(nerds > 0){
+					AUnit unit = new Nerd(gameMap, i, j, gameScene, "red");
+					unit.init(); 
+					player2.addUnit(unit);
+					nerds--;
+				}
+				else if(ditz > 0){
+					AUnit unit = new Ditz(gameMap, i, j, gameScene, "red");
+					unit.init(); 
+					player2.addUnit(unit);
+					ditz--;
+				}
+				else if(jocks > 0){
+					AUnit unit = new Jock(gameMap, i, j, gameScene, "red");
+					unit.init(); 
+					player2.addUnit(unit);
+					jocks--;
+				}
+			}
 		
 	}
 
