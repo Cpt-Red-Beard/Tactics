@@ -22,6 +22,7 @@ import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
 import com.testgame.sprite.CharacterSprite;
 import com.testgame.sprite.WalkMoveModifier;
+import com.testgame.OnlineGame;
 
 /**
  * Class which represents an abstract unit.
@@ -246,7 +247,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 				e.printStackTrace();
 			}
 			
-			this.game.addMove(temp);
+			((OnlineGame)this.game.getGame()).addMove(temp);
 
 			Log.d("AndEngine", "moving to " + destX + ", "+destY);
 			
@@ -313,7 +314,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 				e.printStackTrace();
 			}
 			
-			this.game.addMove(temp);
+			((OnlineGame)this.game.getGame()).addMove(temp);
+			
 			unit.attackedAnimate(null, unit, this.attack);
 			
 			

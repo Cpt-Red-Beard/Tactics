@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.testgame.AGame;
+import com.testgame.OnlineGame;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.mechanics.unit.Ditz;
 import com.testgame.mechanics.unit.Jock;
@@ -21,7 +22,7 @@ public class ComputerPlayer extends APlayer {
 		super(name);
 	}
 	
-	public void startTurn(final AGame game, JSONArray array){
+	public void startTurn(final OnlineGame game, JSONArray array){
 		
 		this.actionsToPerform = array;
 		this.game = game;
@@ -114,7 +115,7 @@ public class ComputerPlayer extends APlayer {
 		
 	}
 	
-	public void init(final AGame game, JSONObject object) {
+	public void init(final OnlineGame game, JSONObject object) {
 		int nerds = 0;
 		int jocks = 0;
 		int ditz = 0;
