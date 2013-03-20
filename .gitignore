@@ -166,3 +166,9 @@ pip-log.txt
 gen/com/example/testgame/R.java
 
 *.properties
+
+*.properties
+
+src/com/testgame/scene/SetupScene.java
+
+project.properties
