@@ -176,7 +176,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	            return true;
 	        case MENU_PLAY:
-	        	if(!loggedin){
+	        	if(!loggedin){ 
 	        		activity.runOnUiThread(new Runnable() {
 		        	    @Override
 		        	    public void run() {
