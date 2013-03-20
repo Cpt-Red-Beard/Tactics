@@ -178,7 +178,10 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        case MENU_PLAY:
 	        	resourcesManager.isLocal = true;
 	        	SceneManager.getInstance().loadSetupScene(engine);
-	        	/*if(!loggedin){ 
+
+
+	        /*	if(!loggedin){
+
 	        		activity.runOnUiThread(new Runnable() {
 		        	    @Override
 		        	    public void run() {

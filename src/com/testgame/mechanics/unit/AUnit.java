@@ -239,8 +239,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			
-			((OnlineGame)this.game.getGame()).addMove(temp);
+			if(!this.game.resourcesManager.isLocal)
+				((OnlineGame)this.game.getGame()).addMove(temp);
 
 			Log.d("AndEngine", "moving to " + destX + ", "+destY);
 			
@@ -304,8 +304,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			((OnlineGame)this.game.getGame()).addMove(temp);
+			if(!this.game.resourcesManager.isLocal)
+				((OnlineGame)this.game.getGame()).addMove(temp);
 			
 			unit.attackedAnimate(null, unit, this.attack);
 			

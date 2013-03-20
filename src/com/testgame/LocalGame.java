@@ -50,7 +50,9 @@ public class LocalGame extends AGame {
 		int jocks = resourcesManager.unitArray.get(0);
 		int nerds = resourcesManager.unitArray.get(1);
 		int ditz = resourcesManager.unitArray.get(2);
-		int j = 0;
+
+		int j = 10;
+
 		for(int i = 0; i < 10; i++){
 				if(nerds > 0){
 					AUnit unit = new Nerd(gameMap, i, j, gameScene, "blue");
@@ -76,6 +78,7 @@ public class LocalGame extends AGame {
 		nerds = resourcesManager.unitArray2.get(1);
 		ditz = resourcesManager.unitArray2.get(2);
 		j = 0;
+
 		for(int i = 0; i < 10; i++){
 				if(nerds > 0){
 					AUnit unit = new Nerd(gameMap, i, j, gameScene, "red");
@@ -96,7 +99,29 @@ public class LocalGame extends AGame {
 					jocks--;
 				}
 			}
+
 		
+		for(int i = 0; i < 10; i++){
+				if(nerds > 0){
+					AUnit unit = new Nerd(gameMap, i, j, gameScene, "red");
+					unit.init(); 
+					player2.addUnit(unit);
+					nerds--;
+				}
+				else if(ditz > 0){
+					AUnit unit = new Ditz(gameMap, i, j, gameScene, "red");
+					unit.init(); 
+					player2.addUnit(unit);
+					ditz--;
+				}
+				else if(jocks > 0){
+					AUnit unit = new Jock(gameMap, i, j, gameScene, "red");
+					unit.init(); 
+					player2.addUnit(unit);
+					jocks--;
+				}
+			}
+		player.beginTurn();
 	}
 
 }
