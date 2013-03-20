@@ -163,8 +163,9 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		    
 	        		    } else if (user.isNew()) {
 	        		      Log.d("MyApp", "User signed up and logged in through Facebook!");
+	        		      Log.d("DeviceID", ParseInstallation.getCurrentInstallation().getInstallationId());
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
-	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getObjectId();
+	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getInstallationId();
 	        		      Log.d("Push", resourcesManager.userString);
 	        		      Log.d("Installation", ParseInstallation.getCurrentInstallation().getInstallationId());
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
@@ -174,7 +175,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		    } else {
 	        		      Log.d("MyApp", "User logged in through Facebook!");
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
-	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getObjectId();
+	        		      Log.d("DeviceID", ParseInstallation.getCurrentInstallation().getInstallationId());
+	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getInstallationId();
 	        		      Log.d("Push", resourcesManager.userString);
 	        		      Log.d("Installation", ParseInstallation.getCurrentInstallation().getInstallationId());
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);

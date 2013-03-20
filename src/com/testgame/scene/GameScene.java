@@ -589,27 +589,29 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		        if (e == null) {
 		            Log.d("score", "Retrieved " + itemList.size() + " scores");
 		            for(ParseObject ob : itemList){
-		            	Log.d("GameId", resourcesManager.gameId);
-		            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
-		            		if(getGame().getCount() != 0){
-				        		JSONArray array = ob.getJSONArray("Moves");
-				        		Log.d("Turn", "Starting computer turn");
-				        		deselectCharacter(false);
-				            	((OnlineGame)getGame()).getCompPlayer().startTurn((OnlineGame)getGame(), array);
-				            	ob.deleteInBackground();
-				            	return;
-				        	}
-				        	else{
-				        		JSONObject object = ob.getJSONObject("Init");
-				        		Log.d("Turn", "Starting Init turn");
-				        		deselectCharacter(false);
-				            	((OnlineGame)getGame()).getCompPlayer().init((OnlineGame)getGame(), object);
-				            	ob.deleteInBackground();
-				            	return;
-				        		
-				        	}
-		            	}
-		            	ob.deleteInBackground();
+		            	if (ob.getString("Device").equals(resourcesManager.opponentDeviceID)) {
+			            	Log.d("GameId", resourcesManager.gameId);
+			            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
+			            		if(getGame().getCount() != 0){
+					        		JSONArray array = ob.getJSONArray("Moves");
+					        		Log.d("Turn", "Starting computer turn");
+					        		deselectCharacter(false);
+					            	((OnlineGame)getGame()).getCompPlayer().startTurn((OnlineGame)getGame(), array);
+					            	ob.deleteInBackground();
+					            	return;
+					        	}
+					        	else{
+					        		JSONObject object = ob.getJSONObject("Init");
+					        		Log.d("Turn", "Starting Init turn");
+					        		deselectCharacter(false);
+					            	((OnlineGame)getGame()).getCompPlayer().init((OnlineGame)getGame(), object);
+					            	ob.deleteInBackground();
+					            	return;
+					        		
+					        	}
+			            	}
+			            	ob.deleteInBackground();
+		            	} 
 		            }
 		            startCompTurn();   
 		        } else {
@@ -791,11 +793,5 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void setGame(AGame game) {
 		this.game = game;
 	}
-	
-	
-	
-	
-	
-	
 	
 }
