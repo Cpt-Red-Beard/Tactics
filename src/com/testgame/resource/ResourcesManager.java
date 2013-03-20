@@ -121,7 +121,7 @@ public class ResourcesManager {
     	
     	final ITexture secFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         
-        handwriting_font = FontFactory.createStrokeFromAsset(activity.getFontManager(), secFontTexture, activity.getAssets(), "Gilles_Handwriting.ttf", 36, true, Color.WHITE, 1, Color.BLACK);
+        handwriting_font = FontFactory.createStrokeFromAsset(activity.getFontManager(), secFontTexture, activity.getAssets(), "cartoonfont.ttf", 36, true, Color.WHITE, 1, Color.BLACK);
         handwriting_font.load();	
     }
     
@@ -136,7 +136,7 @@ public class ResourcesManager {
     public ITextureRegion menu_background_region;
     // Button texture regions
     private BuildableBitmapTextureAtlas menuTextureAtlas;
-    public ITextureRegion newgame_region, options_region, continue_region, login_region, reset_region, blank_region, howtoplay_region, logout_region;
+    public ITextureRegion newgame_region, options_region, continue_region, login_region, reset_region, blank_region, howtoplay_region, logout_region, play_region;
     public Music menu_background_music, select_sound;
 
     public Font font;
@@ -178,6 +178,10 @@ public class ResourcesManager {
     	howtoplay_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "howtoplaybutton.png");
 
     	logout_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "logoutbutton.png");
+    	
+    	play_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "playbutton.png");
+    	
+    	
 
     	try {
     	    this.menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
@@ -351,6 +355,7 @@ public class ResourcesManager {
         try {
 			walking_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "running.wav");
 			walking_sound.setLooping(true);
+			walking_sound.setVolume(2f);
 			attack_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "whack.wav");
 			touch_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "touch.mp3");
 		} catch (IllegalStateException e) {

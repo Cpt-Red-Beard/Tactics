@@ -76,7 +76,7 @@ public class SetupScene extends BaseScene {
 	}
 
 	private void createButtons() {
-		play = new ButtonSprite(240, 360, resourcesManager.blank_region, vbom, new OnClickListener() {
+		play = new ButtonSprite(240, 360, resourcesManager.play_region, vbom, new OnClickListener() {
 
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {

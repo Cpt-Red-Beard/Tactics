@@ -11,8 +11,6 @@ import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.engine.handler.timer.ITimerCallback;
-import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -112,8 +110,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	private float mPinchZoomStartedCameraZoomFactor;
 	
 	private Sprite bottomBar;
-	
-	private GameDialogBox dialogBox;
 	
 	@Override
 	public void onBackKeyPressed() {
@@ -225,7 +221,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.endGameMessage = new Text(240, 400, resourcesManager.font, "", 50, new TextOptions(HorizontalAlign.CENTER), vbom);
 		
 		// Initialize HUD and its entities.
-		this.curUnitAttack = new Text(300, 130, resourcesManager.handwriting_font, "Attack: " , 75, new TextOptions(HorizontalAlign.LEFT), vbom);
+		this.curUnitAttack = new Text(300, 200, resourcesManager.handwriting_font, "Attack: " , 75, new TextOptions(HorizontalAlign.LEFT), vbom);
 		this.curUnitAttack.setOffsetCenter(0, 0);
 		this.curUnitEnergy = new Text(50, 250, resourcesManager.handwriting_font, "Energy: ", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
 		this.curUnitEnergy.setOffsetCenter(0,0);
@@ -309,7 +305,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	public void activateAndSelect(final CharacterSprite sprite) {
 		
-		if (this.selectedCharacter == null) { 
+		if (this.selectedCharacter == sprite) { 
+			
+			Log.d("AndEngine", "[In activateAndSelect] we were activated, deselecting now");
+			
+			this.deselectCharacter(true);
+			return;
+			
+		} else {
 			
 			Log.d("AndEngine", "[In ActivateAndSelect] no one selected before, setting character.");
 			// no character selected, select the character we touched.
@@ -317,55 +320,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			// Set selected character - displays information on HUD.
 			this.setSelectedCharacter((AUnit) sprite);
 			
-			activity.runOnUiThread(new Runnable() {
-        	    @Override
-        	    public void run() {
-        	    	 unitOptions((AUnit)sprite);
-          			 
-        	    }
-        	});
+			highlightAvailableTargets(sprite);
+			highlightAvailableMoves(sprite);
 			
 			return;
 		}
-
-		else if (this.selectedCharacter == sprite) { // clicked same character, deselect
-			
-			Log.d("AndEngine", "[In activateAndSelect] we were activated, deselecting now");
-			
-			this.deselectCharacter(true);
-			return;
-			
-		}
-		
-		else { // clicked different sprite.
-			Log.d("AndEngine", "[In ActivateAndSelect] other team selected before, setting character.");
-			
-			// Set selected character - displays information on HUD.
-			this.setSelectedCharacter((AUnit) sprite);
-			
-			
-			
-			activity.runOnUiThread(new Runnable() {
-        	    @Override
-        	    public void run() {
-        	    	 unitOptions((AUnit)sprite);
-          			 
-        	    }
-        	});
-			return;
-		}
-		
-		
-		/*else { // clicked another enemy, attack!
-			
-			((AUnit) sprite).attack(this.getSelectedCharacter());
-			this.attackNotification.setText(this.game.getCurrentPlayer().getName() + " is attacking " + this.game.getOtherPlayer().getName() + "!");
-			hud.attachChild(attackNotification);
-			
-		}*/
 	}
 	
-	public void highlightAvailableTargets(TMXTile startTile, CharacterSprite sprite, boolean type) {
+	public void highlightAvailableTargets(CharacterSprite sprite) {
+				
 		ArrayList<AUnit> targets = ((AUnit)sprite).availableTargets();
 		
 		for (AUnit target: targets){
@@ -375,7 +338,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 			TMXTile t = this.tmxLayer.getTMXTileAt(x, y);
 				
-			HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, target);
+			HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, getSelectedCharacter());
 			
 			this.highlightedSquares.add(availableMove);
 			availableMove.setOffsetCenter(0, 0);
@@ -398,7 +361,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	 * @param sprite The unit itself.
 	 */
 	//TODO: Clean UP Code here for attack and moves.
-	public void highlightAvailableMoves(TMXTile startTile, CharacterSprite sprite, boolean type) {
+	public void highlightAvailableMoves(CharacterSprite sprite) {
 
 		ArrayList<Point> moves = ((AUnit)sprite).availableMoves();
 		
@@ -412,7 +375,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			//if(resourcesManager.tiledMap.getTMXTileProperties(t.getGlobalTileID()) != null)
 		    //    if (resourcesManager.tiledMap.getTMXTileProperties(t.getGlobalTileID()).containsTMXProperty("obstacle", "1")) continue;
 						
-			HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, null);
+			HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, getSelectedCharacter());
 			
 			this.highlightedSquares.add(availableMove);
 			availableMove.setOffsetCenter(0, 0);
@@ -584,6 +547,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		else showBar();
 		this.selectedCharacter = selectedCharacter;
 		
+		placeSelectionRectangle(selectedCharacter);
+		
 		this.camera.setCenter(this.selectedCharacter.getX(), this.selectedCharacter.getY());
 		
 		this.selectedCharacter.idleAnimate();
@@ -734,66 +699,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		
 	}
-	
-	private void unitOptions(final AUnit sprite){
-		final Dialog dialog = new Dialog(activity);
-		dialog.setTitle("HP: " + sprite.getHealth() + "  En: "+sprite.getEnergy());
-		LinearLayout ll = new LinearLayout(activity);
-		ll.setOrientation(LinearLayout.VERTICAL);
-		
-		Button b1 = new Button(activity);
-        b1.setText("Move");
-        b1.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				TMXTile tmxTile = placeSelectionRectangle(sprite);
-				highlightAvailableMoves(tmxTile, sprite, true);
-				dialog.dismiss();
-				
-			}
-        });        
-        ll.addView(b1);
-
-        Button b2 = new Button(activity);
-        b2.setText("Attack");
-        b2.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	TMXTile tmxTile = placeSelectionRectangle(sprite);
-				highlightAvailableTargets(tmxTile, sprite, false);
-				dialog.dismiss();
-                dialog.dismiss();
-            }
-        });
-        ll.addView(b2);
-        
-       
-        
-        Button b3 = new Button(activity);
-        b3.setText("Cancel");
-        b3.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	
-            		deselectCharacter(true);
-            	
-                dialog.dismiss();
-            }
-        });
-        ll.addView(b3);
-        
-        
-        
-        
-        dialog.setContentView(ll);      
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();        
-		
-		
-	}
-	
 	public void textMenu(String text){
 		
-		final GameScene gameScene = this;
+		
 		
 		/*ButtonSprite okButton = new ButtonSprite(0, 0, resourcesManager.continue_region, vbom, new OnClickListener() {
 			@Override
