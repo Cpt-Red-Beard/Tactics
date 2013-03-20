@@ -176,7 +176,9 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	            return true;
 	        case MENU_PLAY:
-	        	if(!loggedin){
+	        	resourcesManager.isLocal = true;
+	        	SceneManager.getInstance().loadSetupScene(engine);
+	        /*	if(!loggedin){
 	        		activity.runOnUiThread(new Runnable() {
 		        	    @Override
 		        	    public void run() {
@@ -191,7 +193,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	    public void run() {
 	        	        showDialog();
 	        	    }
-	        	});
+	        	});*/
 	        	 
 	        	
 	            return true;

@@ -112,6 +112,7 @@ public class SetupScene extends BaseScene {
 					twice = true;
 					tot = 0; jocks = 0; nerds = 0; ditzes = 0;
 					updateText();
+					
 					if(!resourcesManager.isLocal){
 						SceneManager.getInstance().loadGameScene(engine);
 					}
