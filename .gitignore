@@ -169,6 +169,6 @@ gen/com/example/testgame/R.java
 
 *.properties
 
-src/com/testgame/scene/SetupScene.java
+
 
 project.properties
