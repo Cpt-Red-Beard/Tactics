@@ -318,6 +318,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		else {
 			this.game.setEventText(this.toString() + " cannot attack,\n not enough energy!");
 		}
+		
 		this.game.deselectCharacter(true);
 	}
 	
@@ -376,10 +377,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 		if(this.energy >= 50)
 			this.setEnergy(100);
 		else if(this.energy >= 25){
-			this.setEnergy(50);
+			this.setEnergy(this.getEnergy()+50);
 		}
 		else
-			this.setEnergy(25);
+			this.setEnergy(this.getEnergy()+25);
 		this.isDefending = false;
 	}
 	
@@ -531,6 +532,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	                
 	                u.setCurrentTileIndex(start_frame);
 	                unit.reduceHealth(attack);
+	                game.working = false;
 	            }
 	        }));
 		}

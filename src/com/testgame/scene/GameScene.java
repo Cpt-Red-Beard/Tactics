@@ -61,6 +61,8 @@ import com.testgame.sprite.HighlightedSquare;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinchZoomDetectorListener {
 
+	public boolean working = false;
+
 	private float mTouchX = 0, mTouchY = 0, mTouchOffsetX = 0, mTouchOffsetY = 0;
 	
 	private Rectangle currentTileRectangle;
@@ -82,6 +84,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public int widthInTiles;
 	public int heightInTiles;
 	
+	private ArrayList<AUnit> targets;
 	
 	private ButtonSprite pauseButton;
 	private ButtonSprite tutorialButton;
@@ -330,14 +333,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			
 			highlightAvailableTargets(sprite);
 			highlightAvailableMoves(sprite);
-			
+			working = false;
 			return;
 		}
 	}
 	
 	public void highlightAvailableTargets(CharacterSprite sprite) {
 				
-		ArrayList<AUnit> targets = ((AUnit)sprite).availableTargets();
+		targets = ((AUnit)sprite).availableTargets();
 		
 		for (AUnit target: targets){
 		
@@ -389,9 +392,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			availableMove.setOffsetCenter(0, 0);
 			
 			float blueValue;
-			if (selectedCharacter == null || t == null) { // checks because of that weird occasional null pointer exception
+			
+			if (selectedCharacter == null ) { // checks because of that weird occasional null pointer exception
+				Log.d("Character", "null");
 				blueValue = 1;
 			}
+			else if(t == null){
+				Log.d("T", "null");
+				blueValue = 1;
+			}
+			
 			else {
 				blueValue = 1.0f/(selectedCharacter.getEnergy()/selectedCharacter.getRange()) * AUnit.manhattanDistance(selectedCharacter.getMapX(), selectedCharacter.getMapY(), t.getTileColumn(), heightInTiles - t.getTileRow() - 1) /2 + .1f;
 			}
@@ -510,12 +520,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
     	((SmoothCamera) this.camera).setZoomFactor(this.mPinchZoomStartedCameraZoomFactor * pZoomFactor);
     }
     
-    public void attack(CharacterSprite unit)
-    {
+   // public void attack(CharacterSprite unit)
+   // {
     	// TODO: is this ever used?
-    	this.getSelectedCharacter().attack((AUnit)unit);
-		this.deselectCharacter(true);
-    }
+    //	this.getSelectedCharacter().attack((AUnit)unit);
+	//	this.deselectCharacter(true);
+  //  }
 
 	public AUnit getSelectedCharacter() {
 		return selectedCharacter;
@@ -559,7 +569,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.selectedCharacter.stopAnimation();
 		this.selectedCharacter = null;
 		clearSquares();
+		for (AUnit target: targets){
+			target.inSelectedCharactersAttackRange = false;
+		}
 		this.currentTileRectangle.setColor(1,0,0,0);
+		working = false;
 	}
 	
 	public void hideBar() {

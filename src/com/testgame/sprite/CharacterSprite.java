@@ -12,6 +12,7 @@ import com.testgame.scene.GameScene;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.player.APlayer;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class CharacterSprite extends AnimatedSprite {
@@ -51,22 +52,32 @@ public class CharacterSprite extends AnimatedSprite {
 		boolean isTurn = p.isTurn();
 		
 		if (game.animating) return true;
+		if(game.working) return true;
 		
 		if (pSceneTouchEvent.getAction() == MotionEvent.ACTION_DOWN) {
 			
 			ResourcesManager.getInstance().touch_sound.play();
 			
 			if (isTurn) {
+				game.working = true;
 				Log.d("AndEngine", "Our turn, calling activate and select");
 				if (this.game.getSelectedCharacter() == this) {
 					this.game.deselectCharacter(true);
 				} else {
+					
 					this.game.activateAndSelect(this);
 				}
 			} else {
 				if (inSelectedCharactersAttackRange){
 					Log.d("AndEngine", "being attacked!");
-					// TODO : attack..
+					
+					if(this.game.getSelectedCharacter() == null){
+						Log.d("Character2", "null");
+						return true;
+					}
+					game.working = true;
+					
+					
 					((AUnit) this.game.getSelectedCharacter()).attack((AUnit) this);
 				} else {
 					Log.d("AndEngine", "Not our turn, just selecting.");
