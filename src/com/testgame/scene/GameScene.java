@@ -47,7 +47,6 @@ import com.parse.FindCallback;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 import com.testgame.AGame;
 import com.testgame.LocalGame;
 import com.testgame.OnlineGame;
@@ -56,7 +55,6 @@ import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
 import com.testgame.scene.SceneManager.SceneType;
 import com.testgame.sprite.CharacterSprite;
-import com.testgame.sprite.GameDialogBox;
 import com.testgame.sprite.HighlightedSquare;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinchZoomDetectorListener {
