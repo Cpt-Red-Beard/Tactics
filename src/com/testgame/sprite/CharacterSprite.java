@@ -12,7 +12,6 @@ import com.testgame.scene.GameScene;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.player.APlayer;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class CharacterSprite extends AnimatedSprite {
