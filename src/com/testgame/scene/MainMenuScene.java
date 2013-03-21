@@ -268,12 +268,13 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 				      // Construct a ParseUser query that will find friends whose
 				      // facebook IDs are contained in the current user's friend list.
+				      Log.d("Facebook", "Finished finding friends");
 				      ParseQuery query = ParseUser.getQuery();
 				      query.whereContainedIn("fbId", friendsList);
-				      
 				      query.findInBackground(new FindCallback() {
 				          public void done(List<ParseObject> friendUsers, ParseException e) {
-				              if (e == null) {
+				              Log.d("Query", "Query finished");
+				        	  if (e == null) {
 				            	  for(ParseObject u : friendUsers){
 				            		  userslist.add(u.getString("Name"));
 				            		  usernames.put(u.getString("Name"), u.getObjectId());
@@ -284,6 +285,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				                  Log.d("friends", friendUsers.toString());
 				              } else {
 				                  Log.d("score", "Error: " + e.getMessage());
+				                  loading.dismiss();
 				              }
 				          }
 				      });

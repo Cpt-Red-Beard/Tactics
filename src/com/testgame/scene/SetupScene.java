@@ -80,7 +80,9 @@ public class SetupScene extends BaseScene {
 
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				
+				if(tot < 10){
+					return;
+				}
 				ArrayList<Integer> unitList = new ArrayList<Integer>();
 				unitList.add(jocks);
 				unitList.add(nerds);
