@@ -316,7 +316,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
                 resourcesManager.opponent = (String) de[pos];
                 resourcesManager.opponentString = usernames.get((String)de[pos]);
                 try {
-					JSONObject data = new JSONObject("{\"alert\": \"Invitation to Game\", \"action\": \"com.testgame.INVITE\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\", \"userid\": \""+ParseUser.getCurrentUser().getObjectId()+"\"}");
+					JSONObject data = new JSONObject("{\"alert\": \"Invitation to Game\", \"action\": \"com.testgame.INVITE\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\", \"userid\": \""+ParseUser.getCurrentUser().getObjectId()+"\"}");
 					 ParsePush push = new ParsePush();
 		             push.setChannel("user_"+resourcesManager.opponentString);
 		             push.setData(data);
@@ -396,7 +396,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		invite.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
             	try {
-					JSONObject data = new JSONObject("{\"alert\": \"Invitation Denied\", \"action\": \"com.testgame.CANCEL\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
+					JSONObject data = new JSONObject("{\"alert\": \"Invitation Denied\", \"action\": \"com.testgame.CANCEL\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
 					 ParsePush push = new ParsePush();
 		             push.setChannel("user_"+object.getString("userid")); 
 		             push.setData(data);

@@ -349,7 +349,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 					game.unregisterTouchArea(u);
 				}
 			});
-			game.getGame().endGame();
+
 			this.game.setEventText(this.toString() + " died!");
 		}
 		//this.setText(this.energy, this.currentHealth);
@@ -533,6 +533,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	                u.setCurrentTileIndex(start_frame);
 	                unit.reduceHealth(attack);
 	                game.working = false;
+	    			game.getGame().endGame();
 	            }
 	        }));
 		}

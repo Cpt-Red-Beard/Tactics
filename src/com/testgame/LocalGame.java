@@ -22,12 +22,26 @@ public class LocalGame extends AGame {
 	@Override
 	public void endGame() {
 		if(player.getActiveUnits().size() == 0){
-			this.gameScene.quitDialog("Player 2 Wins!");
+			gameScene.activity.runOnUiThread(new Runnable() {
+        	    @Override
+        	    public void run() {
+        	    	gameScene.quitDialog("Player 2 Wins!");
+          			 
+        	    }
+        	});
+			
 			this.gameScene.setEndGameText(player2);
 			
 		}
 		else if(player2.getActiveUnits().size() == 0){
-			this.gameScene.quitDialog("Player 1 Wins!");
+			gameScene.activity.runOnUiThread(new Runnable() {
+        	    @Override
+        	    public void run() {
+        	    	gameScene.quitDialog("Player 1 Wins!");
+          			 
+        	    }
+        	});
+			
 			this.gameScene.setEndGameText(player);
 			
 		}
