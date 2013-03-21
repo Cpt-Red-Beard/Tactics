@@ -1,5 +1,7 @@
 package com.testgame;
 
+import android.util.Log;
+
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.mechanics.unit.Ditz;
 import com.testgame.mechanics.unit.Jock;
@@ -34,6 +36,8 @@ public class LocalGame extends AGame {
 
 	@Override
 	public void nextTurn() {
+		
+		Log.d("AndEnine", "[LocalGame] next turn");
 		if(this.getPlayer().isTurn()){
 			this.getPlayer().endTurn();
 			this.player2.beginTurn();
@@ -42,7 +46,6 @@ public class LocalGame extends AGame {
 			this.player2.endTurn();
 			this.getPlayer().beginTurn();
 		}
-
 	}
 
 	@Override

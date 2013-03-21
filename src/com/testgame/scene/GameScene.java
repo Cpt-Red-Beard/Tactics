@@ -655,7 +655,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				if(getSelectedCharacter() != null){
 					deselectCharacter(true);
 				}
-					getGame().nextTurn();
+				getGame().nextTurn();
 				pausemenu.dismiss();
 				
 			}
@@ -767,7 +767,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		quitDialog.setCanceledOnTouchOutside(false);
 		quitDialog.show();
 	}
-	
 	
 	public void quitDialog(String Text){
 		final Dialog pausemenu = new Dialog(activity);

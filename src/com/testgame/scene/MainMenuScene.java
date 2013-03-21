@@ -49,7 +49,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static MenuScene menuChildScene;
 	private final int MENU_LOGIN = 0;
 	private final int MENU_PLAY = 1;
-	private final int MENU_CONTINUE = 2;
+	private final int MENU_HOWTOPLAY = 2;
 	private final int MENU_LOGOUT = 3;
 	private static IMenuItem loginMenuItem;
 	private static IMenuItem playMenuItem;
@@ -59,6 +59,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private AlertDialog dialog;
 	private static AlertDialog loading;
 	private static AlertDialog invitation;
+	private static AlertDialog gameOptionsDialog;
 	private static AlertDialog textDialog;
 	private static AlertDialog acceptDialog;
 	private static Map<String, String> usernames;
@@ -115,7 +116,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    logoutMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGOUT, resourcesManager.logout_region, vbom), 1.2f, 1);
 	    loginMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGIN, resourcesManager.login_region, vbom), 1.2f, 1);
 	    playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.newgame_region, vbom), 1.2f, 1);
-	    final IMenuItem conintueMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_CONTINUE, resourcesManager.howtoplay_region, vbom), 1.2f, 1);
+	    final IMenuItem conintueMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_HOWTOPLAY, resourcesManager.howtoplay_region, vbom), 1.2f, 1);
 	    
 	    menuChildScene.addMenuItem(loginMenuItem);
 	    menuChildScene.addMenuItem(playMenuItem);
@@ -128,7 +129,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    loginMenuItem.setPosition(0, 175); 
 	    playMenuItem.setPosition(0, 75);
 	    conintueMenuItem.setPosition(0, -25);
-	    logoutMenuItem.setPosition(0, -125);
+	    logoutMenuItem.setPosition(0, -325); // place log out all the way at the bottom.
+	    logoutMenuItem.setVisible(false);
 	    //optionsMenuItem.disabled(true);
 	    
 	    menuChildScene.setOnMenuItemClickListener(this);
@@ -189,10 +191,15 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	            return true;
 	        case MENU_PLAY:
-	        	resourcesManager.isLocal = true;
-	        	SceneManager.getInstance().loadSetupScene(engine);
-
-
+	        	//resourcesManager.isLocal = true;
+	        	//SceneManager.getInstance().loadSetupScene(engine);
+	        	
+	        	activity.runOnUiThread(new Runnable() {
+	        	    @Override
+	        	    public void run() {
+	        	    	 gameOptions();
+	        	    }
+	        	});
 	        /*	if(!loggedin){
 
 	        		activity.runOnUiThread(new Runnable() {
@@ -214,7 +221,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	            return true;
 	        
-	        case MENU_CONTINUE:
+	        case MENU_HOWTOPLAY:
 	        	SceneManager.getInstance().previousScene = this.getSceneType();
 	        	SceneManager.getInstance().loadTutorialScene(engine);
 	        	//SceneManager.getInstance().loadSetupScene(engine);
@@ -293,6 +300,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	
 	private void welcomeDialog() {
 		camera.setHUD(new HUD());
+		logoutMenuItem.setVisible(true);
 		GameDialogBox box = new GameDialogBox(camera.getHUD(), "Welcome \n"+name+"!", ((ButtonSprite[]) null));
 	}
 	
@@ -341,6 +349,40 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		loading = load.create();
 		loading.setCanceledOnTouchOutside(false);
 		loading.show();
+	}
+	
+	public void gameOptions() {
+		final AlertDialog.Builder gameOptions = new AlertDialog.Builder(activity);
+		gameOptions.setTitle("Would you like to play an online or local game?");
+		
+		gameOptions.setNegativeButton("Local", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// launch a local game.	
+				Log.d("AndEngine", "[SetupScene] launching local game.");
+				gameOptionsDialog.dismiss();
+				resourcesManager.isLocal = true;
+				SceneManager.getInstance().loadSetupScene(engine);
+			}
+		});
+
+		gameOptions.setNeutralButton("Online", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// Launch an online game.
+				Log.d("AndEngine", "[SetupScene] launching online game.");
+				gameOptionsDialog.dismiss();
+				resourcesManager.isLocal = false;
+				activity.runOnUiThread(new Runnable() {
+	        	    @Override
+	        	    public void run() {
+	        	        showDialog();
+	        	    }
+	        	});
+			}
+		});
+		
+		gameOptionsDialog = gameOptions.create();
+		gameOptionsDialog.setCanceledOnTouchOutside(false);
+		gameOptionsDialog.show();
 	}
 	
 	public void createInvite(final JSONObject object){
@@ -409,7 +451,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		invitation = invite.create();
 		invitation.setCanceledOnTouchOutside(false);
 		invitation.show();
-		}
+	}
 	
 	public void createDialog(String text){
 		
@@ -451,10 +493,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void onHomeKeyPressed() {
-		// TODO Auto-generated method stub
-		
+		resourcesManager.pause_music();
 	}
 
-
-	
 }
