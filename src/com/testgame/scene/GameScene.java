@@ -84,7 +84,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public int widthInTiles;
 	public int heightInTiles;
 	
-	private ArrayList<AUnit> targets;
+	private ArrayList<AUnit> targets = new ArrayList<AUnit>();
 	
 	private ButtonSprite pauseButton;
 	private ButtonSprite tutorialButton;
@@ -232,7 +232,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.endGameMessage = new Text(240, 400, resourcesManager.font, "", 50, new TextOptions(HorizontalAlign.CENTER), vbom);
 		
 		// Initialize HUD and its entities.
-		this.curUnitAttack = new Text(300, 200, resourcesManager.handwriting_font, "Attack: " , 75, new TextOptions(HorizontalAlign.LEFT), vbom);
+		this.curUnitAttack = new Text(300, 175, resourcesManager.handwriting_font, "Attack: " , 75, new TextOptions(HorizontalAlign.LEFT), vbom);
 		this.curUnitAttack.setOffsetCenter(0, 0);
 		this.curUnitEnergy = new Text(50, 250, resourcesManager.handwriting_font, "Energy: ", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
 		this.curUnitEnergy.setOffsetCenter(0,0);
@@ -569,9 +569,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.selectedCharacter.stopAnimation();
 		this.selectedCharacter = null;
 		clearSquares();
+		
 		for (AUnit target: targets){
 			target.inSelectedCharactersAttackRange = false;
 		}
+		
 		this.currentTileRectangle.setColor(1,0,0,0);
 		working = false;
 	}
