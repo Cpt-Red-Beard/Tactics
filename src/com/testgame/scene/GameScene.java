@@ -607,6 +607,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		        if (e == null) {
 		            Log.d("score", "Retrieved " + itemList.size() + " scores");
 		            for(ParseObject ob : itemList){
+		            	Log.d("Device", resourcesManager.opponentDeviceID);
 		            	if (ob.getString("Device").equals(resourcesManager.opponentDeviceID)) {
 			            	Log.d("GameId", resourcesManager.gameId);
 			            	if(ob.getString("GameId").equals(resourcesManager.gameId)){

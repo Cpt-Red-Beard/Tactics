@@ -43,7 +43,7 @@ public class SetupScene extends BaseScene {
 	
 	@Override
 	public void createScene() {
-		
+		twice = false;
 		attachChild(new Sprite(240, 400, resourcesManager.setup_background, vbom)
 	    {
 	        @Override

@@ -31,8 +31,8 @@ public class GameDialogBox {
 		
 		ITextureRegion background = resourcesManager.dialog_background;
 		
-		this.width = background.getWidth();
-		this.height = background.getHeight();
+		this.setWidth(background.getWidth());
+		this.setHeight(background.getHeight());
 		
 		// Attach Background
 		hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background, resourcesManager.vbom));
@@ -77,5 +77,21 @@ public class GameDialogBox {
 				hud.detachChild(okayButton);
 			}
 		});
+	}
+
+	public float getWidth() {
+		return width;
+	}
+
+	public void setWidth(float width) {
+		this.width = width;
+	}
+
+	public float getHeight() {
+		return height;
+	}
+
+	public void setHeight(float height) {
+		this.height = height;
 	}
 }
