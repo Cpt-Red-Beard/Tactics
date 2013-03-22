@@ -720,6 +720,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			@Override
 			public void onClick(View v) {
 				pausemenu.dismiss();
+				game.endGame();
 				
 			}
         });        

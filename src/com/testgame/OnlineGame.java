@@ -87,10 +87,11 @@ public class OnlineGame extends AGame{
         	    }
         	});
 			
-			this.gameScene.setEndGameText(compPlayer);
+			
 			
 		}
 		else if(compPlayer.getActiveUnits().size() == 0){
+			nextTurn();
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
@@ -99,7 +100,7 @@ public class OnlineGame extends AGame{
         	    }
         	});
 			
-			this.gameScene.setEndGameText(player);
+			
 			
 		}
 		

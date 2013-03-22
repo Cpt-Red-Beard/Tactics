@@ -31,8 +31,10 @@ public class ComputerPlayer extends APlayer {
 		
 		if(game.isFirstTurn()) 
 			game.incrementCount();
+		
 		game.getPlayer().beginTurn(); // this calls turn init on all the units
 		this.endTurn();
+		
 		
 	}
 	

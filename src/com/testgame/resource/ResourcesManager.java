@@ -155,9 +155,9 @@ public class ResourcesManager {
     private void loadMenuMusic() {
    	 	MusicFactory.setAssetBasePath("mfx/");
         try {
-                this.menu_background_music = MusicFactory.createMusicFromAsset(this.engine.getMusicManager(), activity, "background.wav");
+                this.menu_background_music = MusicFactory.createMusicFromAsset(this.engine.getMusicManager(), activity, "kickstarter.mp3");
                 this.menu_background_music.setLooping(true);
-                this.menu_background_music.setVolume(.25f);
+                this.menu_background_music.setVolume(2f);
                 
                 this.select_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "buttonpush.wav");
         } catch (final IOException e) {
