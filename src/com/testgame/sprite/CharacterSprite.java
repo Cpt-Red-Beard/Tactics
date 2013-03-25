@@ -96,6 +96,9 @@ public class CharacterSprite extends AnimatedSprite {
 	}
 
 	public void animatePoints(int points, String which) {
+		
+		if (points == 0) return;
+		
 		Font whichFont;
 		if (which.equals("red")) {
 			whichFont = resourcesManager.cartoon_font_red;
