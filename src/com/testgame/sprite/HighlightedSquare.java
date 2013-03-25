@@ -53,31 +53,31 @@ public class HighlightedSquare extends Rectangle {
     public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 		Log.d("AndEngine", "Square touched!");
 		if(!game.onSceneTouchEvent(game, pSceneTouchEvent)){
-		if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN) {
-			
-			ResourcesManager.getInstance().touch_sound.play();
-			
-			if (touched) {
-				Log.d("AndEngine", "already selected, calling gamescne");
-				this.removeBorder();
-				this.game.squareTouched(this, pSceneTouchEvent);
-				this.touched = false;
-				this.game.currentlySelectedMoveTile = null;
-				return true;
-			} else {
-				Log.d("AndEngine", "drawing border");
-				// remove border from previously selected square.
-				if (game.currentlySelectedMoveTile != null) {
-					game.currentlySelectedMoveTile.removeBorder();
-					game.currentlySelectedMoveTile.touched = false;
-					
+			if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN) {
+				
+				ResourcesManager.getInstance().touch_sound.play();
+				
+				if (touched) {
+					Log.d("AndEngine", "already selected, calling gamescne");
+					this.removeBorder();
+					this.game.squareTouched(this, pSceneTouchEvent);
+					this.touched = false;
+					this.game.currentlySelectedMoveTile = null;
+					return true;
+				} else {
+					Log.d("AndEngine", "drawing border");
+					// remove border from previously selected square.
+					if (game.currentlySelectedMoveTile != null) {
+						game.currentlySelectedMoveTile.removeBorder();
+						game.currentlySelectedMoveTile.touched = false;
+						
+					}
+					this.touched = true;
+					this.game.currentlySelectedMoveTile = this;
+					drawBorder();
+					return true;
 				}
-				this.touched = true;
-				this.game.currentlySelectedMoveTile = this;
-				drawBorder();
-				return true;
 			}
-		}
 		}
 		return true;
 	}

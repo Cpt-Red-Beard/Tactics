@@ -78,7 +78,7 @@ public class OnlineGame extends AGame{
 	 * Ends the game.
 	 */
 	public void endGame() {
-		if(player.getActiveUnits().size() == 0){
+		if(player.getActiveUnits().size() == 0 || player.getBase() == null){
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
@@ -90,7 +90,7 @@ public class OnlineGame extends AGame{
 			
 			
 		}
-		else if(compPlayer.getActiveUnits().size() == 0){
+		else if(compPlayer.getActiveUnits().size() == 0 || compPlayer.getBase() == null){
 			nextTurn();
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override

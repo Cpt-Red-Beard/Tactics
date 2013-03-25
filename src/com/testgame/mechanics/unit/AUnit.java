@@ -538,4 +538,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 	        }));
 		}
 	}
+	
+	public String getType(){
+		return this.unitType;
+	}
+	
 }
