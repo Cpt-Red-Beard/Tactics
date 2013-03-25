@@ -481,6 +481,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             
             pTouchEvent.getX();
             pTouchEvent.getY();
+
             return false;
 			
         }
@@ -496,6 +497,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
                       
             mTouchX = newX;
             mTouchY = newY;
+
             return true;
         }
         

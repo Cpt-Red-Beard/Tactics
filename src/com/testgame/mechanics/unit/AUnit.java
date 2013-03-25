@@ -388,7 +388,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 		this.energy -= energy;
 		//this.setText(this.energy, this.currentHealth);
 		animatePoints(-energy, "blue");
-		//this.setAlpha(this.energy / 100 + .1f);
 	}
 	
 	@Override
