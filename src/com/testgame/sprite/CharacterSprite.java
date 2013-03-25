@@ -1,8 +1,11 @@
 package com.testgame.sprite;
 
+import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.font.Font;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.ITiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
@@ -91,4 +94,40 @@ public class CharacterSprite extends AnimatedSprite {
 		}
 		return true;
 	}
+
+	public void animatePoints(int points, String which) {
+		Font whichFont;
+		if (which.equals("red")) {
+			whichFont = resourcesManager.cartoon_font_red;
+		} else {
+			whichFont = resourcesManager.cartoon_font_blue;
+		}
+		
+		Text message;
+		if (points > 0) {
+			message = new Text(this.getWidth()/2, this.getHeight() + 10, whichFont, "+"+points, game.vbom);
+		} else {
+			message = new Text(this.getWidth()/2, this.getHeight() + 10, whichFont, ""+points, game.vbom);
+		}
+		
+		this.attachChild(message);
+		
+		final CharacterSprite sprite = this;
+		
+		message.registerEntityModifier(new MoveModifier(1.5f, message.getX(), message.getY(), message.getX(), message.getY() + 25) {
+			@Override
+			protected void onModifierFinished(final IEntity pItem) {
+				super.onModifierFinished(pItem);
+				Log.d("AndEngine", "[CharacterSprite] detaching text popup");
+				game.engine.runOnUpdateThread(new Runnable() {
+					@Override
+					public void run() {
+						sprite.detachChild(pItem);
+					}});
+			}
+		});
+		
+	}
+	
+	
 }

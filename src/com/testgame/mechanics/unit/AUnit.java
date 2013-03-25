@@ -352,24 +352,34 @@ public class AUnit extends CharacterSprite implements IUnit {
 
 			this.game.setEventText(this.toString() + " died!");
 		}
+		
+		animatePoints(-dec, "red");
 		//this.setText(this.energy, this.currentHealth);
 	}
 
 	public void setEnergy(int energy){
+		int diff = energy - this.energy;  // positive if regaining, negative if losing
 		this.energy = energy;
 		//this.setText(this.energy, this.currentHealth);
+		animatePoints(diff, "blue"); // recharging energy;
+		//this.setAlpha(this.energy / 100 + .1f);
 	}
 	
 	@Override
 	public void restoreEnergy(int energy) {
 		this.energy += energy;
+		if (this.energy > 100) this.energy = 100;
 		//this.setText(this.energy, this.currentHealth);
+		animatePoints(energy, "blue"); 
+		//this.setAlpha(this.energy / 100 + .1f);
 	}
 
 	@Override
 	public void reduceEnergy(int energy) {
 		this.energy -= energy;
 		//this.setText(this.energy, this.currentHealth);
+		animatePoints(-energy, "blue");
+		//this.setAlpha(this.energy / 100 + .1f);
 	}
 	
 	@Override
@@ -377,10 +387,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 		if(this.energy >= 50)
 			this.setEnergy(100);
 		else if(this.energy >= 25){
-			this.setEnergy(this.getEnergy()+50);
+			this.restoreEnergy(50);
 		}
 		else
-			this.setEnergy(this.getEnergy()+25);
+			this.restoreEnergy(+25);
 		this.isDefending = false;
 	}
 	
