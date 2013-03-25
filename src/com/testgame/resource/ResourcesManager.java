@@ -13,6 +13,7 @@ import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.ITexture;
+import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -73,6 +74,10 @@ public class ResourcesManager {
         return INSTANCE;
     }
     
+    public Font cartoon_font_white;
+    public Font cartoon_font_red;
+    public Font cartoon_font_blue;
+    
     //==============================
     // Splash Resources
     //==============================
@@ -122,11 +127,6 @@ public class ResourcesManager {
     	basics_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR);
     	basics_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(basics_atlas, activity, "basicsbutton.png", 0, 0);
     	basics_atlas.load();
-    	
-    	final ITexture secFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        
-        handwriting_font = FontFactory.createStrokeFromAsset(activity.getFontManager(), secFontTexture, activity.getAssets(), "cartoonfont.ttf", 36, true, Color.WHITE, 1, Color.BLACK);
-        handwriting_font.load();	
     }
     
     public void unloadTutorialResources() {
@@ -209,7 +209,21 @@ public class ResourcesManager {
         final ITexture mainFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 
         font = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "Toony.ttf", 50, true, Color.BLACK, 2, Color.WHITE);
-        font.load();        
+        font.load();  
+        
+        final ITexture whiteTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        final ITexture redTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        final ITexture blueTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        
+        
+        cartoon_font_white = FontFactory.createStrokeFromAsset(activity.getFontManager(), whiteTexture, activity.getAssets(), "cartoonfont.ttf", 36, true, Color.WHITE, 1, Color.BLACK);
+        cartoon_font_white.load();	
+        
+        cartoon_font_red = FontFactory.createStrokeFromAsset(activity.getFontManager(), redTexture, activity.getAssets(), "cartoonfont.ttf", 36, true, Color.RED, 1, Color.BLACK);
+        cartoon_font_red.load();
+        
+        cartoon_font_blue = FontFactory.createStrokeFromAsset(activity.getFontManager(), blueTexture, activity.getAssets(), "cartoonfont.ttf", 36, true, Color.BLUE, 1, Color.BLACK);
+        cartoon_font_blue.load();
     }
 
     public void unloadMenuTextures()

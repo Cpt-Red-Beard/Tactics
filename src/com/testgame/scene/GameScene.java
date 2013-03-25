@@ -227,15 +227,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		hud.attachChild(bottomBar = new Sprite(240, -300, resourcesManager.bottom_bar, vbom));
 		
 		// Create the game events messages.
-		this.eventsMessage = new Text(240, 760, resourcesManager.handwriting_font, "Destroy All Enemy Units\n to Win!", 200, new TextOptions(HorizontalAlign.CENTER), vbom);
+		this.eventsMessage = new Text(240, 760, resourcesManager.cartoon_font_white, "Destroy All Enemy Units\n to Win!", 200, new TextOptions(HorizontalAlign.CENTER), vbom);
 		this.endGameMessage = new Text(240, 400, resourcesManager.font, "", 50, new TextOptions(HorizontalAlign.CENTER), vbom);
 		
 		// Initialize HUD and its entities.
-		this.curUnitAttack = new Text(300, 175, resourcesManager.handwriting_font, "Attack: " , 75, new TextOptions(HorizontalAlign.LEFT), vbom);
+		this.curUnitAttack = new Text(300, 175, resourcesManager.cartoon_font_white, "Attack: " , 75, new TextOptions(HorizontalAlign.LEFT), vbom);
 		this.curUnitAttack.setOffsetCenter(0, 0);
-		this.curUnitEnergy = new Text(50, 250, resourcesManager.handwriting_font, "Energy: ", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
+		this.curUnitEnergy = new Text(50, 250, resourcesManager.cartoon_font_white, "Energy: ", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
 		this.curUnitEnergy.setOffsetCenter(0,0);
-		this.curUnitHealth = new Text(50, 200, resourcesManager.handwriting_font, "Health: " , 25, new TextOptions(HorizontalAlign.LEFT), vbom);
+		this.curUnitHealth = new Text(50, 200, resourcesManager.cartoon_font_white, "Health: " , 25, new TextOptions(HorizontalAlign.LEFT), vbom);
 		this.curUnitHealth.setOffsetCenter(0, 0);
 		
 		bottomBar.attachChild(curUnitAttack);

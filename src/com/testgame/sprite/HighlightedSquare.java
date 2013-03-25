@@ -46,7 +46,7 @@ public class HighlightedSquare extends Rectangle {
 		this.borderLines.add(new Line(0, game.tileSize, game.tileSize, game.tileSize, borderSize, game.vbom));
 		this.borderLines.add(new Line(game.tileSize, 0, game.tileSize, game.tileSize, borderSize, game.vbom));
 		
-		this.EnergyCostText = new Text(32, 32, game.resourcesManager.handwriting_font, "", 10, game.vbom);
+		this.EnergyCostText = new Text(32, 32, game.resourcesManager.cartoon_font_white, "", 10, game.vbom);
 	}
 	
 	@Override
