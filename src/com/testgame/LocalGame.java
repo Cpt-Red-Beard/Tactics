@@ -21,7 +21,7 @@ public class LocalGame extends AGame {
 
 	@Override
 	public void endGame() {
-		if(player.getActiveUnits().size() == 0 ){
+		if(player.getActiveUnits().size() == 0 || player.getBase() == null){
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
@@ -33,7 +33,7 @@ public class LocalGame extends AGame {
 			this.gameScene.setEndGameText(player2);
 			
 		}
-		else if(player2.getActiveUnits().size() == 0 ){
+		else if(player2.getActiveUnits().size() == 0 || player2.getBase() == null){
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
@@ -90,8 +90,8 @@ public class LocalGame extends AGame {
 					jocks--;
 				}
 			}
-		//AUnit unitbase = new Base(gameMap, 5, j+1, gameScene, "blue");
-		//player.setBase(unitbase);
+		AUnit unitbase = new Base(gameMap, 5, j+1, gameScene, "blue");
+		player.setBase(unitbase);
 		
 		jocks = resourcesManager.unitArray2.get(0);
 		nerds = resourcesManager.unitArray2.get(1);
@@ -118,8 +118,8 @@ public class LocalGame extends AGame {
 					jocks--;
 				}
 			}
-		//AUnit unitbase2 = new Base(gameMap, 5, j-1, gameScene, "red");
-		//player2.setBase(unitbase2);
+		AUnit unitbase2 = new Base(gameMap, 5, j-1, gameScene, "red");
+		player2.setBase(unitbase2);
 		
 		player.beginTurn();
 	}

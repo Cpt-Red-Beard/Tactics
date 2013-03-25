@@ -14,6 +14,7 @@ import com.testgame.mechanics.unit.Ditz;
 import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
 import com.testgame.player.APlayer;
+import com.testgame.player.Base;
 import com.testgame.player.ComputerPlayer;
 import com.testgame.scene.GameScene;
 
@@ -48,9 +49,12 @@ public class OnlineGame extends AGame{
 		int jocks = resourcesManager.unitArray.get(0);
 		int nerds = resourcesManager.unitArray.get(1);
 		int ditz = resourcesManager.unitArray.get(2);
-		int j = 0;
-		if(isFirstTurn())
+		int j = 1;
+		int x = 0;
+		if(isFirstTurn()){
 			j = 10;
+			x = 11;
+		}
 		
 		for(int i = 0; i < 10; i++){
 				if(nerds > 0){
@@ -72,6 +76,9 @@ public class OnlineGame extends AGame{
 					jocks--;
 				}
 			}
+		
+		AUnit unitbase = new Base(gameMap, 5, x, gameScene, "blue");
+		player.setBase(unitbase);
 	}
 	
 	/**
