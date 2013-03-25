@@ -119,7 +119,6 @@ public class SetupScene extends BaseScene {
 					tot = 0; jocks = 0; nerds = 0; ditzes = 0;
 					updateText();
 					
-					if(!resourcesManager.isLocal){
 						SceneManager.getInstance().loadGameScene(engine);
 					}
 				}
@@ -127,7 +126,10 @@ public class SetupScene extends BaseScene {
 					resourcesManager.unitArray2 = unitList;
 					SceneManager.getInstance().loadGameScene(engine);
 				}
+<<<<<<< HEAD
 
+=======
+>>>>>>> Alen's-Branch
 			}
 			
 		});
