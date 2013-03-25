@@ -465,9 +465,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pTouchEvent) {
 		
-		if (this.hud.getChildScene() != null) return true; // tutorial menu is up, don't move around!
+		if (this.hud.getChildScene() != null) return false; // tutorial menu is up, don't move around!
 		
-		if (animating) return true; // If we're moving, don't recognize touch
+		if (animating) return false; // If we're moving, don't recognize touch
 		
 		this.mPinchZoomDetector.onTouchEvent(pTouchEvent);
 		
@@ -480,6 +480,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             
             pTouchEvent.getX();
             pTouchEvent.getY();
+            
+            return false;
 			
         }
         else if(pTouchEvent.getAction() == MotionEvent.ACTION_MOVE)
@@ -494,9 +496,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
                       
             mTouchX = newX;
             mTouchY = newY;
+            
+            return true;
         }
         
-        return true;
+        return false;
 	}
 
     @Override
