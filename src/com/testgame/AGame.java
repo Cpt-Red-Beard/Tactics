@@ -5,12 +5,7 @@ import java.util.Random;
 import org.json.JSONObject;
 
 import com.testgame.mechanics.map.GameMap;
-import com.testgame.mechanics.unit.AUnit;
-import com.testgame.mechanics.unit.Ditz;
-import com.testgame.mechanics.unit.Jock;
-import com.testgame.mechanics.unit.Nerd;
 import com.testgame.player.APlayer;
-import com.testgame.player.ComputerPlayer;
 import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
 

@@ -265,4 +265,16 @@ public class MainActivity extends BaseGameActivity {
          	  ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
          	}
 
+         	
+         	@Override
+         	public void onPause() {
+         		super.onPause();
+         		if (resourcesManager != null) resourcesManager.pause_music();
+         	}
+         	
+         	@Override
+         	public void onResume() {
+         		super.onResume();
+         		if (resourcesManager != null)resourcesManager.play_music();
+         	}
 }

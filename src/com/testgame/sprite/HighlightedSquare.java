@@ -4,11 +4,14 @@ import java.util.ArrayList;
 
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.primitive.Line;
+import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 import org.andengine.extension.tmx.TMXTile;
 
+import com.testgame.mechanics.unit.AUnit;
+import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
 
 import android.util.Log;
@@ -23,6 +26,7 @@ public class HighlightedSquare extends Rectangle {
 	public CharacterSprite unit;
 	public TMXTile tile;
 	private GameScene game;
+	private Text EnergyCostText;
 	
 	boolean touched;
 	
@@ -41,6 +45,8 @@ public class HighlightedSquare extends Rectangle {
 		this.borderLines.add(new Line(0, 0, game.tileSize, 0, borderSize, game.vbom));
 		this.borderLines.add(new Line(0, game.tileSize, game.tileSize, game.tileSize, borderSize, game.vbom));
 		this.borderLines.add(new Line(game.tileSize, 0, game.tileSize, game.tileSize, borderSize, game.vbom));
+		
+		this.EnergyCostText = new Text(32, 32, game.resourcesManager.handwriting_font, "", 10, game.vbom);
 	}
 	
 	@Override
@@ -48,6 +54,9 @@ public class HighlightedSquare extends Rectangle {
 		Log.d("AndEngine", "Square touched!");
 		
 		if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN) {
+			
+			ResourcesManager.getInstance().touch_sound.play();
+			
 			if (touched) {
 				Log.d("AndEngine", "already selected, calling gamescne");
 				this.removeBorder();
@@ -76,12 +85,19 @@ public class HighlightedSquare extends Rectangle {
 			l.setColor(Color.BLACK);
 			this.attachChild(l);
 		}
+		
+		AUnit myUnit = ((AUnit) this.unit);
+		
+		EnergyCostText.setText(myUnit.getRange() * AUnit.manhattanDistance(tile.getTileColumn(), game.heightInTiles - tile.getTileRow() - 1, myUnit.getMapX(), myUnit.getMapY()) + "");
+		this.attachChild(EnergyCostText);
 	}
 	
 	public void removeBorder() {
 		for (Line l : this.borderLines){
 			this.detachChild(l);
 		}
+		
+		this.detachChild(EnergyCostText);
 	}
 
 }

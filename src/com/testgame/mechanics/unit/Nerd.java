@@ -9,7 +9,7 @@ import com.testgame.scene.GameScene;
  *
  */
 public class Nerd extends AUnit {
-	
+	   
 	/**
 	 * Constructor. Sets mutable and immutable stats.
 	 * @param map The map being used for this game.

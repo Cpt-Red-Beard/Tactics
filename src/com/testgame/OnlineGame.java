@@ -15,7 +15,6 @@ import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
-import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
 
 public class OnlineGame extends AGame{
@@ -80,12 +79,26 @@ public class OnlineGame extends AGame{
 	 */
 	public void endGame() {
 		if(player.getActiveUnits().size() == 0){
-			this.gameScene.quitDialog("You Lose!");
+			gameScene.activity.runOnUiThread(new Runnable() {
+        	    @Override
+        	    public void run() {
+        	    	gameScene.quitDialog("You Lose!");
+          			 
+        	    }
+        	});
+			
 			this.gameScene.setEndGameText(compPlayer);
 			
 		}
 		else if(compPlayer.getActiveUnits().size() == 0){
-			this.gameScene.quitDialog("You Win!");
+			gameScene.activity.runOnUiThread(new Runnable() {
+        	    @Override
+        	    public void run() {
+        	    	gameScene.quitDialog("You Win!");
+          			 
+        	    }
+        	});
+			
 			this.gameScene.setEndGameText(player);
 			
 		}

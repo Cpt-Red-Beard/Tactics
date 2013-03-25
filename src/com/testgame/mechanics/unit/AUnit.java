@@ -20,6 +20,7 @@ import android.util.Log;
 import com.testgame.mechanics.map.GameMap;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
+import com.testgame.resource.ResourcesManager;
 import com.testgame.sprite.CharacterSprite;
 import com.testgame.sprite.WalkMoveModifier;
 import com.testgame.OnlineGame;
@@ -197,12 +198,14 @@ public class AUnit extends CharacterSprite implements IUnit {
 					IEntity pItem) {
 				game.animating = true;
 				game.camera.setChaseEntity(pItem);
+				ResourcesManager.getInstance().walking_sound.play();
 				
 			}
 			@Override
 			public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
 				game.animating = false;
 				game.camera.setChaseEntity(null);
+				ResourcesManager.getInstance().walking_sound.pause();
 				((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
 				game.setEventText("Moved using "+energy+" energy.");
 				Log.d("AndEngine", "[ComputerMove] calling perform next on player.");
@@ -246,8 +249,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			
-			((OnlineGame)this.game.getGame()).addMove(temp);
+			if(!this.game.resourcesManager.isLocal)
+				((OnlineGame)this.game.getGame()).addMove(temp);
 
 			Log.d("AndEngine", "moving to " + destX + ", "+destY);
 			
@@ -313,8 +316,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			((OnlineGame)this.game.getGame()).addMove(temp);
+			if(!this.game.resourcesManager.isLocal)
+				((OnlineGame)this.game.getGame()).addMove(temp);
 			
 			unit.attackedAnimate(null, unit, this.attack);
 			
@@ -324,6 +327,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		else {
 			this.game.setEventText(this.toString() + " cannot attack,\n not enough energy!");
 		}
+		
 		this.game.deselectCharacter(true);
 	}
 	
@@ -354,7 +358,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 					game.unregisterTouchArea(u);
 				}
 			});
-			game.getGame().endGame();
+
 			this.game.setEventText(this.toString() + " died!");
 		}
 		//this.setText(this.energy, this.currentHealth);
@@ -382,10 +386,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 		if(this.energy >= 50)
 			this.setEnergy(100);
 		else if(this.energy >= 25){
-			this.setEnergy(50);
+			this.setEnergy(this.getEnergy()+50);
 		}
 		else
-			this.setEnergy(25);
+			this.setEnergy(this.getEnergy()+25);
 		this.isDefending = false;
 	}
 	
@@ -492,7 +496,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 	
 	public void walkAnimate(int xDirection, int yDirection) {
 		// TODO: Should work, but we don't have the correct graphics yet to do this.
-		
 		if (xDirection == 0) { // walking up or down
 			if (yDirection > 0) { // walking up
 				this.animate(new long[] { 100, 100, 100 }, start_frame + WALK_UP_START_FRAME, start_frame + WALK_UP_END_FRAME, true);
@@ -513,6 +516,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void attackedAnimate(final ComputerPlayer computerPlayer, final AUnit unit, final int attack) {
+		ResourcesManager.getInstance().attack_sound.play();
 		this.animate(new long[] { 100, 100 }, start_frame + ATTACKED_START_FRAME, start_frame + ATTACKED_END_FRAME, true);
 		
 		final AUnit u = this;
@@ -537,6 +541,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 	                
 	                u.setCurrentTileIndex(start_frame);
 	                unit.reduceHealth(attack);
+	                game.working = false;
+	    			game.getGame().endGame();
 	            }
 	        }));
 		}

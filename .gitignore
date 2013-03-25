@@ -162,3 +162,13 @@ pip-log.txt
 # Mac crap
 .DS_Store
 /gen
+
+gen/com/example/testgame/R.java
+
+*.properties
+
+*.properties
+
+
+
+project.properties

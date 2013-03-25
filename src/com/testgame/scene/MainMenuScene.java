@@ -8,12 +8,17 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.hud.HUD;
+import org.andengine.entity.scene.IOnAreaTouchListener;
+import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
+import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +32,6 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.model.GraphUser;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.LogInCallback;
 import com.parse.ParseFacebookUtils;
@@ -38,38 +42,45 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.PushService;
 import com.testgame.scene.SceneManager.SceneType;
+import com.testgame.sprite.GameDialogBox;
 
 public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener {
 
 	private static MenuScene menuChildScene;
 	private final int MENU_LOGIN = 0;
 	private final int MENU_PLAY = 1;
-	private final int MENU_CONTINUE = 2;
+	private final int MENU_HOWTOPLAY = 2;
 	private final int MENU_LOGOUT = 3;
 	private static IMenuItem loginMenuItem;
 	private static IMenuItem playMenuItem;
+	private static String name;
 	private static IMenuItem logoutMenuItem;
 	private static List<String> userslist = new ArrayList<String>();
 	private AlertDialog dialog;
 	private static AlertDialog loading;
 	private static AlertDialog invitation;
+	private static AlertDialog gameOptionsDialog;
 	private static AlertDialog textDialog;
 	private static AlertDialog acceptDialog;
 	private static Map<String, String> usernames;
 	private static boolean loggedin = false;
+	
+	private GameDialogBox gameDialog;
 	
 	@Override
 	public void createScene() {
 		createBackground();
 		createMenuChildScene();
 		usernames = new HashMap<String, String>();
+		resourcesManager.menu_background_music.play();
 	}
 
 	@Override
 	public void onBackKeyPressed() {
-		PushService.unsubscribe(activity, resourcesManager.userString);
-		loggedin = false;
-		Session.getActiveSession().closeAndClearTokenInformation();
+		//PushService.unsubscribe(activity, resourcesManager.userString);
+		//loggedin = false;
+		resourcesManager.menu_background_music.pause();
+		//Session.getActiveSession().closeAndClearTokenInformation();
 		//System.exit(0);
 
 	}
@@ -105,7 +116,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    logoutMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGOUT, resourcesManager.logout_region, vbom), 1.2f, 1);
 	    loginMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGIN, resourcesManager.login_region, vbom), 1.2f, 1);
 	    playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.newgame_region, vbom), 1.2f, 1);
-	    final IMenuItem conintueMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_CONTINUE, resourcesManager.options_region, vbom), 1.2f, 1);
+	    final IMenuItem conintueMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_HOWTOPLAY, resourcesManager.howtoplay_region, vbom), 1.2f, 1);
 	    
 	    menuChildScene.addMenuItem(loginMenuItem);
 	    menuChildScene.addMenuItem(playMenuItem);
@@ -118,17 +129,18 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    loginMenuItem.setPosition(0, 175); 
 	    playMenuItem.setPosition(0, 75);
 	    conintueMenuItem.setPosition(0, -25);
-	    logoutMenuItem.setPosition(0, -125);
+	    logoutMenuItem.setPosition(0, -325); // place log out all the way at the bottom.
+	    logoutMenuItem.setVisible(false);
 	    //optionsMenuItem.disabled(true);
-	   
 	    
 	    menuChildScene.setOnMenuItemClickListener(this);
-	    
-	    setChildScene(menuChildScene);
+	    setChildScene(menuChildScene, false, false, false);
 	}
 	
 	public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY)
 	{
+			resourcesManager.select_sound.play();
+		
 	        switch(pMenuItem.getID())
 	        {
 	        case MENU_LOGIN:
@@ -152,8 +164,9 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		    
 	        		    } else if (user.isNew()) {
 	        		      Log.d("MyApp", "User signed up and logged in through Facebook!");
+	        		      Log.d("DeviceID", ParseInstallation.getCurrentInstallation().getInstallationId());
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
-	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getObjectId();
+	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getInstallationId();
 	        		      Log.d("Push", resourcesManager.userString);
 	        		      Log.d("Installation", ParseInstallation.getCurrentInstallation().getInstallationId());
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
@@ -163,7 +176,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		    } else {
 	        		      Log.d("MyApp", "User logged in through Facebook!");
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
-	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getObjectId();
+	        		      Log.d("DeviceID", ParseInstallation.getCurrentInstallation().getInstallationId());
+	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getInstallationId();
 	        		      Log.d("Push", resourcesManager.userString);
 	        		      Log.d("Installation", ParseInstallation.getCurrentInstallation().getInstallationId());
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
@@ -177,7 +191,17 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	            return true;
 	        case MENU_PLAY:
-	        	if(!loggedin){
+	        	//resourcesManager.isLocal = true;
+	        	//SceneManager.getInstance().loadSetupScene(engine);
+	        	
+	        	activity.runOnUiThread(new Runnable() {
+	        	    @Override
+	        	    public void run() {
+	        	    	 gameOptions();
+	        	    }
+	        	});
+	        /*	if(!loggedin){
+
 	        		activity.runOnUiThread(new Runnable() {
 		        	    @Override
 		        	    public void run() {
@@ -192,12 +216,12 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	    public void run() {
 	        	        showDialog();
 	        	    }
-	        	});
+	        	});*/
 	        	 
 	        	
 	            return true;
 	        
-	        case MENU_CONTINUE:
+	        case MENU_HOWTOPLAY:
 	        	SceneManager.getInstance().previousScene = this.getSceneType();
 	        	SceneManager.getInstance().loadTutorialScene(engine);
 	        	//SceneManager.getInstance().loadSetupScene(engine);
@@ -211,11 +235,13 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	        	
 	        default:
+	        	Log.d("AndEngine", "touch not on a button..?");
 	            return false;
 	    }
 	}
 	
-	private static void getFacebookIdInBackground() {
+	// NOTE!: I removed static here so that I can popup up a message dialog. Will put it back in if this breaks networking.
+	private void getFacebookIdInBackground() {
 		
 		  Request.executeMeRequestAsync(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
 		    @Override
@@ -225,6 +251,9 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		    	ParseUser.getCurrentUser().put("Name", user.getName());
 		        ParseUser.getCurrentUser().put("fbId", user.getId());
 		        ParseUser.getCurrentUser().saveInBackground();
+		        name =  user.getName();
+		        welcomeDialog();
+
 		      }
 		      Request.executeMyFriendsRequestAsync(ParseFacebookUtils.getSession(), new Request.GraphUserListCallback() {
 
@@ -239,12 +268,13 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 				      // Construct a ParseUser query that will find friends whose
 				      // facebook IDs are contained in the current user's friend list.
+				      Log.d("Facebook", "Finished finding friends");
 				      ParseQuery query = ParseUser.getQuery();
 				      query.whereContainedIn("fbId", friendsList);
-				      
 				      query.findInBackground(new FindCallback() {
 				          public void done(List<ParseObject> friendUsers, ParseException e) {
-				              if (e == null) {
+				              Log.d("Query", "Query finished");
+				        	  if (e == null) {
 				            	  for(ParseObject u : friendUsers){
 				            		  userslist.add(u.getString("Name"));
 				            		  usernames.put(u.getString("Name"), u.getObjectId());
@@ -255,6 +285,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				                  Log.d("friends", friendUsers.toString());
 				              } else {
 				                  Log.d("score", "Error: " + e.getMessage());
+				                  loading.dismiss();
 				              }
 				          }
 				      });
@@ -269,6 +300,12 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		 
 		}
 	
+	private void welcomeDialog() {
+		camera.setHUD(new HUD());
+		logoutMenuItem.setVisible(true);
+		GameDialogBox box = new GameDialogBox(camera.getHUD(), "Welcome \n"+name+"!", ((ButtonSprite[]) null));
+	}
+	
 	private void showDialog(){
 		final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle("Friends");
@@ -281,7 +318,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
                 resourcesManager.opponent = (String) de[pos];
                 resourcesManager.opponentString = usernames.get((String)de[pos]);
                 try {
-					JSONObject data = new JSONObject("{\"alert\": \"Invitation to Game\", \"action\": \"com.testgame.INVITE\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\", \"userid\": \""+ParseUser.getCurrentUser().getObjectId()+"\"}");
+					JSONObject data = new JSONObject("{\"alert\": \"Invitation to Game\", \"action\": \"com.testgame.INVITE\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\", \"userid\": \""+ParseUser.getCurrentUser().getObjectId()+"\"}");
 					 ParsePush push = new ParsePush();
 		             push.setChannel("user_"+resourcesManager.opponentString);
 		             push.setData(data);
@@ -316,6 +353,40 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		loading.show();
 	}
 	
+	public void gameOptions() {
+		final AlertDialog.Builder gameOptions = new AlertDialog.Builder(activity);
+		gameOptions.setTitle("Would you like to play an online or local game?");
+		
+		gameOptions.setNegativeButton("Local", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// launch a local game.	
+				Log.d("AndEngine", "[SetupScene] launching local game.");
+				gameOptionsDialog.dismiss();
+				resourcesManager.isLocal = true;
+				SceneManager.getInstance().loadSetupScene(engine);
+			}
+		});
+
+		gameOptions.setNeutralButton("Online", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// Launch an online game.
+				Log.d("AndEngine", "[SetupScene] launching online game.");
+				gameOptionsDialog.dismiss();
+				resourcesManager.isLocal = false;
+				activity.runOnUiThread(new Runnable() {
+	        	    @Override
+	        	    public void run() {
+	        	        showDialog();
+	        	    }
+	        	});
+			}
+		});
+		
+		gameOptionsDialog = gameOptions.create();
+		gameOptionsDialog.setCanceledOnTouchOutside(false);
+		gameOptionsDialog.show();
+	}
+	
 	public void createInvite(final JSONObject object){
 		final AlertDialog.Builder invite = new AlertDialog.Builder(activity);
 		try {
@@ -341,7 +412,13 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 		invite.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-            				resourcesManager.isLocal = true;
+            				try {
+								resourcesManager.opponentDeviceID = object.getString("deviceId");
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+            				resourcesManager.isLocal = false;
             				resourcesManager.inGame = true;
         		        	resourcesManager.gameId = UUID.randomUUID().toString();
         		        	Random rand = new Random();
@@ -382,7 +459,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		invitation = invite.create();
 		invitation.setCanceledOnTouchOutside(false);
 		invitation.show();
-		}
+	}
 	
 	public void createDialog(String text){
 		
@@ -409,7 +486,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		}
 		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) { 
-            				resourcesManager.isLocal = true;
+            				resourcesManager.isLocal = false;
             				resourcesManager.inGame = true;
         		        	acceptDialog.dismiss();
         		           	SceneManager.getInstance().loadSetupScene(engine);
@@ -424,8 +501,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void onHomeKeyPressed() {
-		// TODO Auto-generated method stub
-		
+		resourcesManager.pause_music();
 	}
-	
+
 }
