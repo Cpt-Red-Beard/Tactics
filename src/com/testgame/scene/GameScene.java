@@ -175,25 +175,25 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			}
 		};
 		
-		Log.d("AndEngine", "" + resourcesManager.selectedMap.getTMXLayers().size());
+		//Log.d("AndEngine", "" + resourcesManager.selectedMap.getTMXLayers().size());
 		
 
 		this.tmxLayer = resourcesManager.tiledMap.getTMXLayers().get(0);  
 
 		
-		this.tileSize = resourcesManager.selectedMap.getTileHeight();
-		this.heightInTiles = resourcesManager.selectedMap.getTileRows();
-		this.widthInTiles = resourcesManager.selectedMap.getTileColumns();
+		this.tileSize = resourcesManager.tiledMap.getTileHeight();
+		this.heightInTiles = resourcesManager.tiledMap.getTileRows();
+		this.widthInTiles = resourcesManager.tiledMap.getTileColumns();
 		
 		Log.d("AndEngine", "Created map of "+this.widthInTiles+"x"+this.heightInTiles+" of "+this.tileSize+"px tiles.");
-		attachChild(resourcesManager.selectedMap);
-		resourcesManager.selectedMap.setOffsetCenter(0, 0);
+		attachChild(resourcesManager.tiledMap);
+		resourcesManager.tiledMap.setOffsetCenter(0, 0);
 		
 		// Initialize highlighted squares list.
 		this.highlightedSquares = new ArrayList<HighlightedSquare>();
 		
 		// Edit camera options.
-		((BoundCamera)camera).setBounds(0, 0, resourcesManager.selectedMap.getWidth(), resourcesManager.selectedMap.getHeight());
+		((BoundCamera)camera).setBounds(0, 0, resourcesManager.tiledMap.getWidth(), resourcesManager.tiledMap.getHeight());
 		((BoundCamera)camera).setBoundsEnabled(true);
 		camera.setCenter(0, 0);
 		
@@ -208,7 +208,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		createHUD();
 	    
 		// Initialize selection rectangle.
-		this.currentTileRectangle = new Rectangle(0, 0, resourcesManager.selectedMap.getTileWidth(), resourcesManager.selectedMap.getTileHeight(), vbom);
+		this.currentTileRectangle = new Rectangle(0, 0, resourcesManager.tiledMap.getTileWidth(), resourcesManager.tiledMap.getTileHeight(), vbom);
 		currentTileRectangle.setOffsetCenter(0, 0);
 		currentTileRectangle.setColor(1, 0, 0, 0);
 		attachChild(currentTileRectangle);

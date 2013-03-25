@@ -300,7 +300,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		int dist = manhattanDistance(this.x, this.y, unit.getMapX(), unit.getMapY());
 		if(dist <= this.attackrange && this.attackenergy <= this.energy){
 			rand = new Random(System.currentTimeMillis()); // new rng with random seed
-			int realAttack = this.attack + ((int) (0.05*this.attack*rand.nextGaussian())); // randomize attack
+			int realAttack = this.attack + ((int) (0.15*this.attack*rand.nextGaussian())); // randomize attack
 			this.reduceEnergy(this.attackenergy);
 			
 			JSONObject temp = new JSONObject();

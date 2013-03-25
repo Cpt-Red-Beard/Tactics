@@ -21,7 +21,7 @@ public class LocalGame extends AGame {
 
 	@Override
 	public void endGame() {
-		if(player.getActiveUnits().size() == 0 || player.getBase() == null){
+		if(player.getActiveUnits().size() == 0 ){
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
@@ -33,7 +33,7 @@ public class LocalGame extends AGame {
 			this.gameScene.setEndGameText(player2);
 			
 		}
-		else if(player2.getActiveUnits().size() == 0 || player2.getBase() == null){
+		else if(player2.getActiveUnits().size() == 0 ){
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
