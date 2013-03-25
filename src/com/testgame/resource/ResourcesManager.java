@@ -270,7 +270,7 @@ public class ResourcesManager {
     private BitmapTextureAtlas top_bar_atlas, bottom_bar_atlas;
     public ITextureRegion top_bar, bottom_bar;
     
-    public TMXTiledMap tiledMap;
+    public TMXTiledMap selectedMap, tiledMap;
     
     public Font handwriting_font;
     

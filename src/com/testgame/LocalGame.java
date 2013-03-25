@@ -90,8 +90,8 @@ public class LocalGame extends AGame {
 					jocks--;
 				}
 			}
-		AUnit unitbase = new Base(gameMap, 5, j+1, gameScene, "blue");
-		player.setBase(unitbase);
+		//AUnit unitbase = new Base(gameMap, 5, j+1, gameScene, "blue");
+		//player.setBase(unitbase);
 		
 		jocks = resourcesManager.unitArray2.get(0);
 		nerds = resourcesManager.unitArray2.get(1);
@@ -118,8 +118,8 @@ public class LocalGame extends AGame {
 					jocks--;
 				}
 			}
-		AUnit unitbase2 = new Base(gameMap, 5, j-1, gameScene, "red");
-		player2.setBase(unitbase2);
+		//AUnit unitbase2 = new Base(gameMap, 5, j-1, gameScene, "red");
+		//player2.setBase(unitbase2);
 		
 		player.beginTurn();
 	}
