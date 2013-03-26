@@ -10,11 +10,11 @@ import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.testgame.mechanics.unit.AUnit;
+import com.testgame.mechanics.unit.Base;
 import com.testgame.mechanics.unit.Ditz;
 import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
 import com.testgame.player.APlayer;
-import com.testgame.player.Base;
 import com.testgame.player.ComputerPlayer;
 import com.testgame.scene.GameScene;
 

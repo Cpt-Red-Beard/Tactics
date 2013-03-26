@@ -102,6 +102,7 @@ public class APlayer implements IPlayer {
 
 	public void setBase(AUnit base) {
 		this.base = base;
+		base.setPlayer(this);
 	}
 	
 	

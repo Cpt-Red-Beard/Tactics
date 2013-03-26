@@ -546,7 +546,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		this.camera.setCenter(this.selectedCharacter.getX(), this.selectedCharacter.getY());
 		
-		this.selectedCharacter.idleAnimate();
+		
+			this.selectedCharacter.idleAnimate();
 		
 		this.curUnitAttack.setText(attackStatusString(selectedCharacter.getAttack(), selectedCharacter.getAttackRange(), selectedCharacter.getAttackCost()));
 		this.curUnitEnergy.setText("Energy: " + selectedCharacter.getEnergy()+"/100");

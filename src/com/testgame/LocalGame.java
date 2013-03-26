@@ -3,6 +3,7 @@ package com.testgame;
 import android.util.Log;
 
 import com.testgame.mechanics.unit.AUnit;
+import com.testgame.mechanics.unit.Base;
 import com.testgame.mechanics.unit.Ditz;
 import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
@@ -91,6 +92,7 @@ public class LocalGame extends AGame {
 				}
 			}
 		AUnit unitbase = new Base(gameMap, 5, j+1, gameScene, "blue");
+		unitbase.init();
 		player.setBase(unitbase);
 		
 		jocks = resourcesManager.unitArray2.get(0);
@@ -119,6 +121,7 @@ public class LocalGame extends AGame {
 				}
 			}
 		AUnit unitbase2 = new Base(gameMap, 5, j-1, gameScene, "red");
+		unitbase2.init();
 		player2.setBase(unitbase2);
 		
 		player.beginTurn();

@@ -9,6 +9,7 @@ import android.util.Log;
 import com.testgame.AGame;
 import com.testgame.OnlineGame;
 import com.testgame.mechanics.unit.AUnit;
+import com.testgame.mechanics.unit.Base;
 import com.testgame.mechanics.unit.Ditz;
 import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
@@ -162,7 +163,7 @@ public class ComputerPlayer extends APlayer {
 					jocks--;
 				}
 			}
-			AUnit unitbase = new Base(gameMap, 5, x, gameScene, "red");
+			AUnit unitbase = new Base(game.gameMap, 5, x, game.getGameScene(), "red");
 			game.getCompPlayer().setBase(unitbase);
 			
 		

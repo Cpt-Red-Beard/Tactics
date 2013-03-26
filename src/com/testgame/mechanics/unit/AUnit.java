@@ -423,7 +423,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 	// all the squares you can move to 
 	public ArrayList<Point> availableMoves() {
 		ArrayList<Point> moves = new ArrayList<Point>();
-				
+		if(this.range == 0)
+			return moves;
 		int movementRange = this.energy/this.range;
 		
 		for (int i = 0; i <= movementRange; i++) {
@@ -500,10 +501,14 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void idleAnimate() {
+		if(this.getType().equals("Base"))
+			return;
 		this.animate(new long[] { 100, 100 }, start_frame + IDLE_START_FRAME, start_frame + IDLE_END_FRAME, true);
 	}
 	
 	public void walkAnimate(int xDirection, int yDirection) {
+		if(this.getType().equals("Base"))
+			return;
 		// TODO: Should work, but we don't have the correct graphics yet to do this.
 		if (xDirection == 0) { // walking up or down
 			if (yDirection > 0) { // walking up
@@ -521,10 +526,17 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void guardAnimate() {
+		if(this.getType().equals("Base"))
+			return;
 		this.setCurrentTileIndex(start_frame + GUARD_FRAME);
 	}
 	
 	public void attackedAnimate(final ComputerPlayer computerPlayer, final AUnit unit, final int attack) {
+		if(this.getType().equals("Base")){
+			unit.reduceHealth(attack);
+			game.getGame().endGame();
+			return;
+		}
 		ResourcesManager.getInstance().attack_sound.play();
 		this.animate(new long[] { 100, 100 }, start_frame + ATTACKED_START_FRAME, start_frame + ATTACKED_END_FRAME, true);
 		
