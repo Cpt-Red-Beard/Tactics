@@ -9,8 +9,6 @@ import java.util.UUID;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.entity.scene.IOnAreaTouchListener;
-import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
@@ -18,7 +16,6 @@ import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,10 +60,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static AlertDialog textDialog;
 	private static AlertDialog acceptDialog;
 	private static Map<String, String> usernames;
-	private static boolean loggedin = false;
-	
-	private GameDialogBox gameDialog;
-	
 	@Override
 	public void createScene() {
 		createBackground();
@@ -229,7 +222,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	        case MENU_LOGOUT:
 	        	PushService.unsubscribe(activity, resourcesManager.userString);
-	    		loggedin = false;
 	    		Session.getActiveSession().closeAndClearTokenInformation();
 	        	return true;
 	        	
@@ -280,7 +272,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				            		  usernames.put(u.getString("Name"), u.getObjectId());
 				            		  
 				            	  }
-				            	  loggedin = true;
 				            	  loading.dismiss();
 				                  Log.d("friends", friendUsers.toString());
 				              } else {
@@ -303,7 +294,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private void welcomeDialog() {
 		camera.setHUD(new HUD());
 		logoutMenuItem.setVisible(true);
-		GameDialogBox box = new GameDialogBox(camera.getHUD(), "Welcome \n"+name+"!", ((ButtonSprite[]) null));
+		new GameDialogBox(camera.getHUD(), "Welcome \n"+name+"!", ((ButtonSprite[]) null));
 	}
 	
 	private void showDialog(){

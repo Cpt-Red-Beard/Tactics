@@ -21,7 +21,7 @@ public class LocalGame extends AGame {
 
 	@Override
 	public void endGame() {
-		if(player.getActiveUnits().size() == 0){
+		if(player.getActiveUnits().size() == 0 || player.getBase() == null){
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
@@ -33,7 +33,7 @@ public class LocalGame extends AGame {
 			this.gameScene.setEndGameText(player2);
 			
 		}
-		else if(player2.getActiveUnits().size() == 0){
+		else if(player2.getActiveUnits().size() == 0 || player2.getBase() == null){
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
@@ -90,11 +90,13 @@ public class LocalGame extends AGame {
 					jocks--;
 				}
 			}
+		AUnit unitbase = new Base(gameMap, 5, j+1, gameScene, "blue");
+		player.setBase(unitbase);
 		
 		jocks = resourcesManager.unitArray2.get(0);
 		nerds = resourcesManager.unitArray2.get(1);
 		ditz = resourcesManager.unitArray2.get(2);
-		j = 0;
+		j = 1;
 
 		for(int i = 0; i < 10; i++){
 				if(nerds > 0){
@@ -116,28 +118,9 @@ public class LocalGame extends AGame {
 					jocks--;
 				}
 			}
-
+		AUnit unitbase2 = new Base(gameMap, 5, j-1, gameScene, "red");
+		player2.setBase(unitbase2);
 		
-		for(int i = 0; i < 10; i++){
-				if(nerds > 0){
-					AUnit unit = new Nerd(gameMap, i, j, gameScene, "red");
-					unit.init(); 
-					player2.addUnit(unit);
-					nerds--;
-				}
-				else if(ditz > 0){
-					AUnit unit = new Ditz(gameMap, i, j, gameScene, "red");
-					unit.init(); 
-					player2.addUnit(unit);
-					ditz--;
-				}
-				else if(jocks > 0){
-					AUnit unit = new Jock(gameMap, i, j, gameScene, "red");
-					unit.init(); 
-					player2.addUnit(unit);
-					jocks--;
-				}
-			}
 		player.beginTurn();
 	}
 

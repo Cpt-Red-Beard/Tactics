@@ -20,6 +20,8 @@ public class APlayer implements IPlayer {
 	
 	protected int turncount;
 	
+	private AUnit base;
+	
 	/**
 	 * Indicates if it's the player's turn. Determines what the player's current capabilities are.
 	 */
@@ -69,7 +71,12 @@ public class APlayer implements IPlayer {
 	
 	@Override
 	public void removeUnit(AUnit unit) {
-		getActiveUnits().remove(unit);
+		if(unit.getType().equals("Base")){
+			this.base = null;
+		}
+		else{
+			getActiveUnits().remove(unit);
+		}
 	}
 	
 	@Override
@@ -87,6 +94,14 @@ public class APlayer implements IPlayer {
 
 	public void setActiveUnits(ArrayList<AUnit> activeUnits) {
 		this.activeUnits = activeUnits;
+	}
+
+	public AUnit getBase() {
+		return base;
+	}
+
+	public void setBase(AUnit base) {
+		this.base = base;
 	}
 	
 	

@@ -175,10 +175,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			}
 		};
 		
-		Log.d("AndEngine", "" + resourcesManager.tiledMap.getTMXLayers().size());
+		//Log.d("AndEngine", "" + resourcesManager.selectedMap.getTMXLayers().size());
 		
+
 		this.tmxLayer = resourcesManager.tiledMap.getTMXLayers().get(0);  
-		
+
 		
 		this.tileSize = resourcesManager.tiledMap.getTileHeight();
 		this.heightInTiles = resourcesManager.tiledMap.getTileRows();
@@ -381,8 +382,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			
 			TMXTile t = this.tmxLayer.getTMXTileAt(x, y);
 			
-			//if(resourcesManager.tiledMap.getTMXTileProperties(t.getGlobalTileID()) != null)
-		    //    if (resourcesManager.tiledMap.getTMXTileProperties(t.getGlobalTileID()).containsTMXProperty("obstacle", "1")) continue;
+			//if(resourcesManager.selectedMap.getTMXTileProperties(t.getGlobalTileID()) != null)
+		    //    if (resourcesManager.selectedMap.getTMXTileProperties(t.getGlobalTileID()).containsTMXProperty("obstacle", "1")) continue;
 						
 			HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, getSelectedCharacter());
 			
@@ -471,7 +472,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		this.mPinchZoomDetector.onTouchEvent(pTouchEvent);
 		
-		if (this.mPinchZoomDetector.isZooming()) return true; // do the zoom
+		if (this.mPinchZoomDetector.isZooming()) return false; // do the zoom
 		
 		if(pTouchEvent.getAction() == MotionEvent.ACTION_DOWN)
 		{		
@@ -480,7 +481,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             
             pTouchEvent.getX();
             pTouchEvent.getY();
-            
+
             return false;
 			
         }
@@ -496,7 +497,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
                       
             mTouchX = newX;
             mTouchY = newY;
-            
+
             return true;
         }
         

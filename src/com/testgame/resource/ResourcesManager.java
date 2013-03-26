@@ -13,7 +13,6 @@ import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.ITexture;
-import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -284,7 +283,7 @@ public class ResourcesManager {
     private BitmapTextureAtlas top_bar_atlas, bottom_bar_atlas;
     public ITextureRegion top_bar, bottom_bar;
     
-    public TMXTiledMap tiledMap;
+    public TMXTiledMap selectedMap, tiledMap;
     
     public Font handwriting_font;
     

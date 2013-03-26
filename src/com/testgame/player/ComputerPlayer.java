@@ -135,8 +135,11 @@ public class ComputerPlayer extends APlayer {
 		Log.d("Jocks", jocks +  " ");
 		Log.d("Nerds", ditz + " ");
 		int j = 10;
-		if(game.isFirstTurn())
-			j = 0;
+		int x = 11;
+		if(game.isFirstTurn()){
+			x = 0;
+			j = 1;
+		}
 		
 		
 			for(int i = 0; i < 10; i++){
@@ -159,6 +162,9 @@ public class ComputerPlayer extends APlayer {
 					jocks--;
 				}
 			}
+			AUnit unitbase = new Base(gameMap, 5, x, gameScene, "red");
+			game.getCompPlayer().setBase(unitbase);
+			
 		
 
 		game.incrementCount();

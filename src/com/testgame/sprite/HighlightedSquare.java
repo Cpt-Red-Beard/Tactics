@@ -52,7 +52,9 @@ public class HighlightedSquare extends Rectangle {
 	@Override
     public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 		Log.d("AndEngine", "Square touched!");
-		if (!game.onSceneTouchEvent(game, pSceneTouchEvent)) {
+
+		if(!game.onSceneTouchEvent(game, pSceneTouchEvent)){
+
 			if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN) {
 				
 				ResourcesManager.getInstance().touch_sound.play();
@@ -70,6 +72,7 @@ public class HighlightedSquare extends Rectangle {
 					if (game.currentlySelectedMoveTile != null) {
 						game.currentlySelectedMoveTile.removeBorder();
 						game.currentlySelectedMoveTile.touched = false;
+
 					}
 					this.touched = true;
 					this.game.currentlySelectedMoveTile = this;
@@ -78,7 +81,6 @@ public class HighlightedSquare extends Rectangle {
 				}
 			}
 		}
-		
 		return true;
 	}
 	

@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.sprite.ButtonSprite;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.opengl.util.GLState;
@@ -35,8 +35,10 @@ public class SetupScene extends BaseScene {
 	/**
 	* Random text fields we need.
 	*/
+	@SuppressWarnings("unused")
 	private Text setupText, mapText;
 	
+	// TODO Need some sort of scrollable or drop-downn menu for level selection; hard-coding buttons for now
 	private ButtonSprite play, reset, jock, nerd, ditz;
 	
 	private int MAX_UNITS = 10;
@@ -123,6 +125,7 @@ public class SetupScene extends BaseScene {
 					resourcesManager.unitArray2 = unitList;
 					SceneManager.getInstance().loadGameScene(engine);
 				}
+
 			}
 			
 		});
@@ -173,6 +176,7 @@ public class SetupScene extends BaseScene {
 			
 		});
 	
+	
 		attachChild(play);
 		attachChild(reset);
 		attachChild(jock);
@@ -184,6 +188,7 @@ public class SetupScene extends BaseScene {
 		registerTouchArea(jock);
 		registerTouchArea(nerd);
 		registerTouchArea(ditz);
+		
 	}
 
 	protected void updateText() {
