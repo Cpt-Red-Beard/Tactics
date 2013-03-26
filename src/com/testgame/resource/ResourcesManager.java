@@ -296,6 +296,9 @@ public class ResourcesManager {
     private BitmapTextureAtlas dialog_atlas;
     public ITextureRegion dialog_background;
     
+    public BitmapTextureAtlas map_tiles_atlas;
+    public TiledTextureRegion map_tiles;
+    
     public void loadGameResources()
     {
         loadGameGraphics();
@@ -349,7 +352,9 @@ public class ResourcesManager {
     	pause_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(pause_atlas, activity, "pausebutton.png", 0, 0);
     	pause_atlas.load();
     	
-    	
+    	map_tiles_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+    	map_tiles = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(map_tiles_atlas, activity, "maptiles.png", 0, 0, 11, 2);
+    	map_tiles_atlas.load();
     }
     
     private void loadGameFonts()
