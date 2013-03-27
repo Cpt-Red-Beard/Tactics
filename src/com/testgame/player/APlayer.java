@@ -1,9 +1,6 @@
 package com.testgame.player;
 
 import java.util.ArrayList;
-
-import android.util.Log;
-
 import com.testgame.mechanics.unit.AUnit;
 
 /**
@@ -49,12 +46,11 @@ public class APlayer implements IPlayer {
 			unit.turnInit();
 		}
 		isTurn = true;
-		Log.d("AndEngine", playerName + " began turn.");
+		
 	}
 
 	@Override
 	public void endTurn() {
-		Log.d("AndEngine", playerName + " ended turn.");
 		isTurn = false;
 	}
 

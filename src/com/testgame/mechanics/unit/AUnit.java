@@ -13,10 +13,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.modifier.IModifier;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.graphics.Point;
-import android.util.Log;
-
 import com.testgame.mechanics.map.GameMap;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
@@ -187,7 +184,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 		float numTilesX = Math.abs(this.getX() - destX) / game.tileSize;
 		float numTilesY = Math.abs(this.getY() - destY) / game.tileSize;
 		
-		Log.d("AndEngine", "numTilesX = " + numTilesX + ", numTilesY = " +numTilesY);
 		
 		WalkMoveModifier one = new WalkMoveModifier(timePerTile*numTilesX + .1f, this.getX(), this.getY(), destX, this.getY(), true);
 		WalkMoveModifier two = new WalkMoveModifier(timePerTile*numTilesY + .1f, destX, this.getY(), destX, destY, false);
@@ -208,7 +204,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 				ResourcesManager.getInstance().walking_sound.pause();
 				((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
 				game.setEventText("Moved using "+energy+" energy.");
-				Log.d("AndEngine", "[ComputerMove] calling perform next on player.");
 				player.performNext(); // finished this action, call next
 			}
 		}, one, two);
@@ -219,8 +214,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 	
 	@Override
 	public void move(int xNew, int yNew) {
-		
-		Log.d("AndEngine", this.toString() + " moving to " +xNew+", "+yNew);
 		int dist = manhattanDistance(this.x, this.y, xNew, yNew);
 		final int eCost = dist*this.range; // Energy expense of this move 
 		if (eCost <= this.energy) {
@@ -252,13 +245,13 @@ public class AUnit extends CharacterSprite implements IUnit {
 			if(!this.game.resourcesManager.isLocal)
 				((OnlineGame)this.game.getGame()).addMove(temp);
 
-			Log.d("AndEngine", "moving to " + destX + ", "+destY);
+			
 			
 			float timePerTile = .2f; 
 			float numTilesX = Math.abs(this.getX() - destX) / game.tileSize;
 			float numTilesY = Math.abs(this.getY() - destY) / game.tileSize;
 			
-			Log.d("AndEngine", "numTilesX = " + numTilesX + ", numTilesY = " +numTilesY);
+			
 			
 			WalkMoveModifier one = new WalkMoveModifier(timePerTile*numTilesX + .1f, this.getX(), this.getY(), destX, this.getY(), true);
 			WalkMoveModifier two = new WalkMoveModifier(timePerTile*numTilesY + .1f, destX, this.getY(), destX, destY, false);
@@ -272,9 +265,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 			this.game.setEventText("Moved using "+eCost+" energy.");
 
         	
-        	Log.d("AndEgine", "modifier finished.");
         	
-        	// TODO: Add message to user about successful move
 		}
 	}
 	
@@ -445,7 +436,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public ArrayList<AUnit> availableTargets() {
 		ArrayList<AUnit> targets = new ArrayList<AUnit>();
 		
-		Log.d("AndEngine", "[AvailableTargets] Attack Ranage: " + attackrange);
 		int attackRange = this.attackrange;
 		if (this.attackenergy > this.energy) attackRange = 0; // no available moves b/c no energy
 		

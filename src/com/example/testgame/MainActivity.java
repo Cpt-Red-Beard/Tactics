@@ -1,8 +1,5 @@
 package com.example.testgame;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import com.testgame.scene.*;
 import org.andengine.engine.Engine;
 import org.andengine.engine.LimitedFPSEngine;
@@ -24,12 +21,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.pm.Signature;
-import android.util.Base64;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import com.parse.Parse;

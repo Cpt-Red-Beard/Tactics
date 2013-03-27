@@ -22,7 +22,6 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.util.Log;
 import com.example.testgame.MainActivity;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -151,28 +150,25 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		  public void done(ParseUser user, ParseException err) {
 	        			 
 	        		    if (user == null) {
-	        		      Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
+	        		      
 	        		      loading.dismiss();
-	        		      Log.d("MyApp", err.getMessage());
+	        		      
 	        		    
 	        		    } else if (user.isNew()) {
-	        		      Log.d("MyApp", "User signed up and logged in through Facebook!");
-	        		      Log.d("DeviceID", ParseInstallation.getCurrentInstallation().getInstallationId());
+	        		      
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
 	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getInstallationId();
-	        		      Log.d("Push", resourcesManager.userString);
-	        		      Log.d("Installation", ParseInstallation.getCurrentInstallation().getInstallationId());
+	        		     
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
 	        		      getFacebookIdInBackground();
 	        		      
 	        		     
 	        		    } else {
-	        		      Log.d("MyApp", "User logged in through Facebook!");
+	        		     
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
-	        		      Log.d("DeviceID", ParseInstallation.getCurrentInstallation().getInstallationId());
+	        		      
 	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getInstallationId();
-	        		      Log.d("Push", resourcesManager.userString);
-	        		      Log.d("Installation", ParseInstallation.getCurrentInstallation().getInstallationId());
+	        		     
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
 	        		      getFacebookIdInBackground();
 	        		     
@@ -227,7 +223,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	        	
 	        default:
-	        	Log.d("AndEngine", "touch not on a button..?");
 	            return false;
 	    }
 	}
@@ -239,7 +234,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		    @Override
 		    public void onCompleted(GraphUser user, Response response) {
 		      if (user != null) {
-		    	 Log.d("Facebook", "Completed id lookup");
+		    	 
 		    	ParseUser.getCurrentUser().put("Name", user.getName());
 		        ParseUser.getCurrentUser().put("fbId", user.getId());
 		        ParseUser.getCurrentUser().saveInBackground();
@@ -260,12 +255,12 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 				      // Construct a ParseUser query that will find friends whose
 				      // facebook IDs are contained in the current user's friend list.
-				      Log.d("Facebook", "Finished finding friends");
+				     
 				      ParseQuery query = ParseUser.getQuery();
 				      query.whereContainedIn("fbId", friendsList);
 				      query.findInBackground(new FindCallback() {
 				          public void done(List<ParseObject> friendUsers, ParseException e) {
-				              Log.d("Query", "Query finished");
+				            
 				        	  if (e == null) {
 				            	  for(ParseObject u : friendUsers){
 				            		  userslist.add(u.getString("Name"));
@@ -273,9 +268,9 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				            		  
 				            	  }
 				            	  loading.dismiss();
-				                  Log.d("friends", friendUsers.toString());
+				                 
 				              } else {
-				                  Log.d("score", "Error: " + e.getMessage());
+				                 
 				                  loading.dismiss();
 				              }
 				          }
@@ -351,7 +346,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		gameOptions.setNegativeButton("Local", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// launch a local game.	
-				Log.d("AndEngine", "[SetupScene] launching local game.");
+				
 				gameOptionsDialog.dismiss();
 				resourcesManager.isLocal = true;
 				SceneManager.getInstance().loadSetupScene(engine);
@@ -361,7 +356,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		gameOptions.setNeutralButton("Online", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// Launch an online game.
-				Log.d("AndEngine", "[SetupScene] launching online game.");
+				
 				gameOptionsDialog.dismiss();
 				resourcesManager.isLocal = false;
 				activity.runOnUiThread(new Runnable() {
