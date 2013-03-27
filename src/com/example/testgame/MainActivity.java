@@ -212,24 +212,7 @@ public class MainActivity extends BaseGameActivity {
             
              @Override
              public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) {
-            	 
-            	// Add code to print out the key hash
-            	    try {
-            	        PackageInfo info = getPackageManager().getPackageInfo(
-            	                "com.example.testgame", 
-            	                PackageManager.GET_SIGNATURES);
-            	        for (Signature signature : info.signatures) {
-            	            MessageDigest md = MessageDigest.getInstance("SHA");
-            	            md.update(signature.toByteArray());
-            	            Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            	            }
-            	    } catch (NameNotFoundException e) {
 
-            	    } catch (NoSuchAlgorithmException e) {
-
-            	    }
-            	 
-            	 
             	 SceneManager.getInstance().createSplashScene(pOnCreateSceneCallback);
             	 
             	 
