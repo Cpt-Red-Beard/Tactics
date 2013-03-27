@@ -357,7 +357,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				redValue = 1;
 			}
 			else {
-				redValue = 1.0f/selectedCharacter.getAttackRange() * AUnit.manhattanDistance(selectedCharacter.getMapX(), selectedCharacter.getMapY(), t.getTileColumn(), heightInTiles - t.getTileRow() - 1) / 2 + .1f;
+				redValue = 1.0f/selectedCharacter.getAttackRange() * selectedCharacter.manhattanDistance(selectedCharacter.getMapX(), selectedCharacter.getMapY(), t.getTileColumn(), heightInTiles - t.getTileRow() - 1) / 2 + .1f;
 			}
 			availableMove.setColor(1, 0, 0, redValue);
 			attachChild(availableMove);
@@ -402,7 +402,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			}
 			
 			else {
-				blueValue = 1.0f/(selectedCharacter.getEnergy()/selectedCharacter.getRange()) * AUnit.manhattanDistance(selectedCharacter.getMapX(), selectedCharacter.getMapY(), t.getTileColumn(), heightInTiles - t.getTileRow() - 1) /2 + .1f;
+				blueValue = 1.0f/(selectedCharacter.getEnergy()/selectedCharacter.getRange()) * selectedCharacter.manhattanDistance(selectedCharacter.getMapX(), selectedCharacter.getMapY(), t.getTileColumn(), heightInTiles - t.getTileRow() - 1) /2 + .1f;
 			}
 			availableMove.setColor(0, 0, 1, blueValue);
 			attachChild(availableMove);

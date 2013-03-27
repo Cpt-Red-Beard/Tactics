@@ -221,7 +221,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void move(int xNew, int yNew) {
 		
 		Log.d("AndEngine", this.toString() + " moving to " +xNew+", "+yNew);
-		int dist = manhattanDistance(this.x, this.y, xNew, yNew);
+		int dist = this.manhattanDistance(this.x, this.y, xNew, yNew);
 		final int eCost = dist*this.range; // Energy expense of this move 
 		if (eCost <= this.energy) {
 			map.setUnoccupied(this.x, this.y);
@@ -297,7 +297,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	// Which order does this go? THIS is being attacked or unit is being attacked ?? 
 	@Override
 	public void attack(final AUnit unit) {
-		int dist = manhattanDistance(this.x, this.y, unit.getMapX(), unit.getMapY());
+		int dist = this.manhattanDistance(this.x, this.y, unit.getMapX(), unit.getMapY());
 		if(dist <= this.attackrange && this.attackenergy <= this.energy){
 			rand = new Random(System.currentTimeMillis()); // new rng with random seed
 			int realAttack = this.attack + ((int) (0.15*this.attack*rand.nextGaussian())); // randomize attack
@@ -405,17 +405,21 @@ public class AUnit extends CharacterSprite implements IUnit {
 	/*
 	 * checks a point x,y
 	 */
-	public void checkPointForMove(int offsetX, int offsetY, ArrayList<Point> moves) {
+	public void checkPointForMove(int offsetX, int offsetY, int range, ArrayList<Point> moves) {
 
 		if (this.x + offsetX < 0 || this.y + offsetY < 0) return; // off of map, not occupied
 		if (this.x + offsetX >= map.xDim || this.y + offsetY >= map.yDim) return; // ditto
 		
 		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
 		
+		Point s = new Point(this.x, this.y);
+		Point d = new Point(this.x + offsetX, this.y + offsetY);
 		Point p = new Point(offsetX, offsetY);
 		
 		if (occupyingUnit == null) { // not occupied
 			if (moves.contains(p)) return;
+			int dist = map.manhattanDistance(s, d);
+			if (dist > range) return;
 			else moves.add(p);
 		}
 	}
@@ -432,12 +436,13 @@ public class AUnit extends CharacterSprite implements IUnit {
 				
 				if (i == 0 && j == 0) continue;
 				
-				checkPointForMove(i, j, moves);
-				checkPointForMove(i, -j, moves);
-				checkPointForMove(-i, j, moves);
-				checkPointForMove(-i, -j, moves);
+				checkPointForMove(i, j, movementRange, moves);
+				checkPointForMove(i, -j, movementRange, moves);
+				checkPointForMove(-i, j, movementRange, moves);
+				checkPointForMove(-i, -j, movementRange, moves);
 			}
 		}
+
 		return moves;
 	}
 	
@@ -454,21 +459,22 @@ public class AUnit extends CharacterSprite implements IUnit {
 				
 				if (i == 0 && j == 0) continue; // no movement, not a move
 				
-				checkPointForTargets(i, j, targets);
-				checkPointForTargets(i, -j, targets);
-				checkPointForTargets(-i, j, targets);
-				checkPointForTargets(-i, -j, targets);
+				checkPointForTargets(i, j, attackRange, targets);
+				checkPointForTargets(i, -j, attackRange, targets);
+				checkPointForTargets(-i, j, attackRange, targets);
+				checkPointForTargets(-i, -j, attackRange, targets);
 			}
 		}
 		return targets;
 	}
 	
 	// checks to see if a square offsetX, offsetY distance from this unit has an ENEMY unit, if so adds it to the array
-	private void checkPointForTargets(int offsetX, int offsetY, ArrayList<AUnit> targets) {
+	private void checkPointForTargets(int offsetX, int offsetY, int attackRange, ArrayList<AUnit> targets) {
 		
 		if (this.x + offsetX < 0 || this.y + offsetY < 0) return; // off of map, not occupied
 		if (this.x + offsetX >= map.xDim || this.y + offsetY >= map.yDim) return; // ditto
-		
+		if (map.manhattanDistance(new Point(this.x, this.y), new Point(this.x + offsetX, this.y + offsetY)) > attackRange)
+			return;
 		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
 		
 		if (occupyingUnit != null) { // occupied
@@ -488,8 +494,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 * @param x2 The x-coordinate of the second location.
 	 * @param y2 The y-coordinate of the second location.
 	 */
-	public static int manhattanDistance(int x1, int y1, int x2, int y2) {
-		return Math.abs(x1-x2) + Math.abs(y1-y2);
+	public int manhattanDistance(int x1, int y1, int x2, int y2) {
+		return map.manhattanDistance(new Point(x1, y1), new Point(x2, y2));
 	}
 	
 	public void init() {

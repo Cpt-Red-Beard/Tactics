@@ -26,7 +26,7 @@ public class HighlightedSquare extends Rectangle {
 	public CharacterSprite unit;
 	public TMXTile tile;
 	private GameScene game;
-	private Text EnergyCostText;
+	private Text energyCostText;
 	
 	boolean touched;
 	
@@ -46,7 +46,7 @@ public class HighlightedSquare extends Rectangle {
 		this.borderLines.add(new Line(0, game.tileSize, game.tileSize, game.tileSize, borderSize, game.vbom));
 		this.borderLines.add(new Line(game.tileSize, 0, game.tileSize, game.tileSize, borderSize, game.vbom));
 		
-		this.EnergyCostText = new Text(32, 32, game.resourcesManager.cartoon_font_white, "", 10, game.vbom);
+		this.energyCostText = new Text(32, 32, game.resourcesManager.cartoon_font_white, "", 10, game.vbom);
 	}
 	
 	@Override
@@ -91,9 +91,10 @@ public class HighlightedSquare extends Rectangle {
 		}
 		
 		AUnit myUnit = ((AUnit) this.unit);
-		
-		EnergyCostText.setText(myUnit.getRange() * AUnit.manhattanDistance(tile.getTileColumn(), game.heightInTiles - tile.getTileRow() - 1, myUnit.getMapX(), myUnit.getMapY()) + "");
-		this.attachChild(EnergyCostText);
+		int mDist = myUnit.manhattanDistance(tile.getTileColumn(), game.heightInTiles - tile.getTileRow() - 1, myUnit.getMapX(), myUnit.getMapY());
+		Log.d("AndEngine", "Manhattan dist is " + mDist);
+		energyCostText.setText(myUnit.getRange() * mDist + "");
+		this.attachChild(energyCostText);
 	}
 	
 	public void removeBorder() {
@@ -101,7 +102,7 @@ public class HighlightedSquare extends Rectangle {
 			this.detachChild(l);
 		}
 		
-		this.detachChild(EnergyCostText);
+		this.detachChild(energyCostText);
 	}
 
 }
