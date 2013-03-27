@@ -415,10 +415,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void clearSquares() {
 		if(highlightedSquares == null)
 			return;
-		for (HighlightedSquare h : this.highlightedSquares) {
+		for (final HighlightedSquare h : this.highlightedSquares) {
 			if (h.unit != null) h.unit.inSelectedCharactersAttackRange = false;
-			this.unregisterTouchArea(h);
-			this.detachChild(h);
+			final GameScene game = this;
+			engine.runOnUpdateThread(new Runnable() {
+				@Override
+				public void run() {
+					game.unregisterTouchArea(h);
+					game.detachChild(h);
+				}});
+			
 		}
 		this.highlightedSquares.clear();
 	}

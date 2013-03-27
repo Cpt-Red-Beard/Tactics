@@ -113,6 +113,10 @@ public class CharacterSprite extends AnimatedSprite {
 			message = new Text(this.getWidth()/2, this.getHeight() + 10, whichFont, ""+points, game.vbom);
 		}
 		
+		this.setZIndex(10);
+		
+		this.getParent().sortChildren();
+		
 		this.attachChild(message);
 		
 		final CharacterSprite sprite = this;
@@ -126,6 +130,7 @@ public class CharacterSprite extends AnimatedSprite {
 					@Override
 					public void run() {
 						sprite.detachChild(pItem);
+						sprite.setZIndex(ZINDEX_DEFAULT);
 					}});
 			}
 		});
