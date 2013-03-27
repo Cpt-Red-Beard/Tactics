@@ -35,6 +35,10 @@ public class CharacterSprite extends AnimatedSprite {
 	
 	protected GameScene game;
 	
+	protected ProgressBar healthBar;
+	
+	protected ProgressBar energyBar;
+	
 	public boolean inSelectedCharactersAttackRange;
 	
 	public void initializeText(int Energy, int Health){

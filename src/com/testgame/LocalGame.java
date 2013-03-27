@@ -141,4 +141,7 @@ public class LocalGame extends AGame {
 		player.beginTurn();
 	}
 
+	public APlayer getOtherPlayer() {
+		return player2;
+	}
 }
