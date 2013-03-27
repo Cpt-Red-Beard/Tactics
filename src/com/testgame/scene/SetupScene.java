@@ -9,7 +9,6 @@ import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
-import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.adt.align.HorizontalAlign;
 import org.json.JSONException;
@@ -36,12 +35,11 @@ public class SetupScene extends BaseScene {
 	/**
 	* Random text fields we need.
 	*/
+	@SuppressWarnings("unused")
 	private Text setupText, mapText;
 	
 	// TODO Need some sort of scrollable or drop-downn menu for level selection; hard-coding buttons for now
-	private ButtonSprite play, reset, jock, nerd, ditz, defaultMapBtn;
-	
-	private TMXTiledMap chosenMap = resourcesManager.tiledMap; // the default option
+	private ButtonSprite play, reset, jock, nerd, ditz;
 	
 	private int MAX_UNITS = 10;
 	
@@ -119,6 +117,7 @@ public class SetupScene extends BaseScene {
 					tot = 0; jocks = 0; nerds = 0; ditzes = 0;
 					updateText();
 					
+					if(!resourcesManager.isLocal){
 						SceneManager.getInstance().loadGameScene(engine);
 					}
 				}
@@ -126,6 +125,7 @@ public class SetupScene extends BaseScene {
 					resourcesManager.unitArray2 = unitList;
 					SceneManager.getInstance().loadGameScene(engine);
 				}
+
 			}
 			
 		});
@@ -176,27 +176,19 @@ public class SetupScene extends BaseScene {
 			
 		});
 	
-		defaultMapBtn = new ButtonSprite (100, 300, resourcesManager.blank_region, vbom, new OnClickListener() {
-
-			@Override
-			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				chosenMap = resourcesManager.tiledMap;
-			}
-		});
 	
 		attachChild(play);
 		attachChild(reset);
 		attachChild(jock);
 		attachChild(nerd);
 		attachChild(ditz);
-		attachChild(defaultMapBtn);
 		
 		registerTouchArea(play);
 		registerTouchArea(reset);
 		registerTouchArea(jock);
 		registerTouchArea(nerd);
 		registerTouchArea(ditz);
-		registerTouchArea(defaultMapBtn);
+		
 	}
 
 	protected void updateText() {

@@ -9,6 +9,7 @@ import android.util.Log;
 import com.testgame.AGame;
 import com.testgame.OnlineGame;
 import com.testgame.mechanics.unit.AUnit;
+import com.testgame.mechanics.unit.Base;
 import com.testgame.mechanics.unit.Ditz;
 import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
@@ -31,8 +32,10 @@ public class ComputerPlayer extends APlayer {
 		
 		if(game.isFirstTurn()) 
 			game.incrementCount();
+		
 		game.getPlayer().beginTurn(); // this calls turn init on all the units
 		this.endTurn();
+		
 		
 	}
 	
@@ -133,8 +136,11 @@ public class ComputerPlayer extends APlayer {
 		Log.d("Jocks", jocks +  " ");
 		Log.d("Nerds", ditz + " ");
 		int j = 10;
-		if(game.isFirstTurn())
-			j = 0;
+		int x = 11;
+		if(game.isFirstTurn()){
+			x = 0;
+			j = 1;
+		}
 		
 		
 			for(int i = 0; i < 10; i++){
@@ -157,6 +163,9 @@ public class ComputerPlayer extends APlayer {
 					jocks--;
 				}
 			}
+			AUnit unitbase = new Base(game.gameMap, 5, x, game.getGameScene(), "red");
+			game.getCompPlayer().setBase(unitbase);
+			
 		
 
 		game.incrementCount();

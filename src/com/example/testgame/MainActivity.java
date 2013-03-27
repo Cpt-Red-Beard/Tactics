@@ -63,10 +63,20 @@ public class MainActivity extends BaseGameActivity {
 
      				@Override
      				public void onReceive(Context context, Intent intent) {
-     					
-     					
-     					if(SceneManager.getInstance().getGameScene() != null)
-     						((GameScene) SceneManager.getInstance().getGameScene()).startCompTurn();
+     					if(resourcesManager.inGame == false){
+     						return;
+     					}
+     					JSONObject json;
+    					try {
+    						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
+     					if(json.getString("deviceId").equals(resourcesManager.opponentDeviceID)){
+	     					if(SceneManager.getInstance().getGameScene() != null)
+	     						((GameScene) SceneManager.getInstance().getGameScene()).startCompTurn();
+	    					}
+    					}
+    					catch(Exception e){
+    						
+    					}
      					
      				}
               		

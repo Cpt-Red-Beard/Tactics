@@ -1,5 +1,6 @@
 package com.testgame.scene;
 
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 
 import android.util.Log;
@@ -25,6 +26,8 @@ public class TutorialScene extends BaseScene {
 	
 	private boolean inMenu; 
 	
+	private Rectangle whiteLayer;
+	
 	private final int BASICS = 0;
 	private final int CONTROLS = 1;
 	private final int UNITS = 2;
@@ -48,6 +51,9 @@ public class TutorialScene extends BaseScene {
 	        }
 	    });
 		
+		whiteLayer = new Rectangle(240, 400, 480, 800, vbom);
+		whiteLayer.setColor(1f, 1f, 1f, .35f);
+		
 		createMenuButtons();
 		
 		// create text messages
@@ -58,19 +64,19 @@ public class TutorialScene extends BaseScene {
 		                  "your units around the\n map to attack and defeat your\n friend's units.\n\n" + 
 				          "Be careful though! Each of your\n units only has a certain amount\n of energy" + 
 		                  "it can use each turn.\n The more energy you use a \nturn, the less restores!";
-		basicText = new Text(240, 400, resourcesManager.handwriting_font, basicMsg, texOps, vbom);
+		basicText = new Text(240, 400, resourcesManager.cartoon_font_white, basicMsg, texOps, vbom);
 		
 		String controlMsg = "How to Move:\n Click the character you want\n to moveand select the 'Move'.\n" + 
 		                    "Double click a blue square to move.\n\nHow to Attack:\n Click the character you want\n" +
 				            "to attack with and select 'Attack'.\n Click a red square unit to attack.\n\n " +
 		                    "How to End Turn:\n Click the pause button at\n the top and select 'End Turn'";
-		controlText = new Text(240, 400, resourcesManager.handwriting_font, controlMsg, texOps, vbom);
+		controlText = new Text(240, 400, resourcesManager.cartoon_font_white, controlMsg, texOps, vbom);
 
 		String unitMsg = "There are three different types\n of units: Jocks, Nerds, and Ditzes.\n\nThe jock " +
 				" is your standard tank. \nHe has a short attack range\n but a large movement range." +
 				"\n\n The girl is the midrange unit.\n She has a medium movement\n and attack range." +
 			 "\n\n The nerd is the range unit.\n He has a large attack range,\n but a short movement.";
-		unitText = new Text(240, 400, resourcesManager.handwriting_font, unitMsg, texOps, vbom);	
+		unitText = new Text(240, 400, resourcesManager.cartoon_font_white, unitMsg, texOps, vbom);	
 	}
 	
 	private void createMenuButtons() {
@@ -113,6 +119,7 @@ public class TutorialScene extends BaseScene {
 			engine.runOnUpdateThread(new Runnable() {
 				@Override
 				public void run() {
+					tutorial.detachChild(whiteLayer);
 					switch(which) {
 					case BASICS:
 						tutorial.detachChild(basicText);
@@ -158,6 +165,7 @@ public class TutorialScene extends BaseScene {
 	
 	private void showBasics() {
 		clearMenu();
+		attachChild(whiteLayer);
 		attachChild(basicText);
 		inMenu = false;
 		which = BASICS;
@@ -177,6 +185,7 @@ public class TutorialScene extends BaseScene {
 
 	private void showControls() {
 		clearMenu();
+		attachChild(whiteLayer);
 		attachChild(controlText);
 		inMenu = false;
 		which = CONTROLS;
@@ -184,6 +193,7 @@ public class TutorialScene extends BaseScene {
 	
 	private void showUnits() {
 		clearMenu();
+		attachChild(whiteLayer);
 		attachChild(unitText);
 		inMenu = false;
 		which = UNITS;

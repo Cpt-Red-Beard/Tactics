@@ -175,29 +175,25 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			}
 		};
 		
-		Log.d("AndEngine", "" + resourcesManager.selectedMap.getTMXLayers().size());
+		//Log.d("AndEngine", "" + resourcesManager.selectedMap.getTMXLayers().size());
 		
-<<<<<<< HEAD
-		this.tmxLayer = resourcesManager.selectedMap.getTMXLayers().get(0);  
-		moves = new JSONArray();
-=======
+
 		this.tmxLayer = resourcesManager.tiledMap.getTMXLayers().get(0);  
+
 		
->>>>>>> origin/master
-		
-		this.tileSize = resourcesManager.selectedMap.getTileHeight();
-		this.heightInTiles = resourcesManager.selectedMap.getTileRows();
-		this.widthInTiles = resourcesManager.selectedMap.getTileColumns();
+		this.tileSize = resourcesManager.tiledMap.getTileHeight();
+		this.heightInTiles = resourcesManager.tiledMap.getTileRows();
+		this.widthInTiles = resourcesManager.tiledMap.getTileColumns();
 		
 		Log.d("AndEngine", "Created map of "+this.widthInTiles+"x"+this.heightInTiles+" of "+this.tileSize+"px tiles.");
-		attachChild(resourcesManager.selectedMap);
-		resourcesManager.selectedMap.setOffsetCenter(0, 0);
+		attachChild(resourcesManager.tiledMap);
+		resourcesManager.tiledMap.setOffsetCenter(0, 0);
 		
 		// Initialize highlighted squares list.
 		this.highlightedSquares = new ArrayList<HighlightedSquare>();
 		
 		// Edit camera options.
-		((BoundCamera)camera).setBounds(0, 0, resourcesManager.selectedMap.getWidth(), resourcesManager.selectedMap.getHeight());
+		((BoundCamera)camera).setBounds(0, 0, resourcesManager.tiledMap.getWidth(), resourcesManager.tiledMap.getHeight());
 		((BoundCamera)camera).setBoundsEnabled(true);
 		camera.setCenter(0, 0);
 		
@@ -212,7 +208,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		createHUD();
 	    
 		// Initialize selection rectangle.
-		this.currentTileRectangle = new Rectangle(0, 0, resourcesManager.selectedMap.getTileWidth(), resourcesManager.selectedMap.getTileHeight(), vbom);
+		this.currentTileRectangle = new Rectangle(0, 0, resourcesManager.tiledMap.getTileWidth(), resourcesManager.tiledMap.getTileHeight(), vbom);
 		currentTileRectangle.setOffsetCenter(0, 0);
 		currentTileRectangle.setColor(1, 0, 0, 0);
 		attachChild(currentTileRectangle);
@@ -231,15 +227,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		hud.attachChild(bottomBar = new Sprite(240, -300, resourcesManager.bottom_bar, vbom));
 		
 		// Create the game events messages.
-		this.eventsMessage = new Text(240, 760, resourcesManager.handwriting_font, "Destroy All Enemy Units\n to Win!", 200, new TextOptions(HorizontalAlign.CENTER), vbom);
+		this.eventsMessage = new Text(240, 760, resourcesManager.cartoon_font_white, "Destroy All Enemy Units\n to Win!", 200, new TextOptions(HorizontalAlign.CENTER), vbom);
 		this.endGameMessage = new Text(240, 400, resourcesManager.font, "", 50, new TextOptions(HorizontalAlign.CENTER), vbom);
 		
 		// Initialize HUD and its entities.
-		this.curUnitAttack = new Text(300, 175, resourcesManager.handwriting_font, "Attack: " , 75, new TextOptions(HorizontalAlign.LEFT), vbom);
+		this.curUnitAttack = new Text(300, 175, resourcesManager.cartoon_font_white, "Attack: " , 75, new TextOptions(HorizontalAlign.LEFT), vbom);
 		this.curUnitAttack.setOffsetCenter(0, 0);
-		this.curUnitEnergy = new Text(50, 250, resourcesManager.handwriting_font, "Energy: ", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
+		this.curUnitEnergy = new Text(50, 250, resourcesManager.cartoon_font_white, "Energy: ", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
 		this.curUnitEnergy.setOffsetCenter(0,0);
-		this.curUnitHealth = new Text(50, 200, resourcesManager.handwriting_font, "Health: " , 25, new TextOptions(HorizontalAlign.LEFT), vbom);
+		this.curUnitHealth = new Text(50, 200, resourcesManager.cartoon_font_white, "Health: " , 25, new TextOptions(HorizontalAlign.LEFT), vbom);
 		this.curUnitHealth.setOffsetCenter(0, 0);
 		
 		bottomBar.attachChild(curUnitAttack);
@@ -470,13 +466,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	@Override
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pTouchEvent) {
 		
-		if (this.hud.getChildScene() != null) return true; // tutorial menu is up, don't move around!
+		if (this.hud.getChildScene() != null) return false; // tutorial menu is up, don't move around!
 		
-		if (animating) return true; // If we're moving, don't recognize touch
+		if (animating) return false; // If we're moving, don't recognize touch
 		
 		this.mPinchZoomDetector.onTouchEvent(pTouchEvent);
 		
-		if (this.mPinchZoomDetector.isZooming()) return true; // do the zoom
+		if (this.mPinchZoomDetector.isZooming()) return false; // do the zoom
 		
 		if(pTouchEvent.getAction() == MotionEvent.ACTION_DOWN)
 		{		
@@ -485,6 +481,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             
             pTouchEvent.getX();
             pTouchEvent.getY();
+
+            return false;
 			
         }
         else if(pTouchEvent.getAction() == MotionEvent.ACTION_MOVE)
@@ -499,9 +497,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
                       
             mTouchX = newX;
             mTouchY = newY;
+
+            return true;
         }
         
-        return true;
+        return false;
 	}
 
     @Override
@@ -546,7 +546,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		this.camera.setCenter(this.selectedCharacter.getX(), this.selectedCharacter.getY());
 		
-		this.selectedCharacter.idleAnimate();
+		
+			this.selectedCharacter.idleAnimate();
 		
 		this.curUnitAttack.setText(attackStatusString(selectedCharacter.getAttack(), selectedCharacter.getAttackRange(), selectedCharacter.getAttackCost()));
 		this.curUnitEnergy.setText("Energy: " + selectedCharacter.getEnergy()+"/100");
@@ -725,6 +726,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			@Override
 			public void onClick(View v) {
 				pausemenu.dismiss();
+				game.endGame();
 				
 			}
         });        

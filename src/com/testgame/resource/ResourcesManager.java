@@ -73,6 +73,10 @@ public class ResourcesManager {
         return INSTANCE;
     }
     
+    public Font cartoon_font_white;
+    public Font cartoon_font_red;
+    public Font cartoon_font_blue;
+    
     //==============================
     // Splash Resources
     //==============================
@@ -122,11 +126,6 @@ public class ResourcesManager {
     	basics_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR);
     	basics_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(basics_atlas, activity, "basicsbutton.png", 0, 0);
     	basics_atlas.load();
-    	
-    	final ITexture secFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        
-        handwriting_font = FontFactory.createStrokeFromAsset(activity.getFontManager(), secFontTexture, activity.getAssets(), "cartoonfont.ttf", 36, true, Color.WHITE, 1, Color.BLACK);
-        handwriting_font.load();	
     }
     
     public void unloadTutorialResources() {
@@ -155,9 +154,9 @@ public class ResourcesManager {
     private void loadMenuMusic() {
    	 	MusicFactory.setAssetBasePath("mfx/");
         try {
-                this.menu_background_music = MusicFactory.createMusicFromAsset(this.engine.getMusicManager(), activity, "background.wav");
+                this.menu_background_music = MusicFactory.createMusicFromAsset(this.engine.getMusicManager(), activity, "kickstarter.mp3");
                 this.menu_background_music.setLooping(true);
-                this.menu_background_music.setVolume(.25f);
+                this.menu_background_music.setVolume(2f);
                 
                 this.select_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "buttonpush.wav");
         } catch (final IOException e) {
@@ -209,7 +208,21 @@ public class ResourcesManager {
         final ITexture mainFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
 
         font = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "Toony.ttf", 50, true, Color.BLACK, 2, Color.WHITE);
-        font.load();        
+        font.load();  
+        
+        final ITexture whiteTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        final ITexture redTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        final ITexture blueTexture = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        
+        
+        cartoon_font_white = FontFactory.createStrokeFromAsset(activity.getFontManager(), whiteTexture, activity.getAssets(), "cartoonfont.ttf", 36, true, Color.WHITE, 1, Color.BLACK);
+        cartoon_font_white.load();	
+        
+        cartoon_font_red = FontFactory.createStrokeFromAsset(activity.getFontManager(), redTexture, activity.getAssets(), "cartoonfont.ttf", 36, true, Color.RED, 1, Color.BLACK);
+        cartoon_font_red.load();
+        
+        cartoon_font_blue = FontFactory.createStrokeFromAsset(activity.getFontManager(), blueTexture, activity.getAssets(), "cartoonfont.ttf", 36, true, Color.BLUE, 1, Color.BLACK);
+        cartoon_font_blue.load();
     }
 
     public void unloadMenuTextures()
@@ -282,6 +295,9 @@ public class ResourcesManager {
     private BitmapTextureAtlas dialog_atlas;
     public ITextureRegion dialog_background;
     
+    public BitmapTextureAtlas map_tiles_atlas;
+    public TiledTextureRegion map_tiles;
+    
     public void loadGameResources()
     {
         loadGameGraphics();
@@ -335,7 +351,9 @@ public class ResourcesManager {
     	pause_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(pause_atlas, activity, "pausebutton.png", 0, 0);
     	pause_atlas.load();
     	
-    	
+    	map_tiles_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+    	map_tiles = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(map_tiles_atlas, activity, "maptiles.png", 0, 0, 11, 2);
+    	map_tiles_atlas.load();
     }
     
     private void loadGameFonts()

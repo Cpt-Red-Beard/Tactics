@@ -300,9 +300,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 		int dist = manhattanDistance(this.x, this.y, unit.getMapX(), unit.getMapY());
 		if(dist <= this.attackrange && this.attackenergy <= this.energy){
 			rand = new Random(System.currentTimeMillis()); // new rng with random seed
-			int realAttack = this.attack + ((int) (0.05*this.attack*rand.nextGaussian())); // randomize attack
+			int realAttack = this.attack + ((int) (0.15*this.attack*rand.nextGaussian())); // randomize attack
 			this.reduceEnergy(this.attackenergy);
-			unit.reduceHealth(realAttack); // unit being attacked
+			
 			JSONObject temp = new JSONObject();
 			try {
 				temp.put("MoveType", "ATTACK");
@@ -319,10 +319,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 			if(!this.game.resourcesManager.isLocal)
 				((OnlineGame)this.game.getGame()).addMove(temp);
 			
-			unit.attackedAnimate(null, unit, this.attack);
+			unit.attackedAnimate(null, unit, realAttack);
 			
 			
-			if (unit.getHealth() > 0) this.game.setEventText("Did "+this.attack+" damage!\n Enemy health "+unit.getHealth()+"/"+unit.getMaxHealth());
+			if (unit.getHealth() > 0) this.game.setEventText("Did "+realAttack+" damage!\n Enemy health "+unit.getHealth()+"/"+unit.getMaxHealth());
 		}
 		else {
 			this.game.setEventText(this.toString() + " cannot attack,\n not enough energy!");
@@ -361,24 +361,33 @@ public class AUnit extends CharacterSprite implements IUnit {
 
 			this.game.setEventText(this.toString() + " died!");
 		}
+		
+		animatePoints(-dec, "red");
 		//this.setText(this.energy, this.currentHealth);
 	}
 
 	public void setEnergy(int energy){
+		int diff = energy - this.energy;  // positive if regaining, negative if losing
 		this.energy = energy;
 		//this.setText(this.energy, this.currentHealth);
+		animatePoints(diff, "blue"); // recharging energy;
+		//this.setAlpha(this.energy / 100 + .1f);
 	}
 	
 	@Override
 	public void restoreEnergy(int energy) {
 		this.energy += energy;
+		if (this.energy > 100) this.energy = 100;
 		//this.setText(this.energy, this.currentHealth);
+		animatePoints(energy, "blue"); 
+		//this.setAlpha(this.energy / 100 + .1f);
 	}
 
 	@Override
 	public void reduceEnergy(int energy) {
 		this.energy -= energy;
 		//this.setText(this.energy, this.currentHealth);
+		animatePoints(-energy, "blue");
 	}
 	
 	@Override
@@ -386,10 +395,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 		if(this.energy >= 50)
 			this.setEnergy(100);
 		else if(this.energy >= 25){
-			this.setEnergy(this.getEnergy()+50);
+			this.restoreEnergy(50);
 		}
 		else
-			this.setEnergy(this.getEnergy()+25);
+			this.restoreEnergy(+25);
 		this.isDefending = false;
 	}
 	
@@ -414,7 +423,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 	// all the squares you can move to 
 	public ArrayList<Point> availableMoves() {
 		ArrayList<Point> moves = new ArrayList<Point>();
-				
+		if(this.range == 0)
+			return moves;
 		int movementRange = this.energy/this.range;
 		
 		for (int i = 0; i <= movementRange; i++) {
@@ -491,10 +501,14 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void idleAnimate() {
+		if(this.getType().equals("Base"))
+			return;
 		this.animate(new long[] { 100, 100 }, start_frame + IDLE_START_FRAME, start_frame + IDLE_END_FRAME, true);
 	}
 	
 	public void walkAnimate(int xDirection, int yDirection) {
+		if(this.getType().equals("Base"))
+			return;
 		// TODO: Should work, but we don't have the correct graphics yet to do this.
 		if (xDirection == 0) { // walking up or down
 			if (yDirection > 0) { // walking up
@@ -512,10 +526,17 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void guardAnimate() {
+		if(this.getType().equals("Base"))
+			return;
 		this.setCurrentTileIndex(start_frame + GUARD_FRAME);
 	}
 	
 	public void attackedAnimate(final ComputerPlayer computerPlayer, final AUnit unit, final int attack) {
+		if(this.getType().equals("Base")){
+			unit.reduceHealth(attack);
+			game.getGame().endGame();
+			return;
+		}
 		ResourcesManager.getInstance().attack_sound.play();
 		this.animate(new long[] { 100, 100 }, start_frame + ATTACKED_START_FRAME, start_frame + ATTACKED_END_FRAME, true);
 		
@@ -547,4 +568,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 	        }));
 		}
 	}
+	
+	public String getType(){
+		return this.unitType;
+	}
+	
 }
