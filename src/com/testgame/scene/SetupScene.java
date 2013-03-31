@@ -61,20 +61,21 @@ public class SetupScene extends BaseScene {
 	}
 
 	private void createText() {
-		jockText = new Text(32, 80, resourcesManager.font, jocks + "", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
-		nerdText = new Text(32, 80, resourcesManager.font, nerds + "", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
-		ditzText = new Text(32, 80, resourcesManager.font, ditzes + "", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
-		totText = new Text(240, 500, resourcesManager.font, "Total: " + tot + "/10", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
+		jockText = new Text(32, 80, resourcesManager.cartoon_font_white, jocks + "", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
+		nerdText = new Text(32, 80, resourcesManager.cartoon_font_white, nerds + "", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
+		ditzText = new Text(32, 80, resourcesManager.cartoon_font_white, ditzes + "", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
+		totText = new Text(240, 500, resourcesManager.cartoon_font_white, "Total: " + tot + "/10", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
 		// what the hell is this?
-		setupText = new Text(100, 500, resourcesManager.font, "", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
+		setupText = new Text(240, 720, resourcesManager.cartoon_font_white, resourcesManager.getLocalName(), new TextOptions(HorizontalAlign.LEFT), vbom);
 		// not implemented yet..
-		mapText = new Text(100, 400, resourcesManager.font, "Map: ", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
+		mapText = new Text(100, 400, resourcesManager.cartoon_font_white, "Map: ", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
 		
 		jock.attachChild(jockText);
 		nerd.attachChild(nerdText);
 		ditz.attachChild(ditzText);
 		
 		attachChild(totText);
+		attachChild(setupText);
 	}
 
 	private void createButtons() {
@@ -118,6 +119,7 @@ public class SetupScene extends BaseScene {
 					resourcesManager.unitArray = unitList;
 					twice = true;
 					tot = 0; jocks = 0; nerds = 0; ditzes = 0;
+					setupText.setText(resourcesManager.getLocalName());
 					updateText();
 					
 					if(!resourcesManager.isLocal){

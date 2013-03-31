@@ -453,4 +453,16 @@ public class ResourcesManager {
 		isLocal = false;
 	}
 
+	private boolean first;
+	
+	public String getLocalName() {
+		if (first) {
+			first = false;
+			return "Player 2";
+		} else {
+			first = true;
+			return "Player 1";
+		}
+	}
+	
 }
