@@ -14,7 +14,6 @@ import com.testgame.resource.ResourcesManager;
 public class GameDialogBox {
 	
 	private HUD hud;
-	private int offset = 100;
 	private float width;
 	private float height;
 	
@@ -37,7 +36,7 @@ public class GameDialogBox {
 		// Attach Background
 		hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background, resourcesManager.vbom));
 		backgroundSprite.setScale(1.75f);
-		// TODO position text
+		
 		hud.attachChild(messageText = new Text(240, 450, resourcesManager.font, message, resourcesManager.vbom));
 		
 		/*
@@ -67,7 +66,6 @@ public class GameDialogBox {
 	}
 
 	protected void dismiss() {
-		final GameDialogBox box = this;
 		ResourcesManager.getInstance().engine.runOnUpdateThread(new Runnable() {
 			@Override
 			public void run() {

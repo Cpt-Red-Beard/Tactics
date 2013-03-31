@@ -3,13 +3,11 @@ package com.testgame;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.util.Log;
-
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.testgame.mechanics.unit.AUnit;
+import com.testgame.mechanics.unit.Base;
 import com.testgame.mechanics.unit.Ditz;
 import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
@@ -72,13 +70,16 @@ public class OnlineGame extends AGame{
 					jocks--;
 				}
 			}
+		
+		AUnit unitbase = new Base(gameMap, 5, gameMap.xDim/2, gameScene, "blue");
+		player.setBase(unitbase);
 	}
 	
 	/**
 	 * Ends the game.
 	 */
 	public void endGame() {
-		if(player.getActiveUnits().size() == 0){
+		if(player.getActiveUnits().size() == 0 || player.getBase() == null){
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
@@ -90,7 +91,7 @@ public class OnlineGame extends AGame{
 			
 			
 		}
-		else if(compPlayer.getActiveUnits().size() == 0){
+		else if(compPlayer.getActiveUnits().size() == 0 || compPlayer.getBase() == null){
 			nextTurn();
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
@@ -109,7 +110,6 @@ public class OnlineGame extends AGame{
 	public void nextTurn() {
 		if(!getPlayer().isTurn())
 			return;
-		Log.d("Turn", getCount()+"");
 		ParseObject turns = new ParseObject("Turns");
 		turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
 		turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+getCount());
@@ -118,7 +118,7 @@ public class OnlineGame extends AGame{
 		turns.put("Moves", moves);
 		turns.saveInBackground();
 		try {
-			JSONObject data = new JSONObject("{\"alert\": \"Next Turn\", \"action\": \"com.testgame.NEXT_TURN\"}");
+			JSONObject data = new JSONObject("{\"alert\": \"Next Turn\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"action\": \"com.testgame.NEXT_TURN\"}");
 			 ParsePush push = new ParsePush();
 			 push.setChannel("user_"+resourcesManager.opponentString);
              push.setData(data);

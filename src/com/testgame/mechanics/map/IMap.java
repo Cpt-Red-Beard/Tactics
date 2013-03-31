@@ -1,6 +1,7 @@
 package com.testgame.mechanics.map;
 
 import com.testgame.mechanics.unit.AUnit;
+import android.graphics.Point;
 
 /**
  * Interface for a  game map.
@@ -39,5 +40,19 @@ public interface IMap {
 	 * @param y The y-coordinate.
 	 */
 	public void setUnoccupied(int x, int y);
+
+	/**
+	 * Returns x, y as a string.
+	 * @param x The x-coordinate.
+	 * @param y The y-coordinate.
+	 */
+	public String entry(int x, int y);
+
+	/**
+	 * Performs A* and returns distance from s to d, or -1 if no path is available.
+	 * @param s The source.
+	 * @param d The destination.
+	 */ 
+	public int manhattanDistance(Point s, Point d);
 
 }

@@ -4,11 +4,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
 
 import com.testgame.AGame;
 import com.testgame.OnlineGame;
 import com.testgame.mechanics.unit.AUnit;
+import com.testgame.mechanics.unit.Base;
 import com.testgame.mechanics.unit.Ditz;
 import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
@@ -50,7 +50,6 @@ public class ComputerPlayer extends APlayer {
 		}
 		for (int i = 0; i < actionsToPerform.length(); i++) {
 			
-			Log.d("AndEngine", "[PerformNext] i = "+i);
 
 			if (actionsToPerform.isNull(i)) {
 				if (i == actionsToPerform.length() - 1) {
@@ -79,7 +78,6 @@ public class ComputerPlayer extends APlayer {
 					
 					if (moveType.equals("MOVE")) {
 						
-						Log.d("AndEngine", "[PerformNext] found move!");
 						
 						int destX = nextAction.getInt("DestX");
 						int destY = nextAction.getInt("DestY");
@@ -92,7 +90,6 @@ public class ComputerPlayer extends APlayer {
 					
 					else if (moveType.equals("ATTACK")) {
 						
-						Log.d("AndEngine", "[PerformNext] found attack!");
 						
 						int targetX = nextAction.getInt("OppX");
 						int targetY = nextAction.getInt("OppY");
@@ -131,12 +128,12 @@ public class ComputerPlayer extends APlayer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.d("Nerds", nerds+" ");
-		Log.d("Jocks", jocks +  " ");
-		Log.d("Nerds", ditz + " ");
 		int j = 10;
-		if(game.isFirstTurn())
-			j = 0;
+		int x = 11;
+		if(game.isFirstTurn()){
+			x = 0;
+			j = 1;
+		}
 		
 		
 			for(int i = 0; i < 10; i++){
@@ -159,6 +156,9 @@ public class ComputerPlayer extends APlayer {
 					jocks--;
 				}
 			}
+			AUnit unitbase = new Base(game.gameMap, 5, x, game.getGameScene(), "red");
+			game.getCompPlayer().setBase(unitbase);
+			
 		
 
 		game.incrementCount();

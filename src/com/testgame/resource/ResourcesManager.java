@@ -13,7 +13,6 @@ import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
 import org.andengine.opengl.texture.ITexture;
-import org.andengine.opengl.texture.Texture;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -37,6 +36,7 @@ public class ResourcesManager {
     public String userString;
     public String opponent;
     public String opponentString;
+    public String mapString = "Default";;
     public boolean turn;
     public boolean inGame;
     public boolean isLocal;
@@ -286,10 +286,12 @@ public class ResourcesManager {
     private BitmapTextureAtlas top_bar_atlas, bottom_bar_atlas;
     public ITextureRegion top_bar, bottom_bar;
     
+
     private BitmapTextureAtlas red_button_atlas, blue_button_atlas;
     public ITextureRegion red_button, blue_button;
     
-    public TMXTiledMap tiledMap;
+
+    public TMXTiledMap selectedMap, tiledMap;
     
     public Font handwriting_font;
     
@@ -423,6 +425,21 @@ public class ResourcesManager {
 
 	public void pause_music() {
 		if (menu_background_music != null) menu_background_music.pause();
+	}
+	
+	public void setMap(String mapName) {
+		this.mapString = mapName;
+		// Add other cases later
+		if (mapName.equals("Default")) {
+	    	try {
+	            final TMXLoader tmxLoader = new TMXLoader(activity.getAssets(), activity.getTextureManager(), TextureOptions.NEAREST, vbom);
+	            this.selectedMap = tmxLoader.loadFromAsset("tmx/basic.tmx");
+	        } 
+	    	catch (final TMXLoadException e) {
+	             Debug.e(e);
+	        }
+		}
+			
 	}
 	
 	public void resetGame() {

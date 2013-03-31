@@ -9,8 +9,6 @@ import java.util.UUID;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.entity.scene.IOnAreaTouchListener;
-import org.andengine.entity.scene.ITouchArea;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.andengine.entity.scene.menu.item.IMenuItem;
@@ -18,14 +16,12 @@ import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.util.GLState;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.util.Log;
 import com.example.testgame.MainActivity;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -62,10 +58,10 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static AlertDialog gameOptionsDialog;
 	private static AlertDialog textDialog;
 	private static AlertDialog acceptDialog;
+	private static AlertDialog mapDialog;
 	private static Map<String, String> usernames;
-	private static boolean loggedin = false;
-	
-	private GameDialogBox gameDialog;
+	private static CharSequence[] mapNames = new CharSequence[]{"Default"};
+	private static String selectedMapName = "Default"; 
 	
 	@Override
 	public void createScene() {
@@ -158,28 +154,25 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		  public void done(ParseUser user, ParseException err) {
 	        			 
 	        		    if (user == null) {
-	        		      Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
+	        		      
 	        		      loading.dismiss();
-	        		      Log.d("MyApp", err.getMessage());
+	        		      
 	        		    
 	        		    } else if (user.isNew()) {
-	        		      Log.d("MyApp", "User signed up and logged in through Facebook!");
-	        		      Log.d("DeviceID", ParseInstallation.getCurrentInstallation().getInstallationId());
+	        		      
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
 	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getInstallationId();
-	        		      Log.d("Push", resourcesManager.userString);
-	        		      Log.d("Installation", ParseInstallation.getCurrentInstallation().getInstallationId());
+	        		     
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
 	        		      getFacebookIdInBackground();
 	        		      
 	        		     
 	        		    } else {
-	        		      Log.d("MyApp", "User logged in through Facebook!");
+	        		     
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
-	        		      Log.d("DeviceID", ParseInstallation.getCurrentInstallation().getInstallationId());
+	        		      
 	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getInstallationId();
-	        		      Log.d("Push", resourcesManager.userString);
-	        		      Log.d("Installation", ParseInstallation.getCurrentInstallation().getInstallationId());
+	        		     
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
 	        		      getFacebookIdInBackground();
 	        		     
@@ -229,13 +222,11 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	        case MENU_LOGOUT:
 	        	PushService.unsubscribe(activity, resourcesManager.userString);
-	    		loggedin = false;
 	    		Session.getActiveSession().closeAndClearTokenInformation();
 	        	return true;
 	        	
 	        	
 	        default:
-	        	Log.d("AndEngine", "touch not on a button..?");
 	            return false;
 	    }
 	}
@@ -247,7 +238,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		    @Override
 		    public void onCompleted(GraphUser user, Response response) {
 		      if (user != null) {
-		    	 Log.d("Facebook", "Completed id lookup");
+		    	 
 		    	ParseUser.getCurrentUser().put("Name", user.getName());
 		        ParseUser.getCurrentUser().put("fbId", user.getId());
 		        ParseUser.getCurrentUser().saveInBackground();
@@ -268,23 +259,22 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 				      // Construct a ParseUser query that will find friends whose
 				      // facebook IDs are contained in the current user's friend list.
-				      Log.d("Facebook", "Finished finding friends");
+				     
 				      ParseQuery query = ParseUser.getQuery();
 				      query.whereContainedIn("fbId", friendsList);
 				      query.findInBackground(new FindCallback() {
 				          public void done(List<ParseObject> friendUsers, ParseException e) {
-				              Log.d("Query", "Query finished");
+				            
 				        	  if (e == null) {
 				            	  for(ParseObject u : friendUsers){
 				            		  userslist.add(u.getString("Name"));
 				            		  usernames.put(u.getString("Name"), u.getObjectId());
 				            		  
 				            	  }
-				            	  loggedin = true;
 				            	  loading.dismiss();
-				                  Log.d("friends", friendUsers.toString());
+				                 
 				              } else {
-				                  Log.d("score", "Error: " + e.getMessage());
+				                 
 				                  loading.dismiss();
 				              }
 				          }
@@ -303,22 +293,20 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private void welcomeDialog() {
 		camera.setHUD(new HUD());
 		logoutMenuItem.setVisible(true);
-		GameDialogBox box = new GameDialogBox(camera.getHUD(), "Welcome \n"+name+"!", ((ButtonSprite[]) null));
+		new GameDialogBox(camera.getHUD(), "Welcome \n"+name+"!", ((ButtonSprite[]) null));
 	}
 	
 	private void showDialog(){
 		final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle("Friends");
 		//userslist.add("TestUser");
-		final CharSequence[] de = userslist.toArray(new CharSequence[userslist.size()]);
-		
-			
+		final CharSequence[] de = userslist.toArray(new CharSequence[userslist.size()]);	
 		 builder.setItems(de, new  DialogInterface.OnClickListener() {
              public void onClick(DialogInterface dialog, int pos) {
                 resourcesManager.opponent = (String) de[pos];
                 resourcesManager.opponentString = usernames.get((String)de[pos]);
                 try {
-					JSONObject data = new JSONObject("{\"alert\": \"Invitation to Game\", \"action\": \"com.testgame.INVITE\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\", \"userid\": \""+ParseUser.getCurrentUser().getObjectId()+"\"}");
+					JSONObject data = new JSONObject("{\"alert\": \"Invitation to Game\", \"action\": \"com.testgame.INVITE\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\", \"map\": \""+selectedMapName+"\", \"userid\": \""+ParseUser.getCurrentUser().getObjectId()+"\"}");
 					 ParsePush push = new ParsePush();
 		             push.setChannel("user_"+resourcesManager.opponentString);
 		             push.setData(data);
@@ -360,8 +348,14 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		gameOptions.setNegativeButton("Local", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// launch a local game.	
-				Log.d("AndEngine", "[SetupScene] launching local game.");
+				
 				gameOptionsDialog.dismiss();
+				activity.runOnUiThread(new Runnable () {
+					@Override
+					public void run() {
+						createMapDialog();
+					}
+				});
 				resourcesManager.isLocal = true;
 				SceneManager.getInstance().loadSetupScene(engine);
 			}
@@ -370,15 +364,15 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		gameOptions.setNeutralButton("Online", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// Launch an online game.
-				Log.d("AndEngine", "[SetupScene] launching online game.");
+				
 				gameOptionsDialog.dismiss();
 				resourcesManager.isLocal = false;
-				activity.runOnUiThread(new Runnable() {
-	        	    @Override
-	        	    public void run() {
-	        	        showDialog();
-	        	    }
-	        	});
+				activity.runOnUiThread(new Runnable () {
+					@Override
+					public void run() {
+						createMapDialog();
+					}
+				});
 			}
 		});
 		
@@ -497,6 +491,22 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		acceptDialog = dia.create();
 		acceptDialog.setCanceledOnTouchOutside(false);
 		acceptDialog.show();
+	}
+	
+	public void createMapDialog(){
+		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
+		dia.setTitle("Selected Map:");
+		dia.setSingleChoiceItems(mapNames, 0, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) { 
+				selectedMapName = (mapNames[whichButton]).toString();
+				resourcesManager.setMap(selectedMapName);
+				mapDialog.dismiss();
+			}
+		});
+		
+		mapDialog = dia.create();
+		mapDialog.setCanceledOnTouchOutside(false);
+		mapDialog.show();
 	}
 
 	@Override

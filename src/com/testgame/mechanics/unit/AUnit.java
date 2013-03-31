@@ -6,17 +6,14 @@ import java.util.Random;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
+import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.modifier.IModifier;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.graphics.Point;
-import android.util.Log;
-
 import com.testgame.mechanics.map.GameMap;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
@@ -122,6 +119,11 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 */
 	protected boolean isDefending;
 	
+	/**
+	 * Random number generator.
+	 */
+	protected Random rand;
+	
 	@Override
 	public void setPlayer(APlayer player) {
 		owner = player;
@@ -186,7 +188,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 		float numTilesX = Math.abs(this.getX() - destX) / game.tileSize;
 		float numTilesY = Math.abs(this.getY() - destY) / game.tileSize;
 		
-		Log.d("AndEngine", "numTilesX = " + numTilesX + ", numTilesY = " +numTilesY);
 		
 		energyBar.setPosition(destX, destY);
 		healthBar.setPosition(destX, destY);
@@ -210,7 +211,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 				ResourcesManager.getInstance().walking_sound.pause();
 				((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
 				game.setEventText("Moved using "+energy+" energy.");
-				Log.d("AndEngine", "[ComputerMove] calling perform next on player.");
 				player.performNext(); // finished this action, call next
 			}
 		}, one, two);
@@ -221,8 +221,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 	
 	@Override
 	public void move(int xNew, int yNew) {
-		
-		Log.d("AndEngine", this.toString() + " moving to " +xNew+", "+yNew);
 		int dist = manhattanDistance(this.x, this.y, xNew, yNew);
 		final int eCost = dist*this.range; // Energy expense of this move 
 		if (eCost <= this.energy) {
@@ -257,13 +255,13 @@ public class AUnit extends CharacterSprite implements IUnit {
 			if(!this.game.resourcesManager.isLocal)
 				((OnlineGame)this.game.getGame()).addMove(temp);
 
-			Log.d("AndEngine", "moving to " + destX + ", "+destY);
+			
 			
 			float timePerTile = .2f; 
 			float numTilesX = Math.abs(this.getX() - destX) / game.tileSize;
 			float numTilesY = Math.abs(this.getY() - destY) / game.tileSize;
 			
-			Log.d("AndEngine", "numTilesX = " + numTilesX + ", numTilesY = " +numTilesY);
+			
 			
 			WalkMoveModifier one = new WalkMoveModifier(timePerTile*numTilesX + .1f, this.getX(), this.getY(), destX, this.getY(), true);
 			WalkMoveModifier two = new WalkMoveModifier(timePerTile*numTilesY + .1f, destX, this.getY(), destX, destY, false);
@@ -277,9 +275,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 			this.game.setEventText("Moved using "+eCost+" energy.");
 
         	
-        	Log.d("AndEgine", "modifier finished.");
         	
-        	// TODO: Add message to user about successful move
 		}
 	}
 	
@@ -302,8 +298,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 	// Which order does this go? THIS is being attacked or unit is being attacked ?? 
 	@Override
 	public void attack(final AUnit unit) {
-		int dist = manhattanDistance(this.x, this.y, unit.getMapX(), unit.getMapY());
+		int dist = this.manhattanDistance(this.x, this.y, unit.getMapX(), unit.getMapY());
 		if(dist <= this.attackrange && this.attackenergy <= this.energy){
+			rand = new Random(System.currentTimeMillis()); // new rng with random seed
+			int realAttack = this.attack + ((int) (0.15*this.attack*rand.nextGaussian())); // randomize attack
 			this.reduceEnergy(this.attackenergy);
 			
 			JSONObject temp = new JSONObject();
@@ -314,7 +312,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 				temp.put("Energy", this.attackenergy);
 				temp.put("OppX", unit.x);
 				temp.put("OppY", unit.y);
-				temp.put("Attack",this.attack);
+				temp.put("Attack", realAttack);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -322,10 +320,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 			if(!this.game.resourcesManager.isLocal)
 				((OnlineGame)this.game.getGame()).addMove(temp);
 			
-			unit.attackedAnimate(null, unit, this.attack);
+			unit.attackedAnimate(null, unit, realAttack);
 			
 			
-			if (unit.getHealth() > 0) this.game.setEventText("Did "+this.attack+" damage!\n Enemy health "+unit.getHealth()+"/"+unit.getMaxHealth());
+			if (unit.getHealth() > 0) this.game.setEventText("Did "+realAttack+" damage!\n Enemy health "+unit.getHealth()+"/"+unit.getMaxHealth());
 		}
 		else {
 			this.game.setEventText(this.toString() + " cannot attack,\n not enough energy!");
@@ -412,17 +410,21 @@ public class AUnit extends CharacterSprite implements IUnit {
 	/*
 	 * checks a point x,y
 	 */
-	public void checkPointForMove(int offsetX, int offsetY, ArrayList<Point> moves) {
+	public void checkPointForMove(int offsetX, int offsetY, int range, ArrayList<Point> moves) {
 
 		if (this.x + offsetX < 0 || this.y + offsetY < 0) return; // off of map, not occupied
 		if (this.x + offsetX >= map.xDim || this.y + offsetY >= map.yDim) return; // ditto
 		
 		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
 		
+		Point s = new Point(this.x, this.y);
+		Point d = new Point(this.x + offsetX, this.y + offsetY);
 		Point p = new Point(offsetX, offsetY);
 		
 		if (occupyingUnit == null) { // not occupied
 			if (moves.contains(p)) return;
+			int dist = map.manhattanDistance(s, d);
+			if (dist > range) return;
 			else moves.add(p);
 		}
 	}
@@ -430,7 +432,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 	// all the squares you can move to 
 	public ArrayList<Point> availableMoves() {
 		ArrayList<Point> moves = new ArrayList<Point>();
-				
+		if(this.range == 0)
+			return moves;
 		int movementRange = this.energy/this.range;
 		
 		for (int i = 0; i <= movementRange; i++) {
@@ -438,12 +441,13 @@ public class AUnit extends CharacterSprite implements IUnit {
 				
 				if (i == 0 && j == 0) continue;
 				
-				checkPointForMove(i, j, moves);
-				checkPointForMove(i, -j, moves);
-				checkPointForMove(-i, j, moves);
-				checkPointForMove(-i, -j, moves);
+				checkPointForMove(i, j, movementRange, moves);
+				checkPointForMove(i, -j, movementRange, moves);
+				checkPointForMove(-i, j, movementRange, moves);
+				checkPointForMove(-i, -j, movementRange, moves);
 			}
 		}
+
 		return moves;
 	}
 	
@@ -451,7 +455,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public ArrayList<AUnit> availableTargets() {
 		ArrayList<AUnit> targets = new ArrayList<AUnit>();
 		
-		Log.d("AndEngine", "[AvailableTargets] Attack Ranage: " + attackrange);
 		int attackRange = this.attackrange;
 		if (this.attackenergy > this.energy) attackRange = 0; // no available moves b/c no energy
 		
@@ -460,21 +463,22 @@ public class AUnit extends CharacterSprite implements IUnit {
 				
 				if (i == 0 && j == 0) continue; // no movement, not a move
 				
-				checkPointForTargets(i, j, targets);
-				checkPointForTargets(i, -j, targets);
-				checkPointForTargets(-i, j, targets);
-				checkPointForTargets(-i, -j, targets);
+				checkPointForTargets(i, j, attackRange, targets);
+				checkPointForTargets(i, -j, attackRange, targets);
+				checkPointForTargets(-i, j, attackRange, targets);
+				checkPointForTargets(-i, -j, attackRange, targets);
 			}
 		}
 		return targets;
 	}
 	
 	// checks to see if a square offsetX, offsetY distance from this unit has an ENEMY unit, if so adds it to the array
-	private void checkPointForTargets(int offsetX, int offsetY, ArrayList<AUnit> targets) {
+	private void checkPointForTargets(int offsetX, int offsetY, int attackRange, ArrayList<AUnit> targets) {
 		
 		if (this.x + offsetX < 0 || this.y + offsetY < 0) return; // off of map, not occupied
 		if (this.x + offsetX >= map.xDim || this.y + offsetY >= map.yDim) return; // ditto
-		
+		if (map.manhattanDistance(new Point(this.x, this.y), new Point(this.x + offsetX, this.y + offsetY)) > attackRange)
+			return;
 		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
 		
 		if (occupyingUnit != null) { // occupied
@@ -494,8 +498,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 * @param x2 The x-coordinate of the second location.
 	 * @param y2 The y-coordinate of the second location.
 	 */
-	public static int manhattanDistance(int x1, int y1, int x2, int y2) {
-		return Math.abs(x1-x2) + Math.abs(y1-y2);
+	public int manhattanDistance(int x1, int y1, int x2, int y2) {
+		return map.manhattanDistance(new Point(x1, y1), new Point(x2, y2));
 	}
 	
 	public void init() {
@@ -521,11 +525,15 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void idleAnimate() {
+		if(this.getType().equals("Base"))
+			return;
 		this.animate(new long[] { 100, 100 }, start_frame + IDLE_START_FRAME, start_frame + IDLE_END_FRAME, true);
 	}
 	
 	public void walkAnimate(int xDirection, int yDirection) {
-		
+		if(this.getType().equals("Base"))
+			return;
+
 		if (xDirection == 0) { // walking up or down
 			if (yDirection > 0) { // walking up
 				this.animate(new long[] { 100, 100, 100 }, start_frame + WALK_UP_START_FRAME, start_frame + WALK_UP_END_FRAME, true);
@@ -542,10 +550,17 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void guardAnimate() {
+		if(this.getType().equals("Base"))
+			return;
 		this.setCurrentTileIndex(start_frame + GUARD_FRAME);
 	}
 	
 	public void attackedAnimate(final ComputerPlayer computerPlayer, final AUnit unit, final int attack) {
+		if(this.getType().equals("Base")){
+			unit.reduceHealth(attack);
+			game.getGame().endGame();
+			return;
+		}
 		ResourcesManager.getInstance().attack_sound.play();
 		this.animate(new long[] { 100, 100 }, start_frame + ATTACKED_START_FRAME, start_frame + ATTACKED_END_FRAME, true);
 		
@@ -601,4 +616,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 			
 		}		
 	}
+
+	
+	public String getType(){
+		return this.unitType;
+	}
+
 }

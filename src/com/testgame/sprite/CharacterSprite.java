@@ -15,7 +15,6 @@ import com.testgame.scene.GameScene;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.player.APlayer;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class CharacterSprite extends AnimatedSprite {
@@ -42,7 +41,7 @@ public class CharacterSprite extends AnimatedSprite {
 	public boolean inSelectedCharactersAttackRange;
 	
 	public void initializeText(int Energy, int Health){
-		if (this.game.vbom == null) Log.d("AndEngine", "VBOM NULL"); 
+		
 		this.energyText = new Text(0, 0, this.resourcesManager.font, Energy+"/"+Health, this.game.vbom);
 		this.attachChild(energyText);
 	}
@@ -53,7 +52,7 @@ public class CharacterSprite extends AnimatedSprite {
 	
 	@Override
     public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
-		Log.d("AndEngine", "Sprite touched!");
+		
 		
 		APlayer p = this.player;
 		boolean isTurn = p.isTurn();
@@ -70,7 +69,7 @@ public class CharacterSprite extends AnimatedSprite {
 			
 			if (isTurn) {
 				game.working = true;
-				Log.d("AndEngine", "Our turn, calling activate and select");
+				
 				if (this.game.getSelectedCharacter() == this) {
 					this.game.deselectCharacter(true);
 				} else {
@@ -79,10 +78,10 @@ public class CharacterSprite extends AnimatedSprite {
 				}
 			} else {
 				if (inSelectedCharactersAttackRange){
-					Log.d("AndEngine", "being attacked!");
+					
 					
 					if(this.game.getSelectedCharacter() == null){
-						Log.d("Character2", "null");
+						
 						return true;
 					}
 					game.working = true;
@@ -90,7 +89,7 @@ public class CharacterSprite extends AnimatedSprite {
 					
 					((AUnit) this.game.getSelectedCharacter()).attack((AUnit) this);
 				} else {
-					Log.d("AndEngine", "Not our turn, just selecting.");
+					
 					if (this.game.getSelectedCharacter() == this) {
 						this.game.deselectCharacter(true);
 					} else {
@@ -120,6 +119,10 @@ public class CharacterSprite extends AnimatedSprite {
 			message = new Text(this.getWidth()/2, this.getHeight() + 10, whichFont, ""+points, game.vbom);
 		}
 		
+		this.setZIndex(10);
+		
+		this.getParent().sortChildren();
+		
 		this.attachChild(message);
 		
 		final CharacterSprite sprite = this;
@@ -128,11 +131,12 @@ public class CharacterSprite extends AnimatedSprite {
 			@Override
 			protected void onModifierFinished(final IEntity pItem) {
 				super.onModifierFinished(pItem);
-				Log.d("AndEngine", "[CharacterSprite] detaching text popup");
+				
 				game.engine.runOnUpdateThread(new Runnable() {
 					@Override
 					public void run() {
 						sprite.detachChild(pItem);
+						sprite.setZIndex(ZINDEX_DEFAULT);
 					}});
 			}
 		});
