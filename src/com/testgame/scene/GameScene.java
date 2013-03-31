@@ -36,7 +36,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Point;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -185,7 +184,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.heightInTiles = resourcesManager.tiledMap.getTileRows();
 		this.widthInTiles = resourcesManager.tiledMap.getTileColumns();
 		
-		Log.d("AndEngine", "Created map of "+this.widthInTiles+"x"+this.heightInTiles+" of "+this.tileSize+"px tiles.");
 		attachChild(resourcesManager.tiledMap);
 		resourcesManager.tiledMap.setOffsetCenter(0, 0);
 		
@@ -251,7 +249,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				
 				if (animating) return;
 				
-				Log.d("AndEngine", "launching tutorial scene");
 				OldX = camera.getCenterX();
 				OldY = camera.getCenterY();
 				SceneManager.getInstance().previousScene = game.getSceneType();
@@ -317,17 +314,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		if (this.selectedCharacter == sprite) { 
 			
-			Log.d("AndEngine", "[In activateAndSelect] we were activated, deselecting now");
+			
 			
 			this.deselectCharacter(true);
 			return;
 			
 		} else {
 			
-			Log.d("AndEngine", "[In ActivateAndSelect] no one selected before, setting character.");
-			// no character selected, select the character we touched.
 			
-			// Set selected character - displays information on HUD.
 			this.setSelectedCharacter((AUnit) sprite);
 			
 			highlightAvailableTargets(sprite);
@@ -393,11 +387,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			float blueValue;
 			
 			if (selectedCharacter == null ) { // checks because of that weird occasional null pointer exception
-				Log.d("Character", "null");
+				
 				blueValue = 1;
 			}
 			else if(t == null){
-				Log.d("T", "null");
+				
 				blueValue = 1;
 			}
 			
@@ -415,10 +409,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void clearSquares() {
 		if(highlightedSquares == null)
 			return;
-		for (HighlightedSquare h : this.highlightedSquares) {
+		for (final HighlightedSquare h : this.highlightedSquares) {
 			if (h.unit != null) h.unit.inSelectedCharactersAttackRange = false;
-			this.unregisterTouchArea(h);
-			this.detachChild(h);
+			final GameScene game = this;
+			engine.runOnUpdateThread(new Runnable() {
+				@Override
+				public void run() {
+					game.unregisterTouchArea(h);
+					game.detachChild(h);
+				}});
+			
 		}
 		this.highlightedSquares.clear();
 	}
@@ -438,7 +438,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			for (HighlightedSquare h : this.highlightedSquares) {
 				if (tmxTile == h.tile) {
 					//selectedCharacter.setPosition(x, y);
-					Log.d("AndEngine", "[SquareTouched] square at "+x+", "+y);
+					
 					getSelectedCharacter().move(x, heightInTiles - y - 1);
 				}
 			}
@@ -536,7 +536,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 	public void setSelectedCharacter(AUnit selectedCharacter) {
 		
-		Log.d("AndEngine", "[setSelectedCharacter] setting char");
+		
 		
 		if (this.selectedCharacter != null)  deselectCharacter(false);
 		else showBar();
@@ -564,7 +564,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	public void deselectCharacter(boolean andHideBar){
 		
-		Log.d("AndEngine", "Deselecting character.");
+		
 		
 		if (this.selectedCharacter == null) return;
 		
@@ -604,22 +604,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	
 	public void startCompTurn(){
-		Log.d("Turn", getGame().getCount()+"");
+		
 		ParseQuery query = new ParseQuery("Turns");
-		Log.d("Player", resourcesManager.opponentString+"_"+getGame().getCount());
+		
 		query.whereEqualTo("Player", "user_"+resourcesManager.opponentString+"_"+getGame().getCount());
 		query.findInBackground(new FindCallback() {
 		    public void done(List<ParseObject> itemList, ParseException e) {
 		        if (e == null) {
-		            Log.d("score", "Retrieved " + itemList.size() + " scores");
+		            
 		            for(ParseObject ob : itemList){
-		            	Log.d("Device", resourcesManager.opponentDeviceID);
+		            	
 		            	if (ob.getString("Device").equals(resourcesManager.opponentDeviceID)) {
-			            	Log.d("GameId", resourcesManager.gameId);
+			            	
 			            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
 			            		if(getGame().getCount() != 0){
 					        		JSONArray array = ob.getJSONArray("Moves");
-					        		Log.d("Turn", "Starting computer turn");
+					        		
 					        		deselectCharacter(false);
 					            	((OnlineGame)getGame()).getCompPlayer().startTurn((OnlineGame)getGame(), array);
 					            	ob.deleteInBackground();
@@ -627,7 +627,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 					        	}
 					        	else{
 					        		JSONObject object = ob.getJSONObject("Init");
-					        		Log.d("Turn", "Starting Init turn");
+					        		
 					        		deselectCharacter(false);
 					            	((OnlineGame)getGame()).getCompPlayer().init((OnlineGame)getGame(), object);
 					            	ob.deleteInBackground();
@@ -639,9 +639,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		            	} 
 		            }
 		            startCompTurn();   
-		        } else {
-		            Log.d("score", "Error: " + e.getMessage());
-		        }
+		        } 
 		    }
 		});
 		

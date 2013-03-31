@@ -3,9 +3,6 @@ package com.testgame;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.util.Log;
-
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseUser;
@@ -116,7 +113,6 @@ public class OnlineGame extends AGame{
 	public void nextTurn() {
 		if(!getPlayer().isTurn())
 			return;
-		Log.d("Turn", getCount()+"");
 		ParseObject turns = new ParseObject("Turns");
 		turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
 		turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+getCount());
