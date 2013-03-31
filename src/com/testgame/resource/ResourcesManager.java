@@ -36,6 +36,7 @@ public class ResourcesManager {
     public String userString;
     public String opponent;
     public String opponentString;
+    public String mapString = "Default";;
     public boolean turn;
     public boolean inGame;
     public boolean isLocal;
@@ -407,6 +408,21 @@ public class ResourcesManager {
 
 	public void pause_music() {
 		if (menu_background_music != null) menu_background_music.pause();
+	}
+	
+	public void setMap(String mapName) {
+		this.mapString = mapName;
+		// Add other cases later
+		if (mapName.equals("Default")) {
+	    	try {
+	            final TMXLoader tmxLoader = new TMXLoader(activity.getAssets(), activity.getTextureManager(), TextureOptions.NEAREST, vbom);
+	            this.selectedMap = tmxLoader.loadFromAsset("tmx/basic.tmx");
+	        } 
+	    	catch (final TMXLoadException e) {
+	             Debug.e(e);
+	        }
+		}
+			
 	}
 	
 	public void resetGame() {
