@@ -68,9 +68,9 @@ public class LocalGame extends AGame {
 		int nerds = resourcesManager.unitArray.get(1);
 		int ditz = resourcesManager.unitArray.get(2);
 
-		int j = 10;
+		int j = this.gameMap.yDim - 2;
 
-		for(int i = 0; i < 10; i++){
+		for(int i = this.gameMap.xDim/2 - 5; i < this.gameMap.xDim/2 + 5; i++){
 				if(nerds > 0){
 					AUnit unit = new Nerd(gameMap, i, j, gameScene, "blue");
 					unit.init(); 
@@ -94,9 +94,9 @@ public class LocalGame extends AGame {
 		jocks = resourcesManager.unitArray2.get(0);
 		nerds = resourcesManager.unitArray2.get(1);
 		ditz = resourcesManager.unitArray2.get(2);
-		j = 0;
+		j = 2;
 
-		for(int i = 0; i < 10; i++){
+		for(int i = this.gameMap.xDim/2 - 5; i < this.gameMap.xDim/2 + 5; i++){
 				if(nerds > 0){
 					AUnit unit = new Nerd(gameMap, i, j, gameScene, "red");
 					unit.init(); 

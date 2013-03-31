@@ -367,6 +367,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		animatePoints(-dec, "red");
 		//this.setText(this.energy, this.currentHealth);
+		this.healthBar.setProgress(this.currentHealth);
 	}
 
 	public void setEnergy(int energy){
@@ -375,6 +376,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		//this.setText(this.energy, this.currentHealth);
 		animatePoints(diff, "blue"); // recharging energy;
 		//this.setAlpha(this.energy / 100 + .1f);
+		this.energyBar.setProgress(this.energy);
 	}
 	
 	@Override
@@ -384,6 +386,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		//this.setText(this.energy, this.currentHealth);
 		animatePoints(energy, "blue"); 
 		//this.setAlpha(this.energy / 100 + .1f);
+		this.energyBar.setProgress(this.energy);
 	}
 
 	@Override
@@ -391,6 +394,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		this.energy -= energy;
 		//this.setText(this.energy, this.currentHealth);
 		animatePoints(-energy, "blue");
+		this.energyBar.setProgress(this.energy);
 	}
 	
 	@Override
@@ -501,15 +505,15 @@ public class AUnit extends CharacterSprite implements IUnit {
 		this.game.attachChild(this);
 		this.game.registerTouchArea(this);
 		
-		healthBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize);
+		healthBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize, this.maxHealth);
 		healthBar.setProgressColor(1, 0, 0, .7f);
-		healthBar.setProgress(new Random().nextInt(100));
+		healthBar.setProgress(this.energy);
 		healthBar.setVisible(false);
 		game.attachChild(healthBar);
 		
-		energyBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize);
+		energyBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize, 100);
 		energyBar.setProgressColor(0, 0, 1, .7f);
-		energyBar.setProgress(new Random().nextInt(100));
+		energyBar.setProgress(this.energy);
 		energyBar.setVisible(false);
 		game.attachChild(energyBar);
 		

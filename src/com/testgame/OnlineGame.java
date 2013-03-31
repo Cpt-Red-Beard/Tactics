@@ -48,11 +48,11 @@ public class OnlineGame extends AGame{
 		int jocks = resourcesManager.unitArray.get(0);
 		int nerds = resourcesManager.unitArray.get(1);
 		int ditz = resourcesManager.unitArray.get(2);
-		int j = 0;
+		int j = 2;
 		if(isFirstTurn())
-			j = 10;
+			j = this.gameMap.yDim - 2;
 		
-		for(int i = 0; i < 10; i++){
+		for(int i = this.gameMap.xDim/2 - 5; i < this.gameMap.xDim/2 + 5; i++){
 				if(nerds > 0){
 					AUnit unit = new Nerd(gameMap, i, j, gameScene, "blue");
 					unit.init(); 

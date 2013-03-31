@@ -21,14 +21,17 @@ public class ProgressBar extends Rectangle {
 	private final Rectangle mBackgroundRectangle;
 	private final Rectangle mProgressRectangle;
 	
-	private final float mPixelsPerPercentRatio;
+	private float mPixelsPerPercentRatio;
 
 	private final static int height = 64;
 	private final static int width = 50;
+	
+	private final float maxValue;
+	
 	// ===========================================================          
 	// Constructors          
 	// =========================================================== 
-	public ProgressBar(final GameScene gameScene, final float pX, final float pY) {
+	public ProgressBar(final GameScene gameScene, final float pX, final float pY, final float maxValue) {
 		super(pX, pY, width, height, gameScene.vbom);
 		setOffsetCenter(0, 0);
 		
@@ -50,7 +53,11 @@ public class ProgressBar extends Rectangle {
 			this.mFrameLines[i].setColor(Color.BLACK);
 			attachChild(this.mFrameLines[i]); //Lines are drawn last, so they'll override everything.
 		}
-		this.mPixelsPerPercentRatio = (float) (height * 1f / 100);
+		
+		this.maxValue = maxValue;
+		
+		this.mPixelsPerPercentRatio = (float) (height * 1f  / this.maxValue);
+		
 	}
 	// ===========================================================          
 	// Getter & Setter          

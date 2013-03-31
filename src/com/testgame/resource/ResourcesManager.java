@@ -160,6 +160,8 @@ public class ResourcesManager {
                 this.menu_background_music.setVolume(2f);
                 
                 this.select_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "buttonpush.wav");
+                
+                touch_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "touch.mp3");
         } catch (final IOException e) {
                 Debug.e("Error", e);
         }
@@ -284,6 +286,9 @@ public class ResourcesManager {
     private BitmapTextureAtlas top_bar_atlas, bottom_bar_atlas;
     public ITextureRegion top_bar, bottom_bar;
     
+    private BitmapTextureAtlas red_button_atlas, blue_button_atlas;
+    public ITextureRegion red_button, blue_button;
+    
     public TMXTiledMap tiledMap;
     
     public Font handwriting_font;
@@ -334,7 +339,7 @@ public class ResourcesManager {
     	ditz_tileset_atlas.load();
     	nerd_tileset_atlas.load();
     	
-    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/");
+    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/hud/");
     	
     	gear_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 128, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
     	gear_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gear_atlas, activity, "settinggear.png", 0, 0);
@@ -351,6 +356,16 @@ public class ResourcesManager {
     	pause_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
     	pause_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(pause_atlas, activity, "pausebutton.png", 0, 0);
     	pause_atlas.load();
+    	
+    	blue_button_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 200, 200, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+    	blue_button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(blue_button_atlas, activity, "blue_button.png", 0, 0);
+    	blue_button_atlas.load();
+    	
+    	red_button_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 200, 200, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+    	red_button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(red_button_atlas, activity, "red_button.png", 0, 0);
+    	red_button_atlas.load();
+    	
+    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/");
     	
     	map_tiles_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
     	map_tiles = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(map_tiles_atlas, activity, "maptiles.png", 0, 0, 11, 2);
@@ -380,7 +395,7 @@ public class ResourcesManager {
 			walking_sound.setLooping(true);
 			walking_sound.setVolume(2f);
 			attack_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "whack.wav");
-			touch_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "touch.mp3");
+			
 		} catch (IllegalStateException e) {
 			Debug.e("Error", e);
 		} catch (IOException e) {

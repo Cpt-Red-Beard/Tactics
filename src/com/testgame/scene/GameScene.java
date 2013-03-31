@@ -16,6 +16,7 @@ import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.AutoWrap;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.extension.tmx.TMXLayer;
@@ -92,6 +93,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	private ButtonSprite pauseButton;
 	private ButtonSprite tutorialButton;
+	private ButtonSprite healthModeButton, energyModeButton;
 	
 	private Text eventsMessage;
 	private Text turnMessage;
@@ -233,7 +235,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		hud.attachChild(bottomBar = new Sprite(240, -300, resourcesManager.bottom_bar, vbom));
 		
 		// Create the game events messages.
-		this.eventsMessage = new Text(240, 760, resourcesManager.cartoon_font_white, "Destroy All Enemy Units\n to Win!", 200, new TextOptions(HorizontalAlign.CENTER), vbom);
+		this.eventsMessage = new Text(240, 760, resourcesManager.cartoon_font_white, "Destroy All Enemy Units\n to Win!", 200, new TextOptions(AutoWrap.LETTERS, 480 - 260, HorizontalAlign.CENTER), vbom);
 		this.endGameMessage = new Text(240, 400, resourcesManager.font, "", 50, new TextOptions(HorizontalAlign.CENTER), vbom);
 		
 		// Initialize HUD and its entities.
@@ -257,6 +259,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				
 				if (animating) return;
 				
+				resourcesManager.select_sound.play();
+				
 				Log.d("AndEngine", "launching tutorial scene");
 				OldX = camera.getCenterX();
 				OldY = camera.getCenterY();
@@ -273,6 +277,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             	
             	if (animating) return;
             	
+            	resourcesManager.select_sound.play();
+            	
             	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
@@ -284,13 +290,52 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             }
 		});
 
+		healthModeButton = new ButtonSprite(110, 760, resourcesManager.red_button, vbom, new OnClickListener() {
+
+			@Override
+			public void onClick(ButtonSprite pButtonSprite,
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				
+				if (animating) return;
+				
+				resourcesManager.select_sound.play();
+				
+				deselectCharacter(true);
+				
+				if (mode == HEALTH_MODE) switchMode(SPRITE_MODE);
+				else switchMode(HEALTH_MODE);
+				
+			}});
+		
+		energyModeButton = new ButtonSprite(480 - 110, 760, resourcesManager.blue_button, vbom, new OnClickListener() {
+
+			@Override
+			public void onClick(ButtonSprite pButtonSprite,
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				
+				if (animating) return;
+				
+				resourcesManager.select_sound.play();
+				
+				deselectCharacter(true);
+			
+				if (mode == ENERGY_MODE) switchMode(SPRITE_MODE);
+				else switchMode(ENERGY_MODE);
+				
+			}});
 	
 	    //hud.attachChild(turnMessage);
 	    //hud.attachChild(nextTurnButton);
 	    //hud.registerTouchArea(nextTurnButton);
-	    hud.attachChild(eventsMessage);
+	    //hud.attachChild(eventsMessage);
 	    hud.attachChild(tutorialButton);
 		hud.registerTouchArea(tutorialButton);
+		
+		hud.attachChild(healthModeButton);
+		hud.registerTouchArea(healthModeButton);
+		
+		hud.attachChild(energyModeButton);
+		hud.registerTouchArea(energyModeButton);
 		
 	   // hud.attachChild(turnMessage);
 	    hud.attachChild(pauseButton);

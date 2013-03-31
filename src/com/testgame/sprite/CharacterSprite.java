@@ -63,6 +63,9 @@ public class CharacterSprite extends AnimatedSprite {
 		
 		if (pSceneTouchEvent.getAction() == MotionEvent.ACTION_DOWN) {
 			
+			// if we're not in sprite mode, switch back to it
+			if (game.mode != GameScene.SPRITE_MODE) game.switchMode(GameScene.SPRITE_MODE);
+			
 			ResourcesManager.getInstance().touch_sound.play();
 			
 			if (isTurn) {

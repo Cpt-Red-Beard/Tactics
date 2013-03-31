@@ -83,6 +83,9 @@ public class SetupScene extends BaseScene {
 				if(tot < 10){
 					return;
 				}
+				
+				resourcesManager.select_sound.play();
+				
 				ArrayList<Integer> unitList = new ArrayList<Integer>();
 				unitList.add(jocks);
 				unitList.add(nerds);
@@ -131,6 +134,7 @@ public class SetupScene extends BaseScene {
 
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				resourcesManager.select_sound.play();
 				tot = 0; jocks = 0; nerds = 0; ditzes = 0;
 				updateText();
 			}
@@ -142,6 +146,7 @@ public class SetupScene extends BaseScene {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				if (tot < MAX_UNITS) {
+					resourcesManager.touch_sound.play();
 					jocks++; tot++;
 					updateText();
 				}
@@ -154,6 +159,7 @@ public class SetupScene extends BaseScene {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				if (tot < MAX_UNITS) {
+					resourcesManager.touch_sound.play();
 					nerds++; tot++;
 					updateText();
 				}
@@ -166,6 +172,7 @@ public class SetupScene extends BaseScene {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				if (tot < MAX_UNITS) {
+					resourcesManager.touch_sound.play();
 					ditzes++; tot++;
 					updateText();
 				}
