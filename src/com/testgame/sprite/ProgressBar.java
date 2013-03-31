@@ -77,11 +77,9 @@ public class ProgressBar extends Rectangle {
 	 * @param pProgress is <b> BETWEEN </b> 0 - 100.
 	 */
 	public void setProgress(final float pProgress) {
-		Log.d("AndEngine", "setting progress to " + pProgress);
 		if(pProgress < 0)
 			this.mProgressRectangle.setHeight(0); //This is an internal check for my specific game, you can remove it.
 		this.mProgressRectangle.setHeight(this.mPixelsPerPercentRatio * pProgress);
-		Log.d("AndEngine", "height now " + this.mProgressRectangle.getHeight());
 	}
 	// ===========================================================          
 	// Methods for/from SuperClass/Interfaces          

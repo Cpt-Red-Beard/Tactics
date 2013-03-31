@@ -60,7 +60,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static AlertDialog acceptDialog;
 	private static AlertDialog mapDialog;
 	private static Map<String, String> usernames;
-	private static CharSequence[] mapNames = new CharSequence[]{"Default"};
 	private static String selectedMapName = "Default"; 
 	
 	@Override
@@ -496,9 +495,9 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	public void createMapDialog(){
 		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
 		dia.setTitle("Selected Map:");
-		dia.setSingleChoiceItems(mapNames, 0, new DialogInterface.OnClickListener() {
+		dia.setSingleChoiceItems(resourcesManager.maps(), 0, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) { 
-				selectedMapName = (mapNames[whichButton]).toString();
+				selectedMapName = (resourcesManager.maps()[whichButton]).toString();
 				resourcesManager.setMap(selectedMapName);
 				mapDialog.dismiss();
 			}

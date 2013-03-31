@@ -7,7 +7,11 @@ import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.extension.tmx.TMXLayer;
 import org.andengine.extension.tmx.TMXLoader;
+import org.andengine.extension.tmx.TMXProperties;
+import org.andengine.extension.tmx.TMXTile;
+import org.andengine.extension.tmx.TMXTileProperty;
 import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.opengl.font.Font;
@@ -23,10 +27,13 @@ import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.extension.tmx.TMXLoader.ITMXTilePropertiesListener;
 
 import org.andengine.util.debug.Debug;
 
+import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.util.Log;
 
 import com.example.testgame.MainActivity;
 
@@ -311,7 +318,7 @@ public class ResourcesManager {
         loadGameGraphics();
         loadGameFonts();
         loadGameAudio();
-        loadGameMap();
+        //loadGameMap();
     }
     
     private void loadGameMap() {
@@ -428,17 +435,30 @@ public class ResourcesManager {
 	}
 	
 	public void setMap(String mapName) {
+		Log.d("AndEngine", "[ResourcesManager] setting map");
 		this.mapString = mapName;
-		// Add other cases later
-		if (mapName.equals("Default")) {
-	    	try {
-	            final TMXLoader tmxLoader = new TMXLoader(activity.getAssets(), activity.getTextureManager(), TextureOptions.NEAREST, vbom);
-	            this.selectedMap = tmxLoader.loadFromAsset("tmx/basic.tmx");
-	        } 
-	    	catch (final TMXLoadException e) {
-	             Debug.e(e);
-	        }
-		}
+    	try {
+            final TMXLoader tmxLoader = new TMXLoader(activity.getAssets(), activity.getTextureManager(), TextureOptions.NEAREST, vbom, new ITMXTilePropertiesListener() {
+				@Override
+				public void onTMXTileWithPropertiesCreated(
+						TMXTiledMap pTMXTiledMap, TMXLayer pTMXLayer,
+						TMXTile pTMXTile,
+						TMXProperties<TMXTileProperty> pTMXTileProperties) {
+					// TODO make this work.
+					Log.d("AndEngine", "found tile property");
+					for (TMXTileProperty tp : pTMXTileProperties) {
+						Log.d("AndEngine", pTMXTile.getTileRow()+"x"+pTMXTile.getTileColumn()+" -> "+tp.getName() + " : " + tp.getValue());
+					}
+				}
+            });
+            
+            this.tiledMap = tmxLoader.loadFromAsset("tmx/"+mapString);
+            
+            Log.d("AndEngine", "[ResourcesManager] successfully loaded map");
+        } 
+    	catch (final TMXLoadException e) {
+             Debug.e(e);
+        }
 			
 	}
 	
@@ -462,6 +482,18 @@ public class ResourcesManager {
 		} else {
 			first = true;
 			return "Player 1";
+		}
+	}
+	
+	public String[] maps() {
+		
+		AssetManager assets = activity.getAssets();
+		try {
+			Log.d("AndEngine", "[tmx maps] " + assets.list("tmx").length);
+			return assets.list("tmx");
+		} catch (IOException e) {
+			Log.d("Error", e.toString());
+			return null;
 		}
 	}
 	
