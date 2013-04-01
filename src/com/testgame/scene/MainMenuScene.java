@@ -481,25 +481,25 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		}
 		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) { 
-            		try {
-						if(object.getString("turn").equals("true")){
-							resourcesManager.turn = true;
-						}
-						else 
-							resourcesManager.turn = false;
+        		try {
 					
-				
-            			resourcesManager.gameId = object.getString("GameId");
-            			resourcesManager.opponentDeviceID = object.getString("deviceId");
-            	
-            				resourcesManager.isLocal = false;
-            				resourcesManager.inGame = true;
-        		        	acceptDialog.dismiss();
-        		           	SceneManager.getInstance().loadSetupScene(engine);
-            		} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+        			if(object.getString("turn").equals("true")){
+						resourcesManager.turn = true;
 					}
+					else 
+						resourcesManager.turn = false;
+			
+		
+    				resourcesManager.gameId = object.getString("GameId");
+    				resourcesManager.opponentDeviceID = object.getString("deviceId");
+    				resourcesManager.isLocal = false;
+    				resourcesManager.inGame = true;
+		        	acceptDialog.dismiss();
+		           	SceneManager.getInstance().loadSetupScene(engine);
+        		} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
 		
