@@ -2,12 +2,17 @@ package com.testgame;
 
 
 
+import android.graphics.Point;
+import android.util.Log;
+
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.mechanics.unit.Base;
 import com.testgame.mechanics.unit.Ditz;
+import com.testgame.mechanics.unit.DummyUnit;
 import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
 import com.testgame.player.APlayer;
+import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
 
 public class LocalGame extends AGame {
@@ -65,11 +70,17 @@ public class LocalGame extends AGame {
 
 	@Override
 	public void init() {
+		
+		for (Point p : ResourcesManager.getInstance().obstacles) {
+			Log.d("AndEngine", "Obstacle at ("+p.x+", "+p.y+")");
+			this.gameMap.setOccupied(p.x, gameMap.yDim - p.y - 1, new DummyUnit(0, 0, resourcesManager.ditz_tileset, resourcesManager.vbom));
+		}
+		
 		int jocks = resourcesManager.unitArray.get(0);
 		int nerds = resourcesManager.unitArray.get(1);
 		int ditz = resourcesManager.unitArray.get(2);
 
-		int j = this.gameMap.yDim - 2;
+		int j = this.gameMap.yDim - 4;
 
 		for(int i = this.gameMap.xDim/2 - 5; i < this.gameMap.xDim/2 + 5; i++){
 				if(nerds > 0){

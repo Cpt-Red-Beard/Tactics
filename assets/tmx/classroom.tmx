@@ -12,6 +12,11 @@
     <property name="obstacle" value="true"/>
    </properties>
   </tile>
+  <tile id="3">
+   <properties>
+    <property name="obstacle" value="true"/>
+   </properties>
+  </tile>
   <tile id="8">
    <properties>
     <property name="ostacle" value="true"/>

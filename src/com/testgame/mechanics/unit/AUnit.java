@@ -426,7 +426,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 			int dist = map.manhattanDistance(s, d);
 			if (dist > range) return;
 			else moves.add(p);
-		}
+		} 
 	}
 	
 	// all the squares you can move to 
@@ -482,6 +482,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
 		
 		if (occupyingUnit != null) { // occupied
+			if (occupyingUnit.unitType.equals("Dummy")) return; // not truly a target, just a dummy obstacle
 			if (targets.contains(occupyingUnit)) return;
 			else {
 				if (occupyingUnit.getPlayer() == this.player) return; // same player, not an enemy

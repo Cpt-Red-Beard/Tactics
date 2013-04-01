@@ -33,6 +33,7 @@ import org.andengine.util.debug.Debug;
 
 import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.util.Log;
 
 import com.example.testgame.MainActivity;
@@ -434,9 +435,12 @@ public class ResourcesManager {
 		if (menu_background_music != null) menu_background_music.pause();
 	}
 	
+	public ArrayList<Point> obstacles;
+	
 	public void setMap(String mapName) {
 		Log.d("AndEngine", "[ResourcesManager] setting map");
 		this.mapString = mapName;
+		this.obstacles = new ArrayList<Point>();
     	try {
             final TMXLoader tmxLoader = new TMXLoader(activity.getAssets(), activity.getTextureManager(), TextureOptions.NEAREST, vbom, new ITMXTilePropertiesListener() {
 				@Override
@@ -447,8 +451,10 @@ public class ResourcesManager {
 					// TODO make this work.
 					Log.d("AndEngine", "found tile property");
 					for (TMXTileProperty tp : pTMXTileProperties) {
-						Log.d("AndEngine", pTMXTile.getTileRow()+"x"+pTMXTile.getTileColumn()+" -> "+tp.getName() + " : " + tp.getValue());
+						Log.d("AndEngine", pTMXTile.getTileColumn()+"x"+pTMXTile.getTileRow()+" -> "+tp.getName() + " : " + tp.getValue());
+						obstacles.add(new Point(pTMXTile.getTileColumn(), pTMXTile.getTileRow()));
 					}
+					
 				}
             });
             
@@ -496,5 +502,5 @@ public class ResourcesManager {
 			return null;
 		}
 	}
-	
+
 }
