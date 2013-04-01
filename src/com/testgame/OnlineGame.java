@@ -43,6 +43,8 @@ public class OnlineGame extends AGame{
 	 */
 	public void init() {
 		
+		super.init();
+		
 		int jocks = resourcesManager.unitArray.get(0);
 		int nerds = resourcesManager.unitArray.get(1);
 		int ditz = resourcesManager.unitArray.get(2);
@@ -72,6 +74,7 @@ public class OnlineGame extends AGame{
 			}
 		
 		AUnit unitbase = new Base(gameMap, 5, gameMap.xDim/2, gameScene, "blue");
+		unitbase.init();
 		player.setBase(unitbase);
 	}
 	

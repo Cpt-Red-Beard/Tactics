@@ -4,7 +4,11 @@ import java.util.Random;
 
 import org.json.JSONObject;
 
+import android.graphics.Point;
+import android.util.Log;
+
 import com.testgame.mechanics.map.GameMap;
+import com.testgame.mechanics.unit.DummyUnit;
 import com.testgame.player.APlayer;
 import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
@@ -79,7 +83,12 @@ public abstract class AGame implements IGame {
 		
 	}
 
-	public abstract void init();
+	public void init() {
+		for (Point p : ResourcesManager.getInstance().obstacles) {
+			Log.d("AndEngine", "Obstacle at ("+p.x+", "+p.y+")");
+			this.gameMap.setOccupied(p.x, gameMap.yDim - p.y - 1, new DummyUnit(0, 0, resourcesManager.ditz_tileset, resourcesManager.vbom));
+		}
+	}
 	
 	public abstract void endGame();
 	

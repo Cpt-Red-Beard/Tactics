@@ -71,10 +71,7 @@ public class LocalGame extends AGame {
 	@Override
 	public void init() {
 		
-		for (Point p : ResourcesManager.getInstance().obstacles) {
-			Log.d("AndEngine", "Obstacle at ("+p.x+", "+p.y+")");
-			this.gameMap.setOccupied(p.x, gameMap.yDim - p.y - 1, new DummyUnit(0, 0, resourcesManager.ditz_tileset, resourcesManager.vbom));
-		}
+		super.init();
 		
 		int jocks = resourcesManager.unitArray.get(0);
 		int nerds = resourcesManager.unitArray.get(1);
