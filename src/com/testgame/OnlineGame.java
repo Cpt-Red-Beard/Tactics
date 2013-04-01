@@ -121,7 +121,7 @@ public class OnlineGame extends AGame{
 		turns.put("Moves", moves);
 		turns.saveInBackground();
 		try {
-			JSONObject data = new JSONObject("{\"alert\": \"Next Turn\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"action\": \"com.testgame.NEXT_TURN\"}");
+			JSONObject data = new JSONObject("{\"alert\": \"Next Turn\", \"deviceId\": \""+resourcesManager.gameId+"\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"action\": \"com.testgame.NEXT_TURN\"}");
 			 ParsePush push = new ParsePush();
 			 push.setChannel("user_"+resourcesManager.opponentString);
              push.setData(data);

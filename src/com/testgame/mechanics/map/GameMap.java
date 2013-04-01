@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import android.graphics.Point;
-import android.util.Log;
 
 import com.testgame.mechanics.unit.AUnit;
 

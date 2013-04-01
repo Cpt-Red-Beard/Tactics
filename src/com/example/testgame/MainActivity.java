@@ -57,6 +57,7 @@ public class MainActivity extends BaseGameActivity {
      					if(resourcesManager.inGame == false){
      						return;
      					}
+     					
      					JSONObject json;
     					try {
     						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
@@ -112,7 +113,7 @@ public class MainActivity extends BaseGameActivity {
 
       				@Override
       				public void onReceive(Context context, Intent intent) {
-      					resourcesManager.inGame = false;
+      					
       					JSONObject json;
     					try {
     						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
@@ -131,19 +132,11 @@ public class MainActivity extends BaseGameActivity {
                		
       				@Override
       				public void onReceive(Context context, Intent intent) {
-      					resourcesManager.inGame = true;
       					JSONObject json;
     					try {
     						
     						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
-    						if(json.getString("turn").equals("true")){
-    							resourcesManager.turn = true;
-    						}
-    						else 
-    							resourcesManager.turn = false;
     						
-    						resourcesManager.gameId = json.getString("GameId");
-    						resourcesManager.opponentDeviceID = json.getString("deviceId");
     						
     						if(SceneManager.getInstance().getMainMenuScene() != null)
     						((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createAcceptDialog(json);

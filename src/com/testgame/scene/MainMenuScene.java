@@ -365,7 +365,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				// Launch an online game.
 				
 				gameOptionsDialog.dismiss();
-				resourcesManager.isLocal = false;
 				activity.runOnUiThread(new Runnable () {
 					@Override
 					public void run() {
@@ -472,7 +471,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 	}
 	
-	public void createAcceptDialog(JSONObject object){
+	public void createAcceptDialog(final JSONObject object){
 		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
 		try {
 			dia.setTitle(object.getString("name")+ " accepted the invitation!");
@@ -482,11 +481,25 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		}
 		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) { 
+            		try {
+						if(object.getString("turn").equals("true")){
+							resourcesManager.turn = true;
+						}
+						else 
+							resourcesManager.turn = false;
+					
+				
+            			resourcesManager.gameId = object.getString("GameId");
+            			resourcesManager.opponentDeviceID = object.getString("deviceId");
+            	
             				resourcesManager.isLocal = false;
             				resourcesManager.inGame = true;
         		        	acceptDialog.dismiss();
         		           	SceneManager.getInstance().loadSetupScene(engine);
-
+            		} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
             }
         });
 		
