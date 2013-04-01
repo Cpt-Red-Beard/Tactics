@@ -157,6 +157,7 @@ public class ComputerPlayer extends APlayer {
 				}
 			}
 			AUnit unitbase = new Base(game.gameMap, 5, x, game.getGameScene(), "red");
+			unitbase.init();
 			game.getCompPlayer().setBase(unitbase);
 			
 		
