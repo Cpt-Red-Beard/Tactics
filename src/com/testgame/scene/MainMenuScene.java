@@ -87,7 +87,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void disposeScene() {
-		// TODO Unload all of the resources.
+		// Nothing to do here since we never want to unload game resources unless quitting the game.
 	}
 	
 	private void createBackground()
@@ -408,7 +408,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 								resourcesManager.opponentDeviceID = object.getString("deviceId");
 								resourcesManager.setMap(object.getString("map"));
 							} catch (JSONException e) {
-								// TODO Auto-generated catch block
+								
 								e.printStackTrace();
 							}
             				resourcesManager.isLocal = false;
@@ -427,7 +427,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
         	            		resourcesManager.opponent = object.getString("name");
         						resourcesManager.opponentString = object.getString("userid");
         					} catch (JSONException e1) {
-        						// TODO Auto-generated catch block
+        						
         						e1.printStackTrace();
         					}
         	            	try {
@@ -476,7 +476,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		try {
 			dia.setTitle(object.getString("name")+ " accepted the invitation!");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
@@ -497,7 +497,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		        	acceptDialog.dismiss();
 		           	SceneManager.getInstance().loadSetupScene(engine);
         		} catch (JSONException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
             }

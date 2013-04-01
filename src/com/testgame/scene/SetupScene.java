@@ -209,7 +209,7 @@ public class SetupScene extends BaseScene {
 
 	@Override
 	public void onBackKeyPressed() {
-		SceneManager.getInstance().loadMenuScene(engine);		
+		//Do Nothing here unsafe when online.
 	}
 
 	@Override
