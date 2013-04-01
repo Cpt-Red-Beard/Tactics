@@ -4,7 +4,6 @@ import org.andengine.entity.IEntity;
 import org.andengine.entity.modifier.MoveModifier;
 
 import com.testgame.mechanics.unit.AUnit;
-import com.testgame.resource.ResourcesManager;
 
 public class WalkMoveModifier extends MoveModifier {
 	

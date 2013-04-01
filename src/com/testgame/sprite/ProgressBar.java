@@ -2,10 +2,7 @@ package com.testgame.sprite;
 
 import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Rectangle;
-import org.andengine.entity.sprite.Sprite;
 import org.andengine.util.adt.color.Color;
-
-import android.util.Log;
 
 import com.testgame.scene.GameScene;
 
