@@ -2,17 +2,12 @@ package com.testgame;
 
 
 
-import android.graphics.Point;
-import android.util.Log;
-
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.mechanics.unit.Base;
 import com.testgame.mechanics.unit.Ditz;
-import com.testgame.mechanics.unit.DummyUnit;
 import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
 import com.testgame.player.APlayer;
-import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
 
 public class LocalGame extends AGame {

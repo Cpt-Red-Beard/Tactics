@@ -161,9 +161,15 @@ public class MainActivity extends BaseGameActivity {
       				@Override
       				public void onReceive(Context context, Intent intent) {
       					
-    						
-      					if(SceneManager.getInstance().getGameScene() != null)
-    						((GameScene) SceneManager.getInstance().getGameScene()).quitDialog("Opponent has quit the game! You win!");
+      					JSONObject json;
+    					try {
+    						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));	
+    						if(SceneManager.getInstance().getGameScene() != null && resourcesManager.gameId.equals(json.getString("gameId")))
+    							((GameScene) SceneManager.getInstance().getGameScene()).quitDialog("Opponent has quit the game! You win!");
+    					}
+      					catch(Exception e){
+      						
+      					}
     					
  	
       				}

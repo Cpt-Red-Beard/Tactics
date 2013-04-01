@@ -852,7 +852,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             public void onClick(DialogInterface dialog, int whichButton) {
             	if(!resourcesManager.isLocal){
 	            	try {
-						JSONObject data = new JSONObject("{\"alert\": \"Game Ended\", \"action\": \"com.testgame.QUIT\"}");
+						JSONObject data = new JSONObject("{\"alert\": \"Game Ended\",\"gameId\": \"+resourcesManager.gameId+\", \"action\": \"com.testgame.QUIT\"}");
 						 ParsePush push = new ParsePush();
 			             push.setChannel("user_"+resourcesManager.opponentString); 
 			             push.setData(data);
