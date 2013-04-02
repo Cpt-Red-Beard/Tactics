@@ -1,7 +1,9 @@
 package com.testgame.mechanics.map;
 
-import com.testgame.mechanics.unit.AUnit;
 import android.graphics.Point;
+
+import com.testgame.mechanics.unit.AUnit;
+import com.testgame.player.APlayer;
 
 /**
  * Interface for a  game map.
@@ -52,7 +54,8 @@ public interface IMap {
 	 * Performs A* and returns distance from s to d, or -1 if no path is available.
 	 * @param s The source.
 	 * @param d The destination.
+	 * @param requestingPlayer Player trying to move this unit.
 	 */ 
-	public int manhattanDistance(Point s, Point d);
+	public int manhattanDistanceAStar(Point s, Point d, APlayer requestingPlayer);
 
 }

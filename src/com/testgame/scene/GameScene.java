@@ -1,20 +1,20 @@
 package com.testgame.scene;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import org.andengine.entity.IEntity;
-import org.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
-import org.andengine.entity.modifier.MoveModifier;
-
 
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.IEntityModifier.IEntityModifierListener;
+import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.ButtonSprite;
+import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
@@ -24,7 +24,6 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.controller.MultiTouchController;
 import org.andengine.input.touch.detector.PinchZoomDetector;
 import org.andengine.input.touch.detector.PinchZoomDetector.IPinchZoomDetectorListener;
-import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.util.Constants;
 import org.andengine.util.adt.align.HorizontalAlign;
 import org.andengine.util.modifier.IModifier;
@@ -41,8 +40,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.parse.ParseException;
 import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
@@ -82,6 +81,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public int heightInTiles;
 	
 	private ArrayList<AUnit> targets = new ArrayList<AUnit>();
+
+	/**
+	 * Mapping of unit to their available moves once calculated. This dictionary 
+	 * is reset every time a unit moves.
+	 */
+	private HashMap<AUnit, ArrayList<Point>> moveMap = new HashMap<AUnit, ArrayList<Point>>();
+
+	/**
+	 * Same as above, but for targets.
+	 */
+	private HashMap<AUnit, ArrayList<AUnit>> targetMap = new HashMap<AUnit, ArrayList<AUnit>>();
+
 	
 	private ButtonSprite pauseButton;
 	private ButtonSprite tutorialButton;
@@ -332,8 +343,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	public void highlightAvailableTargets(CharacterSprite sprite) {
-				
-		targets = ((AUnit)sprite).availableTargets();
+		
+		ArrayList<AUnit> curTargets = targetMap.get((AUnit) sprite);
+		if (curTargets == null) {
+			curTargets = ((AUnit)sprite).availableTargets();
+			targetMap.put((AUnit) sprite, curTargets);
+		}
+
+		targets = curTargets;
 		
 		for (AUnit target: targets){
 		
@@ -351,7 +368,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				redValue = 1;
 			}
 			else {
-				redValue = 1.0f/selectedCharacter.getAttackRange() * selectedCharacter.manhattanDistance(selectedCharacter.getMapX(), selectedCharacter.getMapY(), t.getTileColumn(), heightInTiles - t.getTileRow() - 1) / 2 + .1f;
+				redValue = 1.0f/selectedCharacter.getAttackRange() * selectedCharacter.manhattanDistance(
+						selectedCharacter.getMapX(), selectedCharacter.getMapY(), t.getTileColumn(), 
+						heightInTiles - t.getTileRow() - 1) / 2 + .1f;
 			}
 			availableMove.setColor(1, 0, 0, redValue);
 			attachChild(availableMove);
@@ -367,7 +386,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	//TODO: Clean UP Code here for attack and moves.
 	public void highlightAvailableMoves(CharacterSprite sprite) {
 
-		ArrayList<Point> moves = ((AUnit)sprite).availableMoves();
+		ArrayList<Point> moves = moveMap.get((AUnit) sprite);
+		if (moves == null) {
+			moves = ((AUnit)sprite).availableMoves();
+			moveMap.put((AUnit) sprite, moves);
+		}
 		
 		for (Point p : moves){
 			
@@ -396,7 +419,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			}
 			
 			else {
-				blueValue = 1.0f/(selectedCharacter.getEnergy()/selectedCharacter.getRange()) * selectedCharacter.manhattanDistance(selectedCharacter.getMapX(), selectedCharacter.getMapY(), t.getTileColumn(), heightInTiles - t.getTileRow() - 1) /2 + .1f;
+				blueValue = 1.0f/(selectedCharacter.getEnergy()/selectedCharacter.getRange()) * 
+						selectedCharacter.manhattanDistance(selectedCharacter.getMapX(), selectedCharacter.getMapY(), 
+								t.getTileColumn(), heightInTiles - t.getTileRow() - 1) /2 + .1f;
 			}
 			availableMove.setColor(0, 0, 1, blueValue);
 			attachChild(availableMove);
@@ -440,6 +465,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 					//selectedCharacter.setPosition(x, y);
 					
 					getSelectedCharacter().move(x, heightInTiles - y - 1);
+					moveMap.clear();
+					targetMap.clear();
 				}
 			}
 			

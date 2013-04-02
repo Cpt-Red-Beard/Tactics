@@ -1,14 +1,14 @@
 package com.testgame.mechanics.map;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.PriorityQueue;
 
 import android.graphics.Point;
-import android.util.Log;
 
 import com.testgame.mechanics.unit.AUnit;
+import com.testgame.player.APlayer;
 
 public class GameMap implements IMap {
 	
@@ -86,14 +86,15 @@ public class GameMap implements IMap {
 	}
 
 	@Override
-	public int manhattanDistance(Point s, Point d) {
+	public int manhattanDistanceAStar(Point s, Point d, APlayer requestingPlayer) {
 		//Log.d("AndEngine", "Calculating shortest path!");
 		Node startNode = graph.get(this.entry(s.x, s.y));
 		Node goal = graph.get(this.entry(d.x, d.y));
-		if (goal == null) return -1;
-
-		ArrayList<Node> closedSet = new ArrayList<Node>(); // Nodes already evaluated
-		ArrayList<Node> openSet = new ArrayList<Node>(); // Nodes for tentative evaluation
+		if (goal == null) 
+			return -1;
+		
+		HashSet<Node> closedSet = new HashSet<Node>(); // Nodes already evaluated
+		PriorityQueue<Node> openSet = new PriorityQueue<Node>(); // Nodes for tentative evaluation
 
 		startNode.setParentNode(null);
 		startNode.setGScore(0.0);
@@ -102,8 +103,7 @@ public class GameMap implements IMap {
 		
 		// A* search
 		while (openSet.size() > 0) {
-			Collections.sort(openSet);
-			Node cur = openSet.remove(0);
+			Node cur = openSet.poll();
 			double curGScore = cur.gScore();
 			
 			if (cur.equals(goal)) {
@@ -117,21 +117,71 @@ public class GameMap implements IMap {
 			closedSet.add(cur);
 			HashSet<Node> neighbors = cur.neighbors();
 			for (Node neigh : neighbors) {
-				if (closedSet.contains(neigh) || neigh.isObstacle())
+				if (closedSet.contains(neigh))
 					continue;
+				if (neigh.isObstacle()) {
+					AUnit curUnit = this.getOccupyingUnit(neigh.x(), neigh.y());
+					if (curUnit == null)
+						continue;
+					else if (!requestingPlayer.equals(curUnit.getPlayer()))
+						continue;
+				}
 				double tentativeGScore = curGScore + 1.0;
-				
-				if (!(openSet.contains(neigh)) || (tentativeGScore < neigh.gScore())) {
+				boolean inOpenSet = openSet.contains(neigh);
+				if (!inOpenSet || (tentativeGScore < neigh.gScore())) {
 					neigh.setParentNode(cur);
 					neigh.setGScore(tentativeGScore);
 					neigh.setFScore(tentativeGScore + Node.h(neigh, goal));
-					if (!(openSet.contains(neigh)))
+					if (!inOpenSet)
 						openSet.add(neigh);
 				}
 			}
 		}
 
-		return -1; // Didn't find a path...
+		return -1; // Didn't find a path
+	}
+	
+	public int manhattanDistanceBFS(Point s, Point d, APlayer requestingPlayer) {
+		//Log.d("AndEngine", "Calculating shortest path!");
+		Node startNode = graph.get(this.entry(s.x, s.y));
+		Node goal = graph.get(this.entry(d.x, d.y));
+		if (goal == null || goal.isObstacle()) 
+			return -1;
+		
+		HashSet<Node> processed = new HashSet<Node>();
+		ArrayList<Node> queue = new ArrayList<Node>();
+		queue.add(startNode);
+		startNode.setParentNode(null);
+
+		// Begin BFS search
+		while (queue.size() > 0) {
+			Node cur = queue.remove(0);
+
+			// Found the goal
+			if (cur.equals(goal)) {
+				int pathLength = getSteps(cur);
+				resetParentNodes();
+				return pathLength;
+			}
+
+			// Process neighbors
+			HashSet<Node> neighbors = cur.neighbors();
+			for (Node neigh: neighbors) {
+				if (!processed.contains(neigh)) {
+					if (neigh.isObstacle()) {
+						AUnit curUnit = this.getOccupyingUnit(neigh.x(), neigh.y());
+						if (curUnit == null)
+							continue;
+						else if (!requestingPlayer.equals(curUnit.getPlayer()))
+							continue;
+					}
+					neigh.setParentNode(cur);
+					queue.add(neigh);
+				}
+			}
+		}
+
+		return -1; // Didn't find a path
 	}
 
 	

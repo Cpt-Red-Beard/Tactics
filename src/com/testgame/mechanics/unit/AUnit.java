@@ -409,7 +409,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		if (occupyingUnit == null) { // not occupied
 			if (moves.contains(p)) return;
-			int dist = map.manhattanDistance(s, d);
+			int dist = map.manhattanDistanceBFS(s, d, this.player);
 			if (dist > range) return;
 			else moves.add(p);
 		}
@@ -463,7 +463,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		if (this.x + offsetX < 0 || this.y + offsetY < 0) return; // off of map, not occupied
 		if (this.x + offsetX >= map.xDim || this.y + offsetY >= map.yDim) return; // ditto
-		if (map.manhattanDistance(new Point(this.x, this.y), new Point(this.x + offsetX, this.y + offsetY)) > attackRange)
+		if (map.manhattanDistanceBFS(new Point(this.x, this.y), new Point(this.x + offsetX, this.y + offsetY), this.player) > attackRange)
 			return;
 		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
 		
@@ -485,7 +485,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 * @param y2 The y-coordinate of the second location.
 	 */
 	public int manhattanDistance(int x1, int y1, int x2, int y2) {
-		return map.manhattanDistance(new Point(x1, y1), new Point(x2, y2));
+		return map.manhattanDistanceBFS(new Point(x1, y1), new Point(x2, y2), this.player);
 	}
 	
 	public void init() {
