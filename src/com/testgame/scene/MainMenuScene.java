@@ -60,7 +60,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static AlertDialog acceptDialog;
 	private static AlertDialog mapDialog;
 	private static Map<String, String> usernames;
-	private static CharSequence[] mapNames = new CharSequence[]{"Default"};
 	private static String selectedMapName = "Default"; 
 	
 	@Override
@@ -349,6 +348,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 			public void onClick(DialogInterface dialog, int whichButton) {
 				// launch a local game.	
 				
+				resourcesManager.isLocal = true;
 				gameOptionsDialog.dismiss();
 				activity.runOnUiThread(new Runnable () {
 					@Override
@@ -356,7 +356,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 						createMapDialog();
 					}
 				});
-				resourcesManager.isLocal = true;
 				SceneManager.getInstance().loadSetupScene(engine);
 			}
 		});
@@ -408,6 +407,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
             public void onClick(DialogInterface dialog, int whichButton) {
             				try {
 								resourcesManager.opponentDeviceID = object.getString("deviceId");
+								resourcesManager.setMap(object.getString("map"));
 							} catch (JSONException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -468,6 +468,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		textDialog = dia.create();
 		textDialog.setCanceledOnTouchOutside(false);
 		textDialog.show();
+		
+		
 	}
 	
 	public void createAcceptDialog(JSONObject object){
@@ -496,17 +498,27 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	public void createMapDialog(){
 		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
 		dia.setTitle("Selected Map:");
-		dia.setSingleChoiceItems(mapNames, 0, new DialogInterface.OnClickListener() {
+		dia.setSingleChoiceItems(resourcesManager.maps(), 0, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) { 
-				selectedMapName = (mapNames[whichButton]).toString();
+				selectedMapName = (resourcesManager.maps()[whichButton]).toString();
 				resourcesManager.setMap(selectedMapName);
 				mapDialog.dismiss();
+				
+				if (!resourcesManager.isLocal) {
+					activity.runOnUiThread(new Runnable () {
+						@Override
+						public void run() {
+							showDialog();
+						}
+					});
+				}
 			}
 		});
 		
 		mapDialog = dia.create();
 		mapDialog.setCanceledOnTouchOutside(false);
 		mapDialog.show();
+		
 	}
 
 	@Override

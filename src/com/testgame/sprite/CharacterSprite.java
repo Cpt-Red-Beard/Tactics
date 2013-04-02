@@ -34,6 +34,10 @@ public class CharacterSprite extends AnimatedSprite {
 	
 	protected GameScene game;
 	
+	protected ProgressBar healthBar;
+	
+	protected ProgressBar energyBar;
+	
 	public boolean inSelectedCharactersAttackRange;
 	
 	public void initializeText(int Energy, int Health){
@@ -57,6 +61,9 @@ public class CharacterSprite extends AnimatedSprite {
 		if(game.working) return true;
 		
 		if (pSceneTouchEvent.getAction() == MotionEvent.ACTION_DOWN) {
+			
+			// if we're not in sprite mode, switch back to it
+			if (game.mode != GameScene.SPRITE_MODE) game.switchMode(GameScene.SPRITE_MODE);
 			
 			ResourcesManager.getInstance().touch_sound.play();
 			

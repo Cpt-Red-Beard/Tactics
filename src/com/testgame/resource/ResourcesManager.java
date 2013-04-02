@@ -7,7 +7,11 @@ import org.andengine.audio.music.Music;
 import org.andengine.audio.music.MusicFactory;
 import org.andengine.engine.Engine;
 import org.andengine.engine.camera.Camera;
+import org.andengine.extension.tmx.TMXLayer;
 import org.andengine.extension.tmx.TMXLoader;
+import org.andengine.extension.tmx.TMXProperties;
+import org.andengine.extension.tmx.TMXTile;
+import org.andengine.extension.tmx.TMXTileProperty;
 import org.andengine.extension.tmx.TMXTiledMap;
 import org.andengine.extension.tmx.util.exception.TMXLoadException;
 import org.andengine.opengl.font.Font;
@@ -23,10 +27,14 @@ import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
+import org.andengine.extension.tmx.TMXLoader.ITMXTilePropertiesListener;
 
 import org.andengine.util.debug.Debug;
 
+import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.util.Log;
 
 import com.example.testgame.MainActivity;
 
@@ -160,6 +168,8 @@ public class ResourcesManager {
                 this.menu_background_music.setVolume(2f);
                 
                 this.select_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "buttonpush.wav");
+                
+                touch_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "touch.mp3");
         } catch (final IOException e) {
                 Debug.e("Error", e);
         }
@@ -284,6 +294,11 @@ public class ResourcesManager {
     private BitmapTextureAtlas top_bar_atlas, bottom_bar_atlas;
     public ITextureRegion top_bar, bottom_bar;
     
+
+    private BitmapTextureAtlas red_button_atlas, blue_button_atlas;
+    public ITextureRegion red_button, blue_button;
+    
+
     public TMXTiledMap selectedMap, tiledMap;
     
     public Font handwriting_font;
@@ -304,7 +319,7 @@ public class ResourcesManager {
         loadGameGraphics();
         loadGameFonts();
         loadGameAudio();
-        loadGameMap();
+        //loadGameMap();
     }
     
     private void loadGameMap() {
@@ -334,7 +349,7 @@ public class ResourcesManager {
     	ditz_tileset_atlas.load();
     	nerd_tileset_atlas.load();
     	
-    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/");
+    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/hud/");
     	
     	gear_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 128, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
     	gear_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gear_atlas, activity, "settinggear.png", 0, 0);
@@ -351,6 +366,16 @@ public class ResourcesManager {
     	pause_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
     	pause_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(pause_atlas, activity, "pausebutton.png", 0, 0);
     	pause_atlas.load();
+    	
+    	blue_button_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 200, 200, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+    	blue_button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(blue_button_atlas, activity, "blue_button.png", 0, 0);
+    	blue_button_atlas.load();
+    	
+    	red_button_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 200, 200, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+    	red_button = BitmapTextureAtlasTextureRegionFactory.createFromAsset(red_button_atlas, activity, "red_button.png", 0, 0);
+    	red_button_atlas.load();
+    	
+    	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/");
     	
     	map_tiles_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
     	map_tiles = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(map_tiles_atlas, activity, "maptiles.png", 0, 0, 11, 2);
@@ -380,7 +405,7 @@ public class ResourcesManager {
 			walking_sound.setLooping(true);
 			walking_sound.setVolume(2f);
 			attack_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "whack.wav");
-			touch_sound = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity, "touch.mp3");
+			
 		} catch (IllegalStateException e) {
 			Debug.e("Error", e);
 		} catch (IOException e) {
@@ -410,18 +435,36 @@ public class ResourcesManager {
 		if (menu_background_music != null) menu_background_music.pause();
 	}
 	
+	public ArrayList<Point> obstacles;
+	
 	public void setMap(String mapName) {
+		Log.d("AndEngine", "[ResourcesManager] setting map");
 		this.mapString = mapName;
-		// Add other cases later
-		if (mapName.equals("Default")) {
-	    	try {
-	            final TMXLoader tmxLoader = new TMXLoader(activity.getAssets(), activity.getTextureManager(), TextureOptions.NEAREST, vbom);
-	            this.selectedMap = tmxLoader.loadFromAsset("tmx/basic.tmx");
-	        } 
-	    	catch (final TMXLoadException e) {
-	             Debug.e(e);
-	        }
-		}
+		this.obstacles = new ArrayList<Point>();
+    	try {
+            final TMXLoader tmxLoader = new TMXLoader(activity.getAssets(), activity.getTextureManager(), TextureOptions.NEAREST, vbom, new ITMXTilePropertiesListener() {
+				@Override
+				public void onTMXTileWithPropertiesCreated(
+						TMXTiledMap pTMXTiledMap, TMXLayer pTMXLayer,
+						TMXTile pTMXTile,
+						TMXProperties<TMXTileProperty> pTMXTileProperties) {
+					// TODO make this work.
+					Log.d("AndEngine", "found tile property");
+					for (TMXTileProperty tp : pTMXTileProperties) {
+						Log.d("AndEngine", pTMXTile.getTileColumn()+"x"+pTMXTile.getTileRow()+" -> "+tp.getName() + " : " + tp.getValue());
+						obstacles.add(new Point(pTMXTile.getTileColumn(), pTMXTile.getTileRow()));
+					}
+					
+				}
+            });
+            
+            this.tiledMap = tmxLoader.loadFromAsset("tmx/"+mapString);
+            
+            Log.d("AndEngine", "[ResourcesManager] successfully loaded map");
+        } 
+    	catch (final TMXLoadException e) {
+             Debug.e(e);
+        }
 			
 	}
 	
@@ -434,6 +477,30 @@ public class ResourcesManager {
 		opponentString = null;
 
 		isLocal = false;
+	}
+
+	private boolean first;
+	
+	public String getLocalName() {
+		if (first) {
+			first = false;
+			return "Player 2";
+		} else {
+			first = true;
+			return "Player 1";
+		}
+	}
+	
+	public String[] maps() {
+		
+		AssetManager assets = activity.getAssets();
+		try {
+			Log.d("AndEngine", "[tmx maps] " + assets.list("tmx").length);
+			return assets.list("tmx");
+		} catch (IOException e) {
+			Log.d("Error", e.toString());
+			return null;
+		}
 	}
 
 }

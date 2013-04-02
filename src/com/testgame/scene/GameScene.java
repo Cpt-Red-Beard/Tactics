@@ -16,6 +16,7 @@ import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.AutoWrap;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.extension.tmx.TMXLayer;
@@ -35,6 +36,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -57,6 +59,12 @@ import com.testgame.sprite.HighlightedSquare;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinchZoomDetectorListener {
 
+	public final static int SPRITE_MODE = 0;
+	public final static int HEALTH_MODE = 1;
+	public final static int ENERGY_MODE = 2;
+	
+	public int mode;
+	
 	public boolean working = false;
 
 	private float mTouchX = 0, mTouchY = 0, mTouchOffsetX = 0, mTouchOffsetY = 0;
@@ -96,6 +104,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	private ButtonSprite pauseButton;
 	private ButtonSprite tutorialButton;
+	private ButtonSprite healthModeButton, energyModeButton;
 	
 	private Text eventsMessage;
 	private Text turnMessage;
@@ -156,11 +165,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.endGameMessage.setText(winner.getName() + " has won!!");
 	}
 	
-	/**
-	 * @param unitCounts The number of each unit desired, in this order: jock, ditz, nerd (list is of size 3).
-	 * //TODO: need to get these counts for both players
-	 */
-	
 	@Override
 	public void createScene() { // will be passed player names and some game state representation later
 		// Set up touch.
@@ -168,20 +172,26 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.engine.setTouchController(new MultiTouchController());
 		this.mPinchZoomDetector = new PinchZoomDetector(this);
 		
+		this.mode = SPRITE_MODE;
+		
 		this.animationListener = new IEntityModifierListener() {
 			@Override
 			public void onModifierStarted(IModifier<IEntity> pModifier,
 					IEntity pItem) {
+				Log.d("AndEngine", "animation modifier started.");
 				animating = true;
 				camera.setChaseEntity(pItem);
-				
+				resourcesManager.walking_sound.play();
 			}
 			@Override
 			public void onModifierFinished(IModifier<IEntity> pModifier,
 					IEntity pItem) {
+				Log.d("AndEngine", "animation modifier ended.");
 				animating = false;
 				camera.setChaseEntity(null);
 				((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
+				resourcesManager.walking_sound.pause();
+				//pItem.clearEntityModifiers(); // perhaps gets stops repeating footsteps.
 			}
 		};
 		
@@ -236,7 +246,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		hud.attachChild(bottomBar = new Sprite(240, -300, resourcesManager.bottom_bar, vbom));
 		
 		// Create the game events messages.
-		this.eventsMessage = new Text(240, 760, resourcesManager.cartoon_font_white, "Destroy All Enemy Units\n to Win!", 200, new TextOptions(HorizontalAlign.CENTER), vbom);
+		this.eventsMessage = new Text(240, 760, resourcesManager.cartoon_font_white, "Destroy All Enemy Units\n to Win!", 200, new TextOptions(AutoWrap.LETTERS, 480 - 260, HorizontalAlign.CENTER), vbom);
 		this.endGameMessage = new Text(240, 400, resourcesManager.font, "", 50, new TextOptions(HorizontalAlign.CENTER), vbom);
 		
 		// Initialize HUD and its entities.
@@ -260,6 +270,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				
 				if (animating) return;
 				
+				resourcesManager.select_sound.play();
+				
+				Log.d("AndEngine", "launching tutorial scene");
+
 				OldX = camera.getCenterX();
 				OldY = camera.getCenterY();
 				SceneManager.getInstance().previousScene = game.getSceneType();
@@ -275,6 +289,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             	
             	if (animating) return;
             	
+            	resourcesManager.select_sound.play();
+            	
             	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
@@ -286,13 +302,52 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             }
 		});
 
+		healthModeButton = new ButtonSprite(110, 760, resourcesManager.red_button, vbom, new OnClickListener() {
+
+			@Override
+			public void onClick(ButtonSprite pButtonSprite,
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				
+				if (animating) return;
+				
+				resourcesManager.select_sound.play();
+				
+				deselectCharacter(true);
+				
+				if (mode == HEALTH_MODE) switchMode(SPRITE_MODE);
+				else switchMode(HEALTH_MODE);
+				
+			}});
+		
+		energyModeButton = new ButtonSprite(480 - 110, 760, resourcesManager.blue_button, vbom, new OnClickListener() {
+
+			@Override
+			public void onClick(ButtonSprite pButtonSprite,
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				
+				if (animating) return;
+				
+				resourcesManager.select_sound.play();
+				
+				deselectCharacter(true);
+			
+				if (mode == ENERGY_MODE) switchMode(SPRITE_MODE);
+				else switchMode(ENERGY_MODE);
+				
+			}});
 	
 	    //hud.attachChild(turnMessage);
 	    //hud.attachChild(nextTurnButton);
 	    //hud.registerTouchArea(nextTurnButton);
-	    hud.attachChild(eventsMessage);
+	    //hud.attachChild(eventsMessage);
 	    hud.attachChild(tutorialButton);
 		hud.registerTouchArea(tutorialButton);
+		
+		hud.attachChild(healthModeButton);
+		hud.registerTouchArea(healthModeButton);
+		
+		hud.attachChild(energyModeButton);
+		hud.registerTouchArea(energyModeButton);
 		
 	   // hud.attachChild(turnMessage);
 	    hud.attachChild(pauseButton);
@@ -428,9 +483,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			this.registerTouchArea(availableMove);
 		}
 	}
-	
-	
-	
+
 	public void clearSquares() {
 		if(highlightedSquares == null)
 			return;
@@ -597,8 +650,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		if (andHideBar) hideBar();
 		
+		((AUnit)this.selectedCharacter).setCurrentTileIndex(((AUnit)this.selectedCharacter).start_frame);
+		
 		this.selectedCharacter.stopAnimation();
 		this.selectedCharacter = null;
+		
+		
+		
 		clearSquares();
 		
 		for (AUnit target: targets){
@@ -716,6 +774,55 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             }
         });
         ll.addView(b3);
+        
+        
+        Button b4 = new Button(activity);
+        b4.setText("Switch to Health Mode");
+        b4.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                pausemenu.dismiss();
+                activity.runOnUiThread(new Runnable() {
+            	    @Override
+            	    public void run() {
+            	    	 switchMode(HEALTH_MODE);
+              			 
+            	    }
+            	});
+            }
+        });
+        ll.addView(b4);
+        
+        Button b5 = new Button(activity);
+        b5.setText("Switch to Energy Mode");
+        b5.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                pausemenu.dismiss();
+                activity.runOnUiThread(new Runnable() {
+            	    @Override
+            	    public void run() {
+            	    	 switchMode(ENERGY_MODE);
+              			 
+            	    }
+            	});
+            }
+        });
+        ll.addView(b5);
+        
+        Button b6 = new Button(activity);
+        b6.setText("Switch to Sprite Mode");
+        b6.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                pausemenu.dismiss();
+                activity.runOnUiThread(new Runnable() {
+            	    @Override
+            	    public void run() {
+            	    	 switchMode(SPRITE_MODE);
+              			 
+            	    }
+            	});
+            }
+        });
+        ll.addView(b6);
         
         pausemenu.setContentView(ll);      
         pausemenu.setCanceledOnTouchOutside(false);
@@ -842,4 +949,27 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.game = game;
 	}
 	
+	public void switchMode(int newMode) {
+		// go through all characters...
+		
+		if (this.mode == newMode) return; 
+		
+		for (AUnit u : game.getPlayer().getUnits()) {
+			u.switchMode(newMode);
+		}
+		
+		if (resourcesManager.isLocal) {
+			
+			for (AUnit u2 : ((LocalGame)game).getOtherPlayer().getUnits()) {
+				u2.switchMode(newMode);
+			}
+			
+		} else {
+			for (AUnit u2 : ((OnlineGame)game).getCompPlayer().getUnits()) {
+				u2.switchMode(newMode);
+			}
+		}
+		
+		this.mode = newMode;
+	}
 }

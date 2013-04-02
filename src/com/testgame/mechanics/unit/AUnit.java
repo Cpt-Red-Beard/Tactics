@@ -18,7 +18,9 @@ import com.testgame.mechanics.map.GameMap;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
 import com.testgame.resource.ResourcesManager;
+import com.testgame.scene.GameScene;
 import com.testgame.sprite.CharacterSprite;
+import com.testgame.sprite.ProgressBar;
 import com.testgame.sprite.WalkMoveModifier;
 import com.testgame.OnlineGame;
 
@@ -55,6 +57,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 	
 	protected int ATTACKED_START_FRAME;
 	protected int ATTACKED_END_FRAME;
+	
+	protected int sightRange = 7; // TODO: must be bigger ? than all movement ranges
 	
 	protected String unitType;
 
@@ -185,6 +189,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 		float numTilesY = Math.abs(this.getY() - destY) / game.tileSize;
 		
 		
+		energyBar.setPosition(destX, destY);
+		healthBar.setPosition(destX, destY);
+		
 		WalkMoveModifier one = new WalkMoveModifier(timePerTile*numTilesX + .1f, this.getX(), this.getY(), destX, this.getY(), true);
 		WalkMoveModifier two = new WalkMoveModifier(timePerTile*numTilesY + .1f, destX, this.getY(), destX, destY, false);
 				
@@ -229,6 +236,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 			
 			int destX = this.game.getTileSceneX(xNew, yNew);
 			int destY = this.game.getTileSceneY(xNew, yNew);
+			
+			energyBar.setPosition(destX, destY);
+			healthBar.setPosition(destX, destY);
 			
 			JSONObject temp = new JSONObject();
 			
@@ -355,6 +365,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		animatePoints(-dec, "red");
 		//this.setText(this.energy, this.currentHealth);
+		this.healthBar.setProgress(this.currentHealth);
 	}
 
 	public void setEnergy(int energy){
@@ -363,6 +374,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		//this.setText(this.energy, this.currentHealth);
 		animatePoints(diff, "blue"); // recharging energy;
 		//this.setAlpha(this.energy / 100 + .1f);
+		this.energyBar.setProgress(this.energy);
 	}
 	
 	@Override
@@ -372,6 +384,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		//this.setText(this.energy, this.currentHealth);
 		animatePoints(energy, "blue"); 
 		//this.setAlpha(this.energy / 100 + .1f);
+		this.energyBar.setProgress(this.energy);
 	}
 
 	@Override
@@ -379,6 +392,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		this.energy -= energy;
 		//this.setText(this.energy, this.currentHealth);
 		animatePoints(-energy, "blue");
+		this.energyBar.setProgress(this.energy);
 	}
 	
 	@Override
@@ -412,7 +426,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 			int dist = map.manhattanDistanceBFS(s, d, this.player);
 			if (dist > range) return;
 			else moves.add(p);
-		}
+		} 
 	}
 	
 	// all the squares you can move to 
@@ -468,6 +482,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
 		
 		if (occupyingUnit != null) { // occupied
+			if (occupyingUnit.unitType.equals("Dummy")) return; // not truly a target, just a dummy obstacle
 			if (targets.contains(occupyingUnit)) return;
 			else {
 				if (occupyingUnit.getPlayer() == this.player) return; // same player, not an enemy
@@ -494,6 +509,20 @@ public class AUnit extends CharacterSprite implements IUnit {
 		this.setOffsetCenter(0, 0);
 		this.game.attachChild(this);
 		this.game.registerTouchArea(this);
+		
+		healthBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize, this.maxHealth);
+		healthBar.setProgressColor(1, 0, 0, .7f);
+		healthBar.setProgress(this.energy);
+		healthBar.setVisible(false);
+		game.attachChild(healthBar);
+		
+		energyBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize, 100);
+		energyBar.setProgressColor(0, 0, 1, .7f);
+		energyBar.setProgress(this.energy);
+		energyBar.setVisible(false);
+		game.attachChild(energyBar);
+		
+		// TODO: make tiles within sight range visible
 	}
 	
 	public void idleAnimate() {
@@ -505,7 +534,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void walkAnimate(int xDirection, int yDirection) {
 		if(this.getType().equals("Base"))
 			return;
-		// TODO: Should work, but we don't have the correct graphics yet to do this.
+
 		if (xDirection == 0) { // walking up or down
 			if (yDirection > 0) { // walking up
 				this.animate(new long[] { 100, 100, 100 }, start_frame + WALK_UP_START_FRAME, start_frame + WALK_UP_END_FRAME, true);
@@ -564,9 +593,34 @@ public class AUnit extends CharacterSprite implements IUnit {
 	        }));
 		}
 	}
+
+	
+	public void switchMode(int newMode) {
+		switch(newMode) {
+			case (GameScene.SPRITE_MODE):
+				this.setVisible(true);
+				healthBar.setVisible(false);
+				energyBar.setVisible(false);
+				break;
+			case (GameScene.HEALTH_MODE):
+				this.setVisible(false);
+				healthBar.setVisible(true);
+				energyBar.setVisible(false);
+				break;
+			case (GameScene.ENERGY_MODE):
+				this.setVisible(false);
+				healthBar.setVisible(false);
+				energyBar.setVisible(true);
+				break;
+			default:
+				break;
+			
+		}		
+	}
+
 	
 	public String getType(){
 		return this.unitType;
 	}
-	
+
 }

@@ -43,17 +43,16 @@ public class OnlineGame extends AGame{
 	 */
 	public void init() {
 		
+		super.init();
+		
 		int jocks = resourcesManager.unitArray.get(0);
 		int nerds = resourcesManager.unitArray.get(1);
 		int ditz = resourcesManager.unitArray.get(2);
-		int j = 1;
-		int x = 0;
-		if(isFirstTurn()){
-			j = 10;
-			x = 11;
-		}
+		int j = 2;
+		if(isFirstTurn())
+			j = this.gameMap.yDim - 2;
 		
-		for(int i = 0; i < 10; i++){
+		for(int i = this.gameMap.xDim/2 - 5; i < this.gameMap.xDim/2 + 5; i++){
 				if(nerds > 0){
 					AUnit unit = new Nerd(gameMap, i, j, gameScene, "blue");
 					unit.init(); 
@@ -74,7 +73,8 @@ public class OnlineGame extends AGame{
 				}
 			}
 		
-		AUnit unitbase = new Base(gameMap, 5, x, gameScene, "blue");
+		AUnit unitbase = new Base(gameMap, 5, gameMap.xDim/2, gameScene, "blue");
+		unitbase.init();
 		player.setBase(unitbase);
 	}
 	

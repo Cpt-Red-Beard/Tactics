@@ -2,12 +2,17 @@ package com.testgame;
 
 
 
+import android.graphics.Point;
+import android.util.Log;
+
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.mechanics.unit.Base;
 import com.testgame.mechanics.unit.Ditz;
+import com.testgame.mechanics.unit.DummyUnit;
 import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
 import com.testgame.player.APlayer;
+import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
 
 public class LocalGame extends AGame {
@@ -65,13 +70,16 @@ public class LocalGame extends AGame {
 
 	@Override
 	public void init() {
+		
+		super.init();
+		
 		int jocks = resourcesManager.unitArray.get(0);
 		int nerds = resourcesManager.unitArray.get(1);
 		int ditz = resourcesManager.unitArray.get(2);
 
-		int j = 10;
+		int j = this.gameMap.yDim - 4;
 
-		for(int i = 0; i < 10; i++){
+		for(int i = this.gameMap.xDim/2 - 5; i < this.gameMap.xDim/2 + 5; i++){
 				if(nerds > 0){
 					AUnit unit = new Nerd(gameMap, i, j, gameScene, "blue");
 					unit.init(); 
@@ -98,9 +106,11 @@ public class LocalGame extends AGame {
 		jocks = resourcesManager.unitArray2.get(0);
 		nerds = resourcesManager.unitArray2.get(1);
 		ditz = resourcesManager.unitArray2.get(2);
-		j = 1;
 
-		for(int i = 0; i < 10; i++){
+		j = 2;
+
+
+		for(int i = this.gameMap.xDim/2 - 5; i < this.gameMap.xDim/2 + 5; i++){
 				if(nerds > 0){
 					AUnit unit = new Nerd(gameMap, i, j, gameScene, "red");
 					unit.init(); 
@@ -127,4 +137,7 @@ public class LocalGame extends AGame {
 		player.beginTurn();
 	}
 
+	public APlayer getOtherPlayer() {
+		return player2;
+	}
 }
