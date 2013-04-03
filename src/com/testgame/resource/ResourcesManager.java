@@ -40,11 +40,10 @@ import com.example.testgame.MainActivity;
 
 public class ResourcesManager {
     
-    // TODO: I think maybe this info shouldn't be stored here. This is just for graphics/music/fonts. -Carrie
     public String userString;
     public String opponent;
     public String opponentString;
-    public String mapString = "Default";;
+    public String mapString = "Default";
     public boolean turn;
     public boolean inGame;
     public boolean isLocal;
@@ -322,7 +321,8 @@ public class ResourcesManager {
         //loadGameMap();
     }
     
-    private void loadGameMap() {
+    @SuppressWarnings("unused")
+	private void loadGameMap() {
     	
     	try {
             final TMXLoader tmxLoader = new TMXLoader(activity.getAssets(), activity.getTextureManager(), TextureOptions.NEAREST, vbom);
@@ -475,7 +475,6 @@ public class ResourcesManager {
 		inGame = false;
 		opponent = null;
 		opponentString = null;
-
 		isLocal = false;
 	}
 
