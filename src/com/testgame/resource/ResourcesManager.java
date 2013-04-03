@@ -327,7 +327,6 @@ public class ResourcesManager {
     	try {
             final TMXLoader tmxLoader = new TMXLoader(activity.getAssets(), activity.getTextureManager(), TextureOptions.NEAREST, vbom);
             this.tiledMap = tmxLoader.loadFromAsset("tmx/basic.tmx");
-            //this.tiledMap.setOffsetCenter(0, 0);
         } catch (final TMXLoadException e) {
              Debug.e(e);
         }

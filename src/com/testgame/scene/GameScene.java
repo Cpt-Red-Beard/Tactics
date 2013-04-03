@@ -576,12 +576,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
     	((SmoothCamera) this.camera).setZoomFactor(this.mPinchZoomStartedCameraZoomFactor * pZoomFactor);
     }
     
-   // public void attack(CharacterSprite unit)
-   // {
-    	// TODO: is this ever used?
-    //	this.getSelectedCharacter().attack((AUnit)unit);
-	//	this.deselectCharacter(true);
-  //  }
 
 	public AUnit getSelectedCharacter() {
 		return selectedCharacter;
@@ -747,56 +741,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             }
         });
         ll.addView(b3);
-        
-        
-        Button b4 = new Button(activity);
-        b4.setText("Switch to Health Mode");
-        b4.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                pausemenu.dismiss();
-                activity.runOnUiThread(new Runnable() {
-            	    @Override
-            	    public void run() {
-            	    	 switchMode(HEALTH_MODE);
-              			 
-            	    }
-            	});
-            }
-        });
-        ll.addView(b4);
-        
-        Button b5 = new Button(activity);
-        b5.setText("Switch to Energy Mode");
-        b5.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                pausemenu.dismiss();
-                activity.runOnUiThread(new Runnable() {
-            	    @Override
-            	    public void run() {
-            	    	 switchMode(ENERGY_MODE);
-              			 
-            	    }
-            	});
-            }
-        });
-        ll.addView(b5);
-        
-        Button b6 = new Button(activity);
-        b6.setText("Switch to Sprite Mode");
-        b6.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                pausemenu.dismiss();
-                activity.runOnUiThread(new Runnable() {
-            	    @Override
-            	    public void run() {
-            	    	 switchMode(SPRITE_MODE);
-              			 
-            	    }
-            	});
-            }
-        });
-        ll.addView(b6);
-        
+         
         pausemenu.setContentView(ll);      
         pausemenu.setCanceledOnTouchOutside(false);
         pausemenu.show();        

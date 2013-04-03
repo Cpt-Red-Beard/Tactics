@@ -75,6 +75,7 @@ public class OnlineGame extends AGame{
 			}
 		
 		AUnit unitbase = new Base(gameMap, 5, x, gameScene, "blue");
+		unitbase.init();
 		player.setBase(unitbase);
 	}
 	
