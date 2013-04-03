@@ -94,6 +94,11 @@ public class AUnit extends CharacterSprite implements IUnit {
 	protected ArrayList<HighlightedSquare> targetCache = null;
 
 	/**
+	 * Actual units in the target cache.
+	 */
+	protected ArrayList<AUnit> targets = null;
+
+	/**
 	 * The maximum amount of health this unit can have.
 	 */
 	protected int maxHealth;
@@ -201,6 +206,14 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void setTargetCache(ArrayList<HighlightedSquare> tCache) {
 		this.targetCache = tCache;
 	}
+
+	public ArrayList<AUnit> getTargets() {
+		return targets;
+	}
+
+	public void setTargets(ArrayList<AUnit> t) {
+		this.targets = t;
+	}
 	
 	public void ComputerMove(int xNew, int yNew, final int energy, final ComputerPlayer player){
 		map.setUnoccupied(x, y);
@@ -258,8 +271,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 			this.y = yNew;
 			map.setOccupied(x, y, this);
 			this.reduceEnergy(eCost);
-			//this.energyUsedLastTurn += eCost;
-			// TODO: code to actually move the sprite on the map
 			
 			int destX = this.game.getTileSceneX(xNew, yNew);
 			int destY = this.game.getTileSceneY(xNew, yNew);
@@ -279,16 +290,13 @@ public class AUnit extends CharacterSprite implements IUnit {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
+
 			if(!this.game.resourcesManager.isLocal)
 				((OnlineGame)this.game.getGame()).addMove(temp);
 
-			
-			
 			float timePerTile = .2f; 
 			float numTilesX = Math.abs(this.getX() - destX) / game.tileSize;
 			float numTilesY = Math.abs(this.getY() - destY) / game.tileSize;
-			
-			
 			
 			WalkMoveModifier one = new WalkMoveModifier(timePerTile*numTilesX + .1f, this.getX(), this.getY(), destX, this.getY(), true);
 			WalkMoveModifier two = new WalkMoveModifier(timePerTile*numTilesY + .1f, destX, this.getY(), destX, destY, false);
@@ -296,13 +304,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 			SequenceEntityModifier seq = new SequenceEntityModifier(game.animationListener, one, two);
 			
 			this.clearEntityModifiers();
-			
-			this.registerEntityModifier(seq);
-			
+			this.registerEntityModifier(seq);			
 			this.game.setEventText("Moved using "+eCost+" energy.");
-
-        	
-        	
+			(this.player).resetUnitCaches();
 		}
 	}
 	
@@ -434,6 +438,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		this.isDefending = false;
 		this.moveCache = null;
 		this.targetCache = null;
+		this.targets = null;
 	}
 	
 	/*

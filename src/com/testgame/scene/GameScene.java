@@ -381,16 +381,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	public void highlightAvailableTargets(CharacterSprite sprite) {
-		
+		this.targets = new ArrayList<AUnit>();
 		AUnit curUnit = (AUnit) sprite;
 		ArrayList<HighlightedSquare> savedTargets = curUnit.getTargetCache();
 		if (savedTargets == null) {
 			savedTargets = new ArrayList<HighlightedSquare>();
-			long startTime = System.nanoTime();
 			ArrayList<AUnit> curTargets = curUnit.availableTargets();
-			long endTime = System.nanoTime();
-			System.out.println("Finding targets took " + (endTime-startTime) + " ns");
-			targets = curTargets;
+			curUnit.setTargets(curTargets);
+			targets.addAll(curTargets);
 			
 			for (AUnit target: targets) {
 			
@@ -421,9 +419,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		}
 
 		else {
-			//System.out.println("Successfully got cached targets!");
+			targets.addAll(curUnit.getTargets());
+			for (AUnit t : targets)
+				t.inSelectedCharactersAttackRange = true;
 			for (HighlightedSquare h : savedTargets) {
-				this.highlightedSquares.add(h);
+				(this.highlightedSquares).add(h);
 				attachChild(h);
 			}
 		}
@@ -441,10 +441,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		ArrayList<HighlightedSquare> savedSquares = curUnit.getMoveCache();
 		if (savedSquares == null) {
 			savedSquares = new ArrayList<HighlightedSquare>();
-			long startTime = System.nanoTime();
 			ArrayList<Point> moves = curUnit.availableMoves();
-			long endTime = System.nanoTime();
-			System.out.println("Finding moves took " + (endTime-startTime) + " ns");
 
 			for (Point p : moves) {
 				
@@ -487,7 +484,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		}
 
 		else {
-			//System.out.println("Successfully got cached moves!");
 			for (HighlightedSquare h : savedSquares) {
 				this.highlightedSquares.add(h);
 				attachChild(h);
@@ -527,11 +523,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			
 			for (HighlightedSquare h : this.highlightedSquares) {
 				if (tmxTile == h.tile) {
-					//selectedCharacter.setPosition(x, y);
-					
-					getSelectedCharacter().move(x, heightInTiles - y - 1);
-					APlayer curPlayer = (this.game).getPlayer();
-					curPlayer.resetUnitCaches();
+					(getSelectedCharacter()).move(x, heightInTiles - y - 1);
 				}
 			}
 			
@@ -638,8 +630,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		this.camera.setCenter(this.selectedCharacter.getX(), this.selectedCharacter.getY());
 		
-		
-			this.selectedCharacter.idleAnimate();
+		this.selectedCharacter.idleAnimate();
 		
 		this.curUnitAttack.setText(attackStatusString(selectedCharacter.getAttack(), selectedCharacter.getAttackRange(), selectedCharacter.getAttackCost()));
 		this.curUnitEnergy.setText("Energy: " + selectedCharacter.getEnergy()+"/100");
@@ -656,8 +647,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	public void deselectCharacter(boolean andHideBar){
 		
-		
-		
 		if (this.selectedCharacter == null) return;
 		
 		if (andHideBar) hideBar();
@@ -666,8 +655,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		this.selectedCharacter.stopAnimation();
 		this.selectedCharacter = null;
-		
-		
 		
 		clearSquares();
 		

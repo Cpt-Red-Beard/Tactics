@@ -42,11 +42,9 @@ public class APlayer implements IPlayer {
 
 	@Override
 	public void beginTurn() {
-		for(AUnit unit : getActiveUnits()){
+		for (AUnit unit : activeUnits)
 			unit.turnInit();
-		}
 		isTurn = true;
-		
 	}
 
 	@Override
