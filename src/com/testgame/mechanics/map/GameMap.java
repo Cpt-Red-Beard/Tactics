@@ -87,11 +87,18 @@ public class GameMap implements IMap {
 
 	@Override
 	public int manhattanDistanceAStar(Point s, Point d, APlayer requestingPlayer) {
-		//Log.d("AndEngine", "Calculating shortest path!");
 		Node startNode = graph.get(this.entry(s.x, s.y));
-		Node goal = graph.get(this.entry(d.x, d.y));
-		if (goal == null) 
+		if (startNode == null) {
+			// System.out.println("The start node is invalid! Game dims: " + this.xDim + " by " + this.yDim + 
+			// 	" Given start coordinates: " + s.x + ", " + s.y);
 			return -1;
+		}
+		Node goal = graph.get(this.entry(d.x, d.y));
+		if (goal == null || goal.isObstacle()) {
+			// System.out.println("The goal node is invalid! Game dims: " + this.xDim + " by " + this.yDim + 
+			// 	" Given start coordinates: " + d.x + ", " + d.y);
+			return -1;
+		}
 		
 		HashSet<Node> closedSet = new HashSet<Node>(); // Nodes already evaluated
 		PriorityQueue<Node> openSet = new PriorityQueue<Node>(); // Nodes for tentative evaluation
@@ -107,7 +114,6 @@ public class GameMap implements IMap {
 			double curGScore = cur.gScore();
 			
 			if (cur.equals(goal)) {
-				//Log.d("AndEngine", "A* found the goal!");
 				closedSet.add(cur);
 				int pathLength = getSteps(cur);
 				resetParentNodes(); // Shortest path may be different as map changes	
@@ -142,11 +148,18 @@ public class GameMap implements IMap {
 	}
 	
 	public int manhattanDistanceBFS(Point s, Point d, APlayer requestingPlayer) {
-		//Log.d("AndEngine", "Calculating shortest path!");
 		Node startNode = graph.get(this.entry(s.x, s.y));
-		Node goal = graph.get(this.entry(d.x, d.y));
-		if (goal == null || goal.isObstacle()) 
+		if (startNode == null) {
+			// System.out.println("The start node is invalid! Game dims: " + this.xDim + " by " + this.yDim + 
+			// 	" Given start coordinates: " + s.x + ", " + s.y);
 			return -1;
+		}
+		Node goal = graph.get(this.entry(d.x, d.y));
+		if (goal == null || goal.isObstacle()) {
+			// System.out.println("The goal node is invalid! Game dims: " + this.xDim + " by " + this.yDim + 
+			// 	" Given start coordinates: " + d.x + ", " + d.y);
+			return -1;
+		}
 		
 		HashSet<Node> processed = new HashSet<Node>();
 		ArrayList<Node> queue = new ArrayList<Node>();
@@ -179,8 +192,10 @@ public class GameMap implements IMap {
 					queue.add(neigh);
 				}
 			}
+			processed.add(cur);
 		}
 
+		System.out.println("Could not find a path!");
 		return -1; // Didn't find a path
 	}
 
@@ -206,7 +221,7 @@ public class GameMap implements IMap {
 	private void resetParentNodes() {
 		for (int i = 0; i < this.xDim; i++) {
 			for (int j = 0; j < this.yDim; j++) {
-				(graph.get(this.entry(i, j))).setParentNode((Node) null);
+				(graph.get(this.entry(i, j))).setParentNode(null);
 			}
 		}
 	}

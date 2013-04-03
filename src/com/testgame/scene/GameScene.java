@@ -89,18 +89,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public int heightInTiles;
 	
 	private ArrayList<AUnit> targets = new ArrayList<AUnit>();
-
-	/**
-	 * Mapping of unit to their available moves once calculated. This dictionary 
-	 * is reset every time a unit moves.
-	 */
-	private HashMap<AUnit, ArrayList<Point>> moveMap = new HashMap<AUnit, ArrayList<Point>>();
-
-	/**
-	 * Same as above, but for targets.
-	 */
-	private HashMap<AUnit, ArrayList<AUnit>> targetMap = new HashMap<AUnit, ArrayList<AUnit>>();
-
 	
 	private ButtonSprite pauseButton;
 	private ButtonSprite tutorialButton;
@@ -379,15 +367,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void activateAndSelect(final CharacterSprite sprite) {
 		
 		if (this.selectedCharacter == sprite) { 
-			
-			
-			
 			this.deselectCharacter(true);
 			return;
 			
-		} else {
-			
-			
+		} else {	
 			this.setSelectedCharacter((AUnit) sprite);
 			
 			highlightAvailableTargets(sprite);
@@ -399,37 +382,50 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	public void highlightAvailableTargets(CharacterSprite sprite) {
 		
-		ArrayList<AUnit> curTargets = targetMap.get((AUnit) sprite);
-		if (curTargets == null) {
-			curTargets = ((AUnit)sprite).availableTargets();
-			targetMap.put((AUnit) sprite, curTargets);
+		AUnit curUnit = (AUnit) sprite;
+		ArrayList<HighlightedSquare> savedTargets = curUnit.getTargetCache();
+		if (savedTargets == null) {
+			savedTargets = new ArrayList<HighlightedSquare>();
+			long startTime = System.nanoTime();
+			ArrayList<AUnit> curTargets = curUnit.availableTargets();
+			long endTime = System.nanoTime();
+			System.out.println("Finding targets took " + (endTime-startTime) + " ns");
+			targets = curTargets;
+			
+			for (AUnit target: targets) {
+			
+				int x = (int) target.getX();
+				int y = (int) target.getY();
+			
+				TMXTile t = this.tmxLayer.getTMXTileAt(x, y);
+					
+				HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, getSelectedCharacter());
+				
+				this.highlightedSquares.add(availableMove);
+				savedTargets.add(availableMove);
+				availableMove.setOffsetCenter(0, 0);
+				float redValue;
+				if (selectedCharacter == null || t == null) { // checks because of that weird occasional null pointer exception
+					redValue = 1;
+				}
+				else {
+					redValue = 1.0f/selectedCharacter.getAttackRange() * selectedCharacter.manhattanDistance(
+							selectedCharacter.getMapX(), selectedCharacter.getMapY(), t.getTileColumn(), 
+							heightInTiles - t.getTileRow() - 1) / 2 + .1f;
+				}
+				availableMove.setColor(1, 0, 0, redValue);
+				attachChild(availableMove);
+			}
+
+			curUnit.setTargetCache(savedTargets);
 		}
 
-		targets = curTargets;
-		
-		for (AUnit target: targets){
-		
-			int x = (int) target.getX();
-			int y = (int) target.getY();
-		
-			TMXTile t = this.tmxLayer.getTMXTileAt(x, y);
-				
-			HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, getSelectedCharacter());
-			
-			this.highlightedSquares.add(availableMove);
-			availableMove.setOffsetCenter(0, 0);
-			float redValue;
-			if (selectedCharacter == null || t == null) { // checks because of that weird occasional null pointer exception
-				redValue = 1;
+		else {
+			//System.out.println("Successfully got cached targets!");
+			for (HighlightedSquare h : savedTargets) {
+				this.highlightedSquares.add(h);
+				attachChild(h);
 			}
-			else {
-				redValue = 1.0f/selectedCharacter.getAttackRange() * selectedCharacter.manhattanDistance(
-						selectedCharacter.getMapX(), selectedCharacter.getMapY(), t.getTileColumn(), 
-						heightInTiles - t.getTileRow() - 1) / 2 + .1f;
-			}
-			availableMove.setColor(1, 0, 0, redValue);
-			attachChild(availableMove);
-			
 		}
 	}
 	
@@ -441,46 +437,62 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	//TODO: Clean UP Code here for attack and moves.
 	public void highlightAvailableMoves(CharacterSprite sprite) {
 
-		ArrayList<Point> moves = moveMap.get((AUnit) sprite);
-		if (moves == null) {
-			moves = ((AUnit)sprite).availableMoves();
-			moveMap.put((AUnit) sprite, moves);
+		AUnit curUnit = (AUnit) sprite;
+		ArrayList<HighlightedSquare> savedSquares = curUnit.getMoveCache();
+		if (savedSquares == null) {
+			savedSquares = new ArrayList<HighlightedSquare>();
+			long startTime = System.nanoTime();
+			ArrayList<Point> moves = curUnit.availableMoves();
+			long endTime = System.nanoTime();
+			System.out.println("Finding moves took " + (endTime-startTime) + " ns");
+
+			for (Point p : moves) {
+				
+				int x = (int) (p.x*tileSize + sprite.getX());
+				int y = (int) (p.y*tileSize + sprite.getY());
+				
+				TMXTile t = this.tmxLayer.getTMXTileAt(x, y);
+				
+				//if(resourcesManager.selectedMap.getTMXTileProperties(t.getGlobalTileID()) != null)
+			    //    if (resourcesManager.selectedMap.getTMXTileProperties(t.getGlobalTileID()).containsTMXProperty("obstacle", "1")) continue;
+							
+				HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, getSelectedCharacter());
+				
+				this.highlightedSquares.add(availableMove);
+				savedSquares.add(availableMove);
+				availableMove.setOffsetCenter(0, 0);
+				
+				float blueValue;
+				
+				if (selectedCharacter == null ) { // checks because of that weird occasional null pointer exception
+					
+					blueValue = 1;
+				}
+				else if (t == null){
+					
+					blueValue = 1;
+				}
+				
+				else {
+					blueValue = 1.0f/(selectedCharacter.getEnergy()/selectedCharacter.getRange()) * 
+							selectedCharacter.manhattanDistance(selectedCharacter.getMapX(), selectedCharacter.getMapY(), 
+									t.getTileColumn(), heightInTiles - t.getTileRow() - 1) /2 + .1f;
+				}
+				availableMove.setColor(0, 0, 1, blueValue);
+				attachChild(availableMove);
+				this.registerTouchArea(availableMove);
+			}
+
+			curUnit.setMoveCache(savedSquares);
 		}
-		
-		for (Point p : moves){
-			
-			int x = (int) (p.x*tileSize + sprite.getX());
-			int y = (int) (p.y*tileSize + sprite.getY());
-			
-			TMXTile t = this.tmxLayer.getTMXTileAt(x, y);
-			
-			//if(resourcesManager.selectedMap.getTMXTileProperties(t.getGlobalTileID()) != null)
-		    //    if (resourcesManager.selectedMap.getTMXTileProperties(t.getGlobalTileID()).containsTMXProperty("obstacle", "1")) continue;
-						
-			HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, getSelectedCharacter());
-			
-			this.highlightedSquares.add(availableMove);
-			availableMove.setOffsetCenter(0, 0);
-			
-			float blueValue;
-			
-			if (selectedCharacter == null ) { // checks because of that weird occasional null pointer exception
-				
-				blueValue = 1;
+
+		else {
+			//System.out.println("Successfully got cached moves!");
+			for (HighlightedSquare h : savedSquares) {
+				this.highlightedSquares.add(h);
+				attachChild(h);
+				this.registerTouchArea(h);
 			}
-			else if(t == null){
-				
-				blueValue = 1;
-			}
-			
-			else {
-				blueValue = 1.0f/(selectedCharacter.getEnergy()/selectedCharacter.getRange()) * 
-						selectedCharacter.manhattanDistance(selectedCharacter.getMapX(), selectedCharacter.getMapY(), 
-								t.getTileColumn(), heightInTiles - t.getTileRow() - 1) /2 + .1f;
-			}
-			availableMove.setColor(0, 0, 1, blueValue);
-			attachChild(availableMove);
-			this.registerTouchArea(availableMove);
 		}
 	}
 
@@ -518,8 +530,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 					//selectedCharacter.setPosition(x, y);
 					
 					getSelectedCharacter().move(x, heightInTiles - y - 1);
-					moveMap.clear();
-					targetMap.clear();
+					APlayer curPlayer = (this.game).getPlayer();
+					curPlayer.resetUnitCaches();
 				}
 			}
 			

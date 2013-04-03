@@ -20,6 +20,7 @@ import com.testgame.player.ComputerPlayer;
 import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
 import com.testgame.sprite.CharacterSprite;
+import com.testgame.sprite.HighlightedSquare;
 import com.testgame.sprite.ProgressBar;
 import com.testgame.sprite.WalkMoveModifier;
 import com.testgame.OnlineGame;
@@ -82,6 +83,16 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 */
 	protected int y;
 	
+	/**
+	 * Unit's available move cache. Reset when a unit on the map moves and at the beginning of each turn.
+	 */ 
+	protected ArrayList<HighlightedSquare> moveCache = null;
+
+	/**
+	 * Unit's target cache. Reset at the beginning of each turn.
+	 */
+	protected ArrayList<HighlightedSquare> targetCache = null;
+
 	/**
 	 * The maximum amount of health this unit can have.
 	 */
@@ -173,6 +184,22 @@ public class AUnit extends CharacterSprite implements IUnit {
 	@Override
 	public int getEnergy() {
 		return energy;
+	}
+
+	public ArrayList<HighlightedSquare> getMoveCache() {
+		return moveCache;
+	}
+
+	public void setMoveCache(ArrayList<HighlightedSquare> mCache) {
+		this.moveCache = mCache;
+	}
+
+	public ArrayList<HighlightedSquare> getTargetCache() {
+		return targetCache;
+	}
+
+	public void setTargetCache(ArrayList<HighlightedSquare> tCache) {
+		this.targetCache = tCache;
 	}
 	
 	public void ComputerMove(int xNew, int yNew, final int energy, final ComputerPlayer player){
@@ -405,6 +432,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 		else
 			this.restoreEnergy(+25);
 		this.isDefending = false;
+		this.moveCache = null;
+		this.targetCache = null;
 	}
 	
 	/*
@@ -417,13 +446,11 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
 		
-		Point s = new Point(this.x, this.y);
-		Point d = new Point(this.x + offsetX, this.y + offsetY);
 		Point p = new Point(offsetX, offsetY);
 		
 		if (occupyingUnit == null) { // not occupied
 			if (moves.contains(p)) return;
-			int dist = map.manhattanDistanceBFS(s, d, this.player);
+			int dist = this.manhattanDistance(this.x, this.y, this.x + offsetX, this.y + offsetY);
 			if (dist > range) return;
 			else moves.add(p);
 		} 
@@ -477,7 +504,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		if (this.x + offsetX < 0 || this.y + offsetY < 0) return; // off of map, not occupied
 		if (this.x + offsetX >= map.xDim || this.y + offsetY >= map.yDim) return; // ditto
-		if (map.manhattanDistanceBFS(new Point(this.x, this.y), new Point(this.x + offsetX, this.y + offsetY), this.player) > attackRange)
+		if (this.manhattanDistance(this.x, this.y, this.x + offsetX, this.y + offsetY) > attackRange)
 			return;
 		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
 		
@@ -500,7 +527,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 * @param y2 The y-coordinate of the second location.
 	 */
 	public int manhattanDistance(int x1, int y1, int x2, int y2) {
-		return map.manhattanDistanceBFS(new Point(x1, y1), new Point(x2, y2), this.player);
+		return map.manhattanDistanceAStar(new Point(x1, y1), new Point(x2, y2), this.player);
 	}
 	
 	public void init() {

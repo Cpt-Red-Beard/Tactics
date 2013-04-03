@@ -74,6 +74,11 @@ public class APlayer implements IPlayer {
 			getActiveUnits().remove(unit);
 		}
 	}
+
+	public void resetUnitCaches() {
+		for (AUnit u : activeUnits)
+			u.setMoveCache(null);
+	}
 	
 	@Override
 	public ArrayList<AUnit> getUnits() {

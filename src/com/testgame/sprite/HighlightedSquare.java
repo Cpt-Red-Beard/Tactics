@@ -91,8 +91,7 @@ public class HighlightedSquare extends Rectangle {
 		}
 		
 		AUnit myUnit = ((AUnit) this.unit);
-		int mDist = myUnit.manhattanDistance(tile.getTileColumn(), game.heightInTiles - tile.getTileRow() - 1, myUnit.getMapX(), myUnit.getMapY());
-		Log.d("AndEngine", "Manhattan dist is " + mDist);
+		int mDist = myUnit.manhattanDistance(myUnit.getMapX(), myUnit.getMapY(), tile.getTileColumn(), game.heightInTiles - tile.getTileRow() - 1);
 		energyCostText.setText(myUnit.getRange() * mDist + "");
 		this.attachChild(energyCostText);
 	}

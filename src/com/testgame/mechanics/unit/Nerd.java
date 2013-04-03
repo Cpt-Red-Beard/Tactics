@@ -27,7 +27,7 @@ public class Nerd extends AUnit {
 		this.attack = 50;
 		this.attackenergy = 100;
 		this.attackrange = 6;
-		this.range = 40;
+		this.range = 35;
 		this.energy = 100;
 		this.energyUsedLastTurn = 0;
 		this.isDefending = false;
