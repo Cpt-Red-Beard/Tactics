@@ -11,6 +11,7 @@ import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -28,6 +29,7 @@ import org.andengine.input.touch.detector.PinchZoomDetector.IPinchZoomDetectorLi
 import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.util.Constants;
 import org.andengine.util.adt.align.HorizontalAlign;
+import org.andengine.util.adt.color.Color;
 import org.andengine.util.modifier.IModifier;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -496,6 +498,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				}
 			}
 			
+			removePath();
 			this.deselectCharacter(true);
 		}
 	}
@@ -748,55 +751,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
         });
         ll.addView(b3);
         
-        
-        Button b4 = new Button(activity);
-        b4.setText("Switch to Health Mode");
-        b4.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                pausemenu.dismiss();
-                activity.runOnUiThread(new Runnable() {
-            	    @Override
-            	    public void run() {
-            	    	 switchMode(HEALTH_MODE);
-              			 
-            	    }
-            	});
-            }
-        });
-        ll.addView(b4);
-        
-        Button b5 = new Button(activity);
-        b5.setText("Switch to Energy Mode");
-        b5.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                pausemenu.dismiss();
-                activity.runOnUiThread(new Runnable() {
-            	    @Override
-            	    public void run() {
-            	    	 switchMode(ENERGY_MODE);
-              			 
-            	    }
-            	});
-            }
-        });
-        ll.addView(b5);
-        
-        Button b6 = new Button(activity);
-        b6.setText("Switch to Sprite Mode");
-        b6.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                pausemenu.dismiss();
-                activity.runOnUiThread(new Runnable() {
-            	    @Override
-            	    public void run() {
-            	    	 switchMode(SPRITE_MODE);
-              			 
-            	    }
-            	});
-            }
-        });
-        ll.addView(b6);
-        
         pausemenu.setContentView(ll);      
         pausemenu.setCanceledOnTouchOutside(false);
         pausemenu.show();        
@@ -944,5 +898,31 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		}
 		
 		this.mode = newMode;
+	}
+
+	private Line[] arrowPath;
+	
+	public void drawPath(Point dest) {
+		Log.d("AndEngine", "drawing path...");
+		arrowPath = new Line[2];
+		
+		float x = selectedCharacter.getX() + 32;
+		float y = selectedCharacter.getY() + 32;
+		
+		arrowPath[0] = new Line(x, y, x, dest.y + 32, 20, vbom);
+		arrowPath[1] = new Line(x, dest.y + 32, dest.x + 32, dest.y + 32, 20, vbom);
+		
+		for (Line l : arrowPath) {
+			l.setColor(Color.BLUE);
+			this.attachChild(l);
+		}
+	}
+	
+	public void removePath() {
+		Log.d("AndEngine", "removing path.");
+		
+		for (Line l : arrowPath) {
+			detachChild(l);
+		}
 	}
 }
