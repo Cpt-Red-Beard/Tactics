@@ -11,11 +11,8 @@ public class LoadingScene extends BaseScene {
 
 	@Override
 	public void createScene() {
-		((SmoothCamera) this.camera).setZoomFactor(1.0f);
-		this.camera.setCenter(240, 400);
-		this.camera.setHUD(null);
 		setBackground(new Background(Color.BLACK));
-		attachChild(new Text(240, 400, resourcesManager.font, "Loading...", vbom));
+		attachChild(new Text(camera.getCenterX(), camera.getCenterY(), resourcesManager.font, "Loading...", vbom));
 	}
 
 	@Override

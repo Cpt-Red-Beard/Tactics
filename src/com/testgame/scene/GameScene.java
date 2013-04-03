@@ -265,6 +265,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 				OldX = camera.getCenterX();
 				OldY = camera.getCenterY();
+				//deselectCharacter(true);
 				SceneManager.getInstance().previousScene = game.getSceneType();
 				SceneManager.getInstance().loadTutorialScene(game.engine);
 			}

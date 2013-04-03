@@ -37,9 +37,6 @@ public class TutorialScene extends BaseScene {
 	@Override
 	public void createScene() {
 		this.setBackgroundEnabled(false);
-		((SmoothCamera) this.camera).setZoomFactor(1.0f);
-		this.camera.setCenter(240, 400);
-		this.camera.setHUD(null);
 		
 		attachChild(new Sprite(240, 400, resourcesManager.tutorial_background_region, vbom)
 	    {
