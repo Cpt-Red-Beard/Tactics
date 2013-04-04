@@ -476,9 +476,12 @@ public class AUnit extends CharacterSprite implements IUnit {
 	private void checkPointForTargets(int offsetX, int offsetY, int attackRange, ArrayList<AUnit> targets) {
 		
 		if (this.x + offsetX < 0 || this.y + offsetY < 0) return; // off of map, not occupied
+		
 		if (this.x + offsetX >= map.xDim || this.y + offsetY >= map.yDim) return; // ditto
-		if (map.manhattanDistance(new Point(this.x, this.y), new Point(this.x + offsetX, this.y + offsetY)) > attackRange)
+		
+		if (this.manhattanDistance(this.x, this.y, this.x + offsetX, this.y + offsetY) > attackRange)
 			return;
+		
 		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
 		
 		if (occupyingUnit != null) { // occupied
@@ -500,7 +503,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 * @param y2 The y-coordinate of the second location.
 	 */
 	public int manhattanDistance(int x1, int y1, int x2, int y2) {
-		return map.manhattanDistance(new Point(x1, y1), new Point(x2, y2));
+		return Math.abs(x1-x2) + Math.abs(y1-y2);
 	}
 	
 	public void init() {
