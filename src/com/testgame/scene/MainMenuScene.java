@@ -183,32 +183,13 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	            return true;
 	        case MENU_PLAY:
-	        	//resourcesManager.isLocal = true;
-	        	//SceneManager.getInstance().loadSetupScene(engine);
-	        	
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
 	        	    	 gameOptions();
 	        	    }
 	        	});
-	        /*	if(!loggedin){
-
-	        		activity.runOnUiThread(new Runnable() {
-		        	    @Override
-		        	    public void run() {
-		        	        createDialog("Please Log In!");
-		        	    }
-		        	});
-	        		return true;
-	        	}
-	        		
-	        	activity.runOnUiThread(new Runnable() {
-	        	    @Override
-	        	    public void run() {
-	        	        showDialog();
-	        	    }
-	        	});*/
+	       
 	        	 
 	        	
 	            return true;
@@ -356,7 +337,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 						createMapDialog();
 					}
 				});
-				SceneManager.getInstance().loadSetupScene(engine);
+				
 			}
 		});
 
@@ -515,6 +496,9 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 			public void onClick(DialogInterface dialog, int whichButton) { 
 				selectedMapName = (resourcesManager.maps()[whichButton]).toString();
 				resourcesManager.setMap(selectedMapName);
+				if(resourcesManager.isLocal){
+					SceneManager.getInstance().loadSetupScene(engine);
+				}
 				mapDialog.dismiss();
 				
 				if (!resourcesManager.isLocal) {

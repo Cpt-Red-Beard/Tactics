@@ -3,6 +3,9 @@ package com.testgame;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.graphics.Point;
+
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseUser;
@@ -46,37 +49,44 @@ public class OnlineGame extends AGame{
 		int jocks = resourcesManager.unitArray.get(0);
 		int nerds = resourcesManager.unitArray.get(1);
 		int ditz = resourcesManager.unitArray.get(2);
-		int j = 1;
-		int x = 0;
+
+
+		Point[] spawns;
+		
 		if(isFirstTurn()){
-			j = 10;
-			x = 11;
+			spawns = resourcesManager.getSpawn2(resourcesManager.mapString);
+		}
+		else{
+			spawns = resourcesManager.getSpawn1(resourcesManager.mapString);
 		}
 		
-		for(int i = 0; i < 10; i++){
+		for(Point i : spawns){
 				if(nerds > 0){
-					AUnit unit = new Nerd(gameMap, i, j, gameScene, "blue");
+					AUnit unit = new Nerd(gameMap, i.x, i.y, gameScene, "blue");
 					unit.init(); 
 					player.addUnit(unit);
 					nerds--;
 				}
 				else if(ditz > 0){
-					AUnit unit = new Ditz(gameMap, i, j, gameScene, "blue");
+					AUnit unit = new Ditz(gameMap, i.x, i.y, gameScene, "blue");
 					unit.init(); 
 					player.addUnit(unit);
 					ditz--;
 				}
 				else if(jocks > 0){
-					AUnit unit = new Jock(gameMap, i, j, gameScene, "blue");
+					AUnit unit = new Jock(gameMap, i.x, i.y, gameScene, "blue");
 					unit.init(); 
 					player.addUnit(unit);
 					jocks--;
 				}
+				else{
+					AUnit unitbase = new Base(gameMap, i.x, i.y, gameScene, "blue");
+					unitbase.init();
+					player.setBase(unitbase);
+				}
 			}
 		
-		AUnit unitbase = new Base(gameMap, 5, x, gameScene, "blue");
-		unitbase.init();
-		player.setBase(unitbase);
+		
 	}
 	
 	/**

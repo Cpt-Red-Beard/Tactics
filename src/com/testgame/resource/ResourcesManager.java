@@ -40,6 +40,25 @@ import com.example.testgame.MainActivity;
 
 public class ResourcesManager {
     
+	
+	/*
+	 * MAP INFORMATION
+	 */
+	
+	//Basic.tmx
+	Point[] basic1 = {};
+	Point[] basic2 = {new Point(5,6), new Point(6,5)};
+	Point[] classroom1 = {new Point(3,2), new Point(1,2), new Point(7, 2), new Point(9, 2), new Point(4, 0)};
+	Point[] classroom2 = {new Point(2,6), new Point(4,6), new Point(6,6), new Point(8,6), new Point(4, 7)};
+	Point[] defaultSpawns = {};
+	
+	
+	/*
+	 * END MAP INFORMATION
+	 */
+	
+	
+	
     public String userString;
     public String opponent;
     public String opponentString;
@@ -499,6 +518,41 @@ public class ResourcesManager {
 			Log.d("Error", e.toString());
 			return null;
 		}
+	}
+	
+	public int getNumber(String map){
+		if(map.equals("basic.tmx")){
+			return 10;
+		}
+		else if(map.equals("classroom.tmx")){
+				return 4;
+		}
+		return 0;
+						
+	}
+	
+	
+	public Point[] getSpawn1(String map){
+		if(map.equals("basic.tmx")){
+			return basic1;
+		}
+		else if(map.equals("classroom.tmx")){
+				return classroom1;
+		} else
+			return defaultSpawns;
+		
+						
+	}
+	
+	public Point[] getSpawn2(String map){
+		if(map.equals("basic.tmx")){
+			return basic2;
+		}
+		else if(map.equals("classroom.tmx")){
+				return classroom2;
+		}
+		return defaultSpawns;
+						
 	}
 
 }

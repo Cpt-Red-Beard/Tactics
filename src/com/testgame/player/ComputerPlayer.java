@@ -5,6 +5,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import android.graphics.Point;
+
 import com.testgame.AGame;
 import com.testgame.OnlineGame;
 import com.testgame.mechanics.unit.AUnit;
@@ -12,6 +14,7 @@ import com.testgame.mechanics.unit.Base;
 import com.testgame.mechanics.unit.Ditz;
 import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
+import com.testgame.resource.ResourcesManager;
 
 public class ComputerPlayer extends APlayer {
 	
@@ -128,37 +131,43 @@ public class ComputerPlayer extends APlayer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		int j = 10;
-		int x = 11;
+		
+		Point[] spawns;
+		
 		if(game.isFirstTurn()){
-			x = 0;
-			j = 1;
+			spawns = game.resourcesManager.getSpawn1(game.resourcesManager.mapString);
+		}
+		else{
+			spawns = game.resourcesManager.getSpawn2(game.resourcesManager.mapString);
 		}
 		
 		
-			for(int i = 0; i < 10; i++){
+			for(Point i : spawns){
 				if(nerds > 0){
-					AUnit unit = new Nerd(game.gameMap, i, j, game.getGameScene(), "red");
+					AUnit unit = new Nerd(game.gameMap, i.x, i.y, game.getGameScene(), "red");
 					unit.init(); 
 					game.getCompPlayer().addUnit(unit);
 					nerds--;
 				}
 				else if(ditz > 0){
-					AUnit unit = new Ditz(game.gameMap, i, j, game.getGameScene(), "red");
+					AUnit unit = new Ditz(game.gameMap, i.x, i.y, game.getGameScene(), "red");
 					unit.init();
 					game.getCompPlayer().addUnit(unit);
 					ditz--;
 				}
 				else if(jocks > 0){
-					AUnit unit = new Jock(game.gameMap, i, j, game.getGameScene(), "red");
+					AUnit unit = new Jock(game.gameMap, i.x, i.y, game.getGameScene(), "red");
 					unit.init(); 
 					game.getCompPlayer().addUnit(unit);
 					jocks--;
 				}
+				else{
+					AUnit unitbase = new Base(game.gameMap, i.x, i.y, game.getGameScene(), "red");
+					unitbase.init();
+					game.getCompPlayer().setBase(unitbase);
+				}
 			}
-			AUnit unitbase = new Base(game.gameMap, 5, x, game.getGameScene(), "red");
-			unitbase.init();
-			game.getCompPlayer().setBase(unitbase);
+			
 			
 		
 

@@ -8,7 +8,6 @@ import android.util.Log;
 import com.testgame.scene.SceneManager.SceneType;
 
 import org.andengine.engine.camera.Camera;
-import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
