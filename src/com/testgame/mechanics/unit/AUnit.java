@@ -14,6 +14,8 @@ import org.andengine.util.modifier.IModifier;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.graphics.Point;
+import android.util.Log;
+
 import com.testgame.mechanics.map.GameMap;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
@@ -431,6 +433,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	
 	// all the squares you can move to 
 	public ArrayList<Point> availableMoves() {
+		Log.d("Moving", "Here");
 		ArrayList<Point> moves = new ArrayList<Point>();
 		if(this.range == 0)
 			return moves;
