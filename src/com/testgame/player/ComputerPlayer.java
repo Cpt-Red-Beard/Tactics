@@ -14,7 +14,6 @@ import com.testgame.mechanics.unit.Base;
 import com.testgame.mechanics.unit.Ditz;
 import com.testgame.mechanics.unit.Jock;
 import com.testgame.mechanics.unit.Nerd;
-import com.testgame.resource.ResourcesManager;
 
 public class ComputerPlayer extends APlayer {
 	
