@@ -518,7 +518,7 @@ public class ResourcesManager {
 			Log.d("Error", e.toString());
 			return null;
 		}
-	}
+	} 
 	
 	public int getNumber(String map){
 		if(map.equals("basic.tmx")){
