@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import android.graphics.Point;
+import android.util.Log;
 
 import com.testgame.mechanics.unit.AUnit;
 
@@ -86,6 +87,7 @@ public class GameMap implements IMap {
 
 	@Override
 	public int manhattanDistance(Point s, Point d) {
+		
 		//Log.d("AndEngine", "Calculating shortest path!");
 		Node startNode = graph.get(this.entry(s.x, s.y));
 		Node goal = graph.get(this.entry(d.x, d.y));

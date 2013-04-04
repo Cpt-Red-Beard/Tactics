@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.graphics.Point;
+import android.util.Log;
 
 import com.parse.ParseObject;
 import com.parse.ParsePush;
@@ -34,6 +35,8 @@ public class OnlineGame extends AGame{
 	
 	public OnlineGame(APlayer pOne, ComputerPlayer pTwo, int xDim, int yDim, GameScene game, boolean turn) {
 		super(pOne,xDim, yDim, game);
+		Log.d("xDim", xDim+"");
+		Log.d("yDim", yDim+"");
 		this.setFirstTurn(turn);
 		moves = new JSONArray();
 		this.setCompPlayer(pTwo);
@@ -45,7 +48,7 @@ public class OnlineGame extends AGame{
 	 * Performs initialization needed to begin the game.
 	 */
 	public void init() {
-		
+		super.init();
 		int jocks = resourcesManager.unitArray.get(0);
 		int nerds = resourcesManager.unitArray.get(1);
 		int ditz = resourcesManager.unitArray.get(2);

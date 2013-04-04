@@ -210,7 +210,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			this.setGame(new OnlineGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn));
 		}
 		else{
-			this.setGame(new LocalGame(new APlayer("One's"), new APlayer("Two"), widthInTiles, heightInTiles, this));
+			this.setGame(new LocalGame(new APlayer("One's"), new APlayer("Two's"), widthInTiles, heightInTiles, this));
 		}
 		
 		createHUD();

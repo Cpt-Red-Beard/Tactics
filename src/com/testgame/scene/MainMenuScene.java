@@ -22,6 +22,8 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.util.Log;
+
 import com.example.testgame.MainActivity;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -286,7 +288,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
                 resourcesManager.opponent = (String) de[pos];
                 resourcesManager.opponentString = usernames.get((String)de[pos]);
                 try {
-					JSONObject data = new JSONObject("{\"alert\": \"Invitation to Game\", \"action\": \"com.testgame.INVITE\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\", \"map\": \""+selectedMapName+"\", \"userid\": \""+ParseUser.getCurrentUser().getObjectId()+"\"}");
+					JSONObject data = new JSONObject("{\"alert\": \"Invitation to Game\", \"action\": \"com.testgame.INVITE\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\", \"map\": \""+resourcesManager.mapString+"\", \"userid\": \""+ParseUser.getCurrentUser().getObjectId()+"\"}");
 					 ParsePush push = new ParsePush();
 		             push.setChannel("user_"+resourcesManager.opponentString);
 		             push.setData(data);
@@ -387,6 +389,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
             public void onClick(DialogInterface dialog, int whichButton) {
             				try {
 								resourcesManager.opponentDeviceID = object.getString("deviceId");
+								Log.d("Map", object.getString("map"));
 								resourcesManager.setMap(object.getString("map"));
 							} catch (JSONException e) {
 								
@@ -496,9 +499,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 			public void onClick(DialogInterface dialog, int whichButton) { 
 				selectedMapName = (resourcesManager.maps()[whichButton]).toString();
 				resourcesManager.setMap(selectedMapName);
-				if(resourcesManager.isLocal){
-					SceneManager.getInstance().loadSetupScene(engine);
-				}
+				
 				mapDialog.dismiss();
 				
 				if (!resourcesManager.isLocal) {
@@ -509,6 +510,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 						}
 					});
 				}
+				else
+					SceneManager.getInstance().loadSetupScene(engine);
 			}
 		});
 		

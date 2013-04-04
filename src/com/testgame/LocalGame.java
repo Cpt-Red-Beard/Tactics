@@ -3,6 +3,7 @@ package com.testgame;
 
 
 import android.graphics.Point;
+import android.util.Log;
 
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.mechanics.unit.Base;
@@ -18,6 +19,8 @@ public class LocalGame extends AGame {
 	
 	public LocalGame(APlayer pOne, APlayer pTwo, int xDim, int yDim, GameScene game) {
 		super(pOne, xDim, yDim, game);
+		Log.d("xDim", xDim+"");
+		Log.d("yDim", yDim+"");
 		this.player2 = pTwo;
 		init();
 	}

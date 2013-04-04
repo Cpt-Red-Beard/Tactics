@@ -527,7 +527,7 @@ public class ResourcesManager {
 		else if(map.equals("classroom.tmx")){
 				return 4;
 		}
-		return 0;
+		return -1;
 						
 	}
 	
