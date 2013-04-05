@@ -100,7 +100,6 @@ public class OnlineGame extends AGame{
 				}
 			}
 		
-		
 	}
 	
 	/**

@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.parse.Parse;
@@ -62,6 +63,7 @@ public class MainActivity extends BaseGameActivity {
     						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
      					if(json.getString("deviceId").equals(resourcesManager.opponentDeviceID)){
 	     					if(SceneManager.getInstance().getGameScene() != null)
+	     						Log.d("Turn", "New Turn starting");
 	     						((GameScene) SceneManager.getInstance().getGameScene()).startCompTurn();
 	    					}
     					}

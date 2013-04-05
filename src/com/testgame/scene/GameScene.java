@@ -647,7 +647,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	public void startCompTurn(){
-		
+		Log.d("Turns", "Getting turn");
 		ParseQuery query = new ParseQuery("Turns");
 		
 		query.whereEqualTo("Player", "user_"+resourcesManager.opponentString+"_"+getGame().getCount());
@@ -661,6 +661,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			            	
 			            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
 			            		if(getGame().getCount() != 0){
+			            			Log.d("Turns", "Found turn data");
 					        		JSONArray array = ob.getJSONArray("Moves");
 					        		Log.d("Array", array.toString());
 					        		deselectCharacter(false);
@@ -694,6 +695,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		pausemenu.setTitle("Paused! Turn: "+getGame().getCount());
 		LinearLayout ll = new LinearLayout(activity);
 		ll.setOrientation(LinearLayout.VERTICAL);
+		
+		
+		
+		Button b0 = new Button(activity);
+        b0.setText("Refresh");
+        b0.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				startCompTurn();
+				pausemenu.dismiss();
+				
+			}
+        });        
+        ll.addView(b0);
+		
 		
 		Button b1 = new Button(activity);
         b1.setText("End Turn");

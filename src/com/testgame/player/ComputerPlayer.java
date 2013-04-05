@@ -176,7 +176,7 @@ public class ComputerPlayer extends APlayer {
 			
 			
 		
-
+		
 		game.incrementCount();
 		if(game.isFirstTurn()) {
 			game.getPlayer().beginTurn();
