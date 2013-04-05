@@ -1,12 +1,11 @@
 package com.testgame.mechanics.map;
 
 import com.testgame.mechanics.unit.AUnit;
-import android.graphics.Point;
 
 /**
  * Interface for a  game map.
  * @author Alen Lukic
- *
+ *  
  */
 public interface IMap {
 	

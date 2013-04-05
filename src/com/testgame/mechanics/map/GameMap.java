@@ -247,9 +247,9 @@ public class GameMap implements IMap {
 	
 	/**
 	 * Calculates the manhatten distance from point a to b
-	 * @param a
-	 * @param b
-	 * @return
+	 * @param a Point a
+	 * @param b Point b
+	 * @return Math.abs(a.x - b.x) +  Math.abs(a.y - b.y)
 	 */
 	public static int manhattanDistance(Point a, Point b) {
 		return Math.abs(a.x - b.x) +  Math.abs(a.y - b.y);
