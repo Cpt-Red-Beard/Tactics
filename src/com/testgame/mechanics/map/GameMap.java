@@ -1,7 +1,6 @@
 package com.testgame.mechanics.map;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -88,14 +87,13 @@ public class GameMap implements IMap {
 			coordMap.remove(entry(x,y));
 	}
 	
-	//TODO: Actually figure out what this does.
+	//TODO: Actually figure out what this does. Some sort of conversion?
 	@Override
 	public String entry(int x, int y) {
 		return x + ", " + y;
 	}
 
 	
-	//TODO: Is this actually used?
 	/**
 	 * Rreturns a path, array-list of points in order, from start to finish
 	 * @param start start point for the A* path.
@@ -194,7 +192,13 @@ public class GameMap implements IMap {
 		return targets;
 	}
 	
-	public HashSet<Point> bfs(Point start, int range, int energy) {
+	/**
+	 * BFS search for all possible moves
+	 * @param start Start point(Where unit is located)
+	 * @param range Range from which the unit can move.
+	 * @return ArrayList of all possible moves.
+	 */
+	public HashSet<Point> bfs(Point start, int range) {
 		Log.d("Range", range+"");
 		HashSet<Point> accessiblePoints = new HashSet<Point>();
 		
@@ -241,6 +245,12 @@ public class GameMap implements IMap {
 		return accessiblePoints;
 	}
 	
+	/**
+	 * Calculates the manhatten distance from point a to b
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	public static int manhattanDistance(Point a, Point b) {
 		return Math.abs(a.x - b.x) +  Math.abs(a.y - b.y);
 	}

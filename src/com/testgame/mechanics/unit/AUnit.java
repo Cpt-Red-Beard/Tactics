@@ -413,7 +413,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 
 		if (unitType.equals("Base")) return new ArrayList<Point>();
 		Log.d("AndEngine", "computing available moves for "+x+", "+y);
-		HashSet<Point> moves = map.bfs(new Point(x , y), energy / range, range);
+		HashSet<Point> moves = map.bfs(new Point(x , y), energy / range);
 		Log.d("AndEngine", moves.toString());
 		ArrayList<Point> result = new ArrayList<Point>();
 		result.addAll(moves);
