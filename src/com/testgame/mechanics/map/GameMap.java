@@ -146,6 +146,8 @@ public class GameMap implements IMap {
 			Point[] neighbors = { new Point(next.x + 1, next.y) , new Point(next.x - 1, next.y), new Point(next.x, next.y + 1),
 					new Point(next.x, next.y -1)};
 			
+			
+			
 			for (Point p : neighbors) {
 				if (!visited.contains(p)) {
 					if (manhattanDistance(start, p) > range) {
@@ -170,7 +172,8 @@ public class GameMap implements IMap {
 		return targets;
 	}
 	
-	public HashSet<Point> bfs(Point start, int range) {
+	public HashSet<Point> bfs(Point start, int range, int energy) {
+		Log.d("Range", range+"");
 		HashSet<Point> accessiblePoints = new HashSet<Point>();
 		
 		HashSet<Point> visited = new HashSet<Point>();
@@ -178,26 +181,38 @@ public class GameMap implements IMap {
 		ArrayList<Point> frontier = new ArrayList<Point>();
 		frontier.add(start);
 		visited.add(start);
-		
+		int i = 0;
+		boolean pendingdepthIncrease = false;
+		int timetoIncrease = 0;
 		while (frontier.size() > 0) {
 			Point next = frontier.get(0);
 			frontier.remove(0); // pseudo-pop
-			if (manhattanDistance(start, next) <= range) { // within range, accessible
-				accessiblePoints.add(next);
+			if (i > range) { // within range, accessible
+				break;
 			}
-			else continue; // point not accessible, no point to branch out.
+			else accessiblePoints.add(next); // point not accessible, no point to branch out.
 			
 			Point[] neighbors = { new Point(next.x + 1, next.y) , new Point(next.x - 1, next.y), new Point(next.x, next.y + 1),
 					new Point(next.x, next.y -1)};
 			
 			for (Point p : neighbors) {
 				if (!visited.contains(p)) {
-					if (!isOccupied(p.x, p.y)) { 
+					if (!isOccupied(p.x, p.y)) {
+						if(pendingdepthIncrease == false){
+							pendingdepthIncrease = true;
+							timetoIncrease = frontier.size();
+						}
 						visited.add(p);
 						frontier.add(p);
 					}
 				}
+				
 			}
+			if(timetoIncrease == 0 && pendingdepthIncrease == true){
+				pendingdepthIncrease = false;
+				i++;
+			}
+			timetoIncrease--;
 			
 		}
 		

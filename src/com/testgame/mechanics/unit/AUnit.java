@@ -223,17 +223,15 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	@Override
-	public void move(int xNew, int yNew) {
-		int dist = manhattanDistance(this.x, this.y, xNew, yNew);
-		final int eCost = dist*this.range; // Energy expense of this move 
-		if (eCost <= this.energy) {
+	public void move(int xNew, int yNew, ArrayList<Point> path, int cost) {
+			cost = this.range * cost;
 			map.setUnoccupied(this.x, this.y);
 			int origX = this.x;
 			int origY = this.y;
 			this.x = xNew;
 			this.y = yNew;
 			map.setOccupied(x, y, this);
-			this.reduceEnergy(eCost);
+			this.reduceEnergy(cost);
 			//this.energyUsedLastTurn += eCost;
 			// TODO: code to actually move the sprite on the map
 			
@@ -251,7 +249,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 				temp.put("DestY", yNew);
 				temp.put("UnitX", origX);
 				temp.put("UnitY", origY);
-				temp.put("Energy", eCost);
+				temp.put("Energy", cost);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -275,11 +273,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 			
 			this.registerEntityModifier(seq);
 			
-			this.game.setEventText("Moved using "+eCost+" energy.");
+			this.game.setEventText("Moved using "+cost+" energy.");
 
         	
-        	
-		}
 	}
 	
 	@Override
@@ -437,7 +433,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 
 		if (unitType.equals("Base")) return new ArrayList<Point>();
 		Log.d("AndEngine", "computing available moves for "+x+", "+y);
-		HashSet<Point> moves = map.bfs(new Point(x , y), energy / range);
+		HashSet<Point> moves = map.bfs(new Point(x , y), energy / range, range);
 		Log.d("AndEngine", moves.toString());
 		ArrayList<Point> result = new ArrayList<Point>();
 		result.addAll(moves);
@@ -448,6 +444,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	// all the squares of enemies you can attack
 	public ArrayList<AUnit> availableTargets() {
 		if (unitType.equals("Base")) return new ArrayList<AUnit>();
+		if(this.energy < this.attackenergy) return new ArrayList<AUnit>();
 		Log.d("AndEngine", "computing available targets for "+x+", "+y);
 		HashSet<AUnit> moves = map.bfsTarget(new Point(x , y), attackrange, player);
 		Log.d("AndEngine", moves.toString());
