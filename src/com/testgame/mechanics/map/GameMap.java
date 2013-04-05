@@ -45,6 +45,9 @@ public class GameMap implements IMap {
 		buildGraph();
 	}
 
+	/**
+	 * Determines if the point (x,y) is occupied by a unit or some other obstacle.
+	 */
 	@Override
 	public boolean isOccupied(int x, int y) {		
 		if (x < 0 || y < 0) {
@@ -61,11 +64,17 @@ public class GameMap implements IMap {
 		return false;
 	}
 	
+	/**
+	 * Returns the occupying unit at point (x,y).
+	 */
 	@Override
 	public AUnit getOccupyingUnit(int x, int y) {
 		return coordMap.get(entry(x,y));
 	}
 
+	/**
+	 * Sets the point (x,y) as occupied.
+	 */
 	@Override
 	public void setOccupied(int x, int y, AUnit unit) {
 		if (x <= (xDim - 1) && x >= 0) {
@@ -75,18 +84,29 @@ public class GameMap implements IMap {
 		}
 	}
 
+	/**
+	 * Sets the point (x,y) as unoccupied.
+	 */
 	@Override
 	public void setUnoccupied(int x, int y) {
 		if (coordMap.get(entry(x, y)) != null)
 			coordMap.remove(entry(x,y));
 	}
 	
+	//TODO: Actually figure out what this does.
 	@Override
 	public String entry(int x, int y) {
 		return x + ", " + y;
 	}
 
-	// returns a path, array-list of points in order, from start to finish
+	
+	//TODO: Is this actually used?
+	/**
+	 * Rreturns a path, array-list of points in order, from start to finish
+	 * @param start start point for the A* path.
+	 * @param dest end point for the A* path.
+	 * @return arrayList containing points in the path. 
+	 */
 	public ArrayList<Point> computePath(Point start, Point dest) {
 		ArrayList<Point> path = new ArrayList<Point>();
 		path.add(dest);
@@ -130,6 +150,13 @@ public class GameMap implements IMap {
 		return path;
 	}
 	
+	/**
+	 * BFS search for targets in a units range.
+	 * @param start Point at which attacking unit is located.
+	 * @param range The distance at which someone can attack from.
+	 * @param me unit in which targets need to be in distance of to attack.
+	 * @return Returns an arraylist of all points of which the unit can attack.
+	 */
 	public HashSet<AUnit> bfsTarget(Point start, int range, APlayer me) {
 		HashSet<AUnit> targets = new HashSet<AUnit>();
 		
