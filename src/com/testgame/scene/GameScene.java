@@ -53,6 +53,7 @@ import com.parse.ParseQuery;
 import com.testgame.AGame;
 import com.testgame.LocalGame;
 import com.testgame.OnlineGame;
+import com.testgame.mechanics.map.GameMap;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
@@ -81,7 +82,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public IEntityModifierListener animationListener;
 	//public IEntityModifierListener computerAnimationListener;
 	
-	private AGame game;
+	public AGame game;
 	
 	public HUD hud;
 	
@@ -403,14 +404,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			
 			this.highlightedSquares.add(availableMove);
 			availableMove.setOffsetCenter(0, 0);
-			float redValue;
-			if (selectedCharacter == null || t == null) { // checks because of that weird occasional null pointer exception
-				redValue = 1;
-			}
-			else {
-				redValue = 1.0f/selectedCharacter.getAttackRange() * selectedCharacter.manhattanDistance(selectedCharacter.getMapX(), selectedCharacter.getMapY(), t.getTileColumn(), heightInTiles - t.getTileRow() - 1) / 2 + .1f;
-			}
-			availableMove.setColor(1, 0, 0, redValue);
+			
+			availableMove.setColor(1, 0, 0, .5f); // attacks take constant energy, no point in shading
 			attachChild(availableMove);
 			
 		}
@@ -428,8 +423,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		for (Point p : moves){
 			
-			int x = (int) (p.x*tileSize + sprite.getX());
-			int y = (int) (p.y*tileSize + sprite.getY());
+			int x = (int) p.x*tileSize;
+			int y = (int) p.y*tileSize;
 			
 			TMXTile t = this.tmxLayer.getTMXTileAt(x, y);
 			
@@ -631,7 +626,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.selectedCharacter.stopAnimation();
 		this.selectedCharacter = null;
 		
-		
+		removePath();
 		
 		clearSquares();
 		
@@ -900,17 +895,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 	private Line[] arrowPath;
 	
-	public void drawPath(Point dest) {
+	public void drawPath(ArrayList<Point> path) {
 		Log.d("AndEngine", "drawing path...");
-		arrowPath = new Line[2];
 		
-		// TODO: make this actually pretty 
+		arrowPath = new Line[path.size()-1];
+	
+		// TODO: make the line actually pretty
 		
-		float x = selectedCharacter.getX() + 32;
-		float y = selectedCharacter.getY() + 32;
-		
-		arrowPath[0] = new Line(x, y, x, dest.y + 32, 20, vbom);
-		arrowPath[1] = new Line(x, dest.y + 32, dest.x + 32, dest.y + 32, 20, vbom);
+		for (int i = 0; i < path.size() - 1; i++) {
+			Point a = path.get(i);
+			Point b = path.get(i+1);
+			
+			arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize + 32, 20, vbom);
+		}
 		
 		for (Line l : arrowPath) {
 			l.setColor(Color.BLUE);
@@ -921,8 +918,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void removePath() {
 		Log.d("AndEngine", "removing path.");
 		
+		if (arrowPath == null) return;
 		for (Line l : arrowPath) {
 			detachChild(l);
 		}
+	}
+	
+	public int costOfPath(ArrayList<Point> path) {
+		int cost = 0;
+		for (int i = 0; i < path.size() - 1; i++){
+			Point a = path.get(i);
+			Point b = path.get(i+1);
+			cost += GameMap.manhattanDistance(a, b);
+		}
+		return cost;
 	}
 }

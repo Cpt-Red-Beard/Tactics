@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.util.Log;
 
 import com.testgame.mechanics.unit.AUnit;
+import com.testgame.player.APlayer;
 
 public class GameMap implements IMap {
 	
@@ -85,8 +86,130 @@ public class GameMap implements IMap {
 		return x + ", " + y;
 	}
 
+	// returns a path, array-list of points in order, from start to finish
+	public ArrayList<Point> computePath(Point start, Point dest) {
+		ArrayList<Point> path = new ArrayList<Point>();
+		path.add(dest);
+		
+		HashSet<Point> visited = new HashSet<Point>();
+		
+		HashMap<Point, Point> parents = new HashMap<Point, Point>();
+		parents.put(start, null);
+		
+		ArrayList<Point> frontier = new ArrayList<Point>();
+		frontier.add(start);
+		visited.add(start);
+		
+		// run bfs
+		while (frontier.size() > 0) {
+			Point next = frontier.get(0);
+			frontier.remove(0); // pseudo-pop
+			
+			Point[] neighbors = { new Point(next.x + 1, next.y) , new Point(next.x - 1, next.y), new Point(next.x, next.y + 1),
+					new Point(next.x, next.y -1)};
+			
+			for (Point p : neighbors) {
+				if (!visited.contains(p)) {
+					if (!isOccupied(p.x, p.y)) { 
+						visited.add(p);
+						frontier.add(p);
+						parents.put(p, next);
+					}
+				}
+			}
+		}
+		
+		// compute path.
+		Point child = dest;
+		while (child != null) {
+			Point parent = parents.get(child);
+			if (parent!=null) path.add(0, parent);
+			child = parent;
+		}
+		
+		return path;
+	}
+	
+	public HashSet<AUnit> bfsTarget(Point start, int range, APlayer me) {
+		HashSet<AUnit> targets = new HashSet<AUnit>();
+		
+		HashSet<Point> visited = new HashSet<Point>();
+		
+		ArrayList<Point> frontier = new ArrayList<Point>();
+		frontier.add(start);
+		visited.add(start);
+		
+		while (frontier.size() > 0) {
+			Point next = frontier.get(0);
+			frontier.remove(0); // pseudo-pop
+			
+			Point[] neighbors = { new Point(next.x + 1, next.y) , new Point(next.x - 1, next.y), new Point(next.x, next.y + 1),
+					new Point(next.x, next.y -1)};
+			
+			for (Point p : neighbors) {
+				if (!visited.contains(p)) {
+					if (manhattanDistance(start, p) > range) {
+						continue;
+					}
+					AUnit occupyingUnit = getOccupyingUnit(p.x, p.y);
+					if (occupyingUnit != null) {
+						if (!occupyingUnit.unitType.equals("Dummy")) { // not just a map tile
+							if (occupyingUnit.getPlayer() != me) { // can do != since checking for instance
+								targets.add(occupyingUnit);
+								occupyingUnit.inSelectedCharactersAttackRange = true;
+							}
+						}
+					}
+					visited.add(p);
+					frontier.add(p);
+				}
+			}
+			
+		}
+		
+		return targets;
+	}
+	
+	public HashSet<Point> bfs(Point start, int range) {
+		HashSet<Point> accessiblePoints = new HashSet<Point>();
+		
+		HashSet<Point> visited = new HashSet<Point>();
+		
+		ArrayList<Point> frontier = new ArrayList<Point>();
+		frontier.add(start);
+		visited.add(start);
+		
+		while (frontier.size() > 0) {
+			Point next = frontier.get(0);
+			frontier.remove(0); // pseudo-pop
+			if (manhattanDistance(start, next) <= range) { // within range, accessible
+				accessiblePoints.add(next);
+			}
+			else continue; // point not accessible, no point to branch out.
+			
+			Point[] neighbors = { new Point(next.x + 1, next.y) , new Point(next.x - 1, next.y), new Point(next.x, next.y + 1),
+					new Point(next.x, next.y -1)};
+			
+			for (Point p : neighbors) {
+				if (!visited.contains(p)) {
+					if (!isOccupied(p.x, p.y)) { 
+						visited.add(p);
+						frontier.add(p);
+					}
+				}
+			}
+			
+		}
+		
+		return accessiblePoints;
+	}
+	
+	public static int manhattanDistance(Point a, Point b) {
+		return Math.abs(a.x - b.x) +  Math.abs(a.y - b.y);
+	}
+	
 	@Override
-	public int manhattanDistance(Point s, Point d) {
+	public int aStar(Point s, Point d) {
 		//Log.d("AndEngine", "Calculating shortest path!");
 		Node startNode = graph.get(this.entry(s.x, s.y));
 		Node goal = graph.get(this.entry(d.x, d.y));
