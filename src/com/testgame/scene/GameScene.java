@@ -488,7 +488,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				if (tmxTile == h.tile) {
 					//selectedCharacter.setPosition(x, y);
 					
-					getSelectedCharacter().move(x, heightInTiles - y - 1);
+					getSelectedCharacter().move(x, heightInTiles - y - 1, sq.path, sq.cost);
 				}
 			}
 			
