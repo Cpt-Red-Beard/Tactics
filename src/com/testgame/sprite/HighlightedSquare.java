@@ -88,6 +88,7 @@ public class HighlightedSquare extends Rectangle {
 	}
 	
 	public void drawBorder() {
+		
 		for (Line l : this.borderLines){
 			l.setColor(Color.BLACK);
 			this.attachChild(l);

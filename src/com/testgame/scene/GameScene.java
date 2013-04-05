@@ -662,8 +662,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		return tmxTile;
 	}
 	
-	
-	
 	public void startCompTurn(){
 		
 		ParseQuery query = new ParseQuery("Turns");
@@ -905,6 +903,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void drawPath(Point dest) {
 		Log.d("AndEngine", "drawing path...");
 		arrowPath = new Line[2];
+		
+		// TODO: make this actually pretty 
 		
 		float x = selectedCharacter.getX() + 32;
 		float y = selectedCharacter.getY() + 32;
