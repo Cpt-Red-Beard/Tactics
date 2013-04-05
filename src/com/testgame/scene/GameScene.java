@@ -762,14 +762,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		
 		
-		/*ButtonSprite okButton = new ButtonSprite(0, 0, resourcesManager.continue_region, vbom, new OnClickListener() {
-			@Override
-			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				gameScene.dismissDialog();
-			}
-		});*/
 		
-		//this.setChildScene(new GameDialogBox(this, "Your Turn!", ((ButtonSprite[]) null)), false, true, true);
 		
 		
 		
@@ -785,7 +778,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			@Override
 			public void onClick(View v) {
 				pausemenu.dismiss();
-				game.endGame();
 				
 			}
         });        
