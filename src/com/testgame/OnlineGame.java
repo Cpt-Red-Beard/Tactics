@@ -142,6 +142,7 @@ public class OnlineGame extends AGame{
 			return;
 		ParseObject turns = new ParseObject("Turns");
 		turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
+		Log.d("Count", getCount()+"");
 		turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+getCount());
 		turns.put("GameId", resourcesManager.gameId);
 		turns.put("Device", resourcesManager.deviceID);

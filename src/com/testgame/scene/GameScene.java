@@ -211,6 +211,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		// Initialize the game.
 		if(!resourcesManager.isLocal){
 			this.setGame(new OnlineGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn));
+			((OnlineGame)this.getGame()).getCompPlayer().setGame(((OnlineGame)this.getGame()));
 		}
 		else{
 			this.setGame(new LocalGame(new APlayer("One's"), new APlayer("Two's"), widthInTiles, heightInTiles, this));
@@ -647,14 +648,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	public void startCompTurn(){
-		Log.d("Turns", "Getting turn");
+		
 		ParseQuery query = new ParseQuery("Turns");
 		
 		query.whereEqualTo("Player", "user_"+resourcesManager.opponentString+"_"+getGame().getCount());
 		query.findInBackground(new FindCallback() {
 		    public void done(List<ParseObject> itemList, ParseException e) {
 		        if (e == null) {
-		            
+		           Log.d("Items", itemList.size()+""); 
 		            for(ParseObject ob : itemList){
 		            	
 		            	if (ob.getString("Device").equals(resourcesManager.opponentDeviceID)) {
@@ -665,7 +666,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 					        		JSONArray array = ob.getJSONArray("Moves");
 					        		Log.d("Array", array.toString());
 					        		deselectCharacter(false);
-					            	((OnlineGame)getGame()).getCompPlayer().startTurn((OnlineGame)getGame(), array);
+					            	((OnlineGame)getGame()).getCompPlayer().startTurn( array);
 					            	ob.deleteInBackground();
 					            	return;
 					        	}
@@ -673,7 +674,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 					        		JSONObject object = ob.getJSONObject("Init");
 					        		
 					        		deselectCharacter(false);
-					            	((OnlineGame)getGame()).getCompPlayer().init((OnlineGame)getGame(), object);
+					            	((OnlineGame)getGame()).getCompPlayer().init(object);
 					            	ob.deleteInBackground();
 					            	return;
 					        		

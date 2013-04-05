@@ -19,31 +19,31 @@ import com.testgame.mechanics.unit.Nerd;
 public class ComputerPlayer extends APlayer {
 	
 	JSONArray actionsToPerform;
-	AGame game;
+	OnlineGame game;
 	
 	public ComputerPlayer(String name) {
 		super(name);
 	}
 	
-	public void startTurn(final OnlineGame game, JSONArray array){
+	public void startTurn(JSONArray array){
 		Log.d("Array", array.length()+"");
 		this.actionsToPerform = array;
-		this.game = game;
 		this.beginTurn();
 		performNext(); // perform all of the animations
-		if(game.isFirstTurn()) 
-			game.incrementCount();
 		
 		
-		game.getPlayer().beginTurn(); // this calls turn init on all the units
-		this.endTurn();
+		
 		
 		
 	}
 	
 	public void performNext() {
 		if(actionsToPerform.length() == 0){
+			if(game.isFirstTurn()) 
+				game.incrementCount();
 			
+			this.endTurn();
+			game.getPlayer().beginTurn(); // this calls turn init on all the units
 			
 			game.getGameScene().activity.runOnUiThread(new Runnable() {
         	    @Override
@@ -58,6 +58,11 @@ public class ComputerPlayer extends APlayer {
 
 			if (actionsToPerform.isNull(i)) {
 				if (i == actionsToPerform.length() - 1) {
+					if(game.isFirstTurn()) 
+						game.incrementCount();
+					this.endTurn();
+					game.getPlayer().beginTurn(); // this calls turn init on all the units
+					
 					game.getGameScene().activity.runOnUiThread(new Runnable() {
 		        	    @Override
 		        	    public void run() {
@@ -123,7 +128,7 @@ public class ComputerPlayer extends APlayer {
 		
 	}
 	
-	public void init(final OnlineGame game, JSONObject object) {
+	public void init(JSONObject object) {
 		int nerds = 0;
 		int jocks = 0;
 		int ditz = 0;
@@ -189,6 +194,10 @@ public class ComputerPlayer extends APlayer {
         	});
 		}
 		
+	}
+	
+	public void setGame(OnlineGame game){
+		this.game = game;
 	}
 
 }
