@@ -14,6 +14,7 @@ import com.testgame.mechanics.unit.AUnit;
 import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
 
+import android.graphics.Point;
 import android.util.Log;
 
 public class HighlightedSquare extends Rectangle {
@@ -62,6 +63,7 @@ public class HighlightedSquare extends Rectangle {
 				if (touched) {
 					Log.d("AndEngine", "already selected, calling gamescne");
 					this.removeBorder();
+					game.removePath();
 					this.game.squareTouched(this, pSceneTouchEvent);
 					this.touched = false;
 					this.game.currentlySelectedMoveTile = null;
@@ -71,12 +73,13 @@ public class HighlightedSquare extends Rectangle {
 					// remove border from previously selected square.
 					if (game.currentlySelectedMoveTile != null) {
 						game.currentlySelectedMoveTile.removeBorder();
+						game.removePath();
 						game.currentlySelectedMoveTile.touched = false;
-
 					}
 					this.touched = true;
 					this.game.currentlySelectedMoveTile = this;
 					drawBorder();
+					game.drawPath(new Point((int) this.getX(), (int) this.getY()));
 					return true;
 				}
 			}
@@ -85,6 +88,7 @@ public class HighlightedSquare extends Rectangle {
 	}
 	
 	public void drawBorder() {
+		
 		for (Line l : this.borderLines){
 			l.setColor(Color.BLACK);
 			this.attachChild(l);
