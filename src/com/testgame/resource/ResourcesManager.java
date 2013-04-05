@@ -46,7 +46,7 @@ public class ResourcesManager {
 	 */
 	
 	//Basic.tmx
-	Point[] basic1 = {};
+	Point[] basic1 = {new Point( 1, 1), new Point(2,2)};
 	Point[] basic2 = {new Point(5,6), new Point(6,5)};
 	Point[] classroom1 = {new Point(3,2), new Point(1,2), new Point(7, 2), new Point(9, 2), new Point(4, 0)};
 	Point[] classroom2 = {new Point(2,6), new Point(4,6), new Point(6,6), new Point(8,6), new Point(4, 7)};

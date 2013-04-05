@@ -437,7 +437,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 
 		if (unitType.equals("Base")) return new ArrayList<Point>();
 		Log.d("AndEngine", "computing available moves for "+x+", "+y);
-		HashSet<Point> moves = map.bfs(new Point(x , y), energy / range);
+		HashSet<Point> moves = map.bfs(new Point(x , y), energy / range, range);
 		Log.d("AndEngine", moves.toString());
 		ArrayList<Point> result = new ArrayList<Point>();
 		result.addAll(moves);
@@ -448,6 +448,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	// all the squares of enemies you can attack
 	public ArrayList<AUnit> availableTargets() {
 		if (unitType.equals("Base")) return new ArrayList<AUnit>();
+		if(this.energy < this.attackenergy) return new ArrayList<AUnit>();
 		Log.d("AndEngine", "computing available targets for "+x+", "+y);
 		HashSet<AUnit> moves = map.bfsTarget(new Point(x , y), attackrange, player);
 		Log.d("AndEngine", moves.toString());
