@@ -48,11 +48,4 @@ public interface IMap {
 	 */
 	public String entry(int x, int y);
 
-	/**
-	 * Performs A* and returns distance from s to d, or -1 if no path is available.
-	 * @param s The source.
-	 * @param d The destination.
-	 */ 
-	public int aStar(Point s, Point d);
-
 }

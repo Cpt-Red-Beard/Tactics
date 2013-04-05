@@ -406,27 +406,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		this.isDefending = false;
 	}
 	
-	/*
-	 * checks a point x,y
-	 */
-	public void checkPointForMove(int offsetX, int offsetY, int range, ArrayList<Point> moves) {
-
-		if (this.x + offsetX < 0 || this.y + offsetY < 0) return; // off of map, not occupied
-		if (this.x + offsetX >= map.xDim || this.y + offsetY >= map.yDim) return; // ditto
-		
-		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
-		
-		Point s = new Point(this.x, this.y);
-		Point d = new Point(this.x + offsetX, this.y + offsetY);
-		Point p = new Point(offsetX, offsetY);
-		
-		if (occupyingUnit == null) { // not occupied
-			if (moves.contains(p)) return;
-			int dist = map.aStar(s, d);
-			if (dist > range) return;
-			else moves.add(p);
-		} 
-	}
+	
 	
 	// all the squares you can move to 
 	public ArrayList<Point> availableMoves() {
