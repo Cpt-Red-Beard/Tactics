@@ -105,7 +105,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	/**
 	 * Unit's range stat.
 	 */
-	protected int range; // ratio b/w energy
+	protected int range; 
 	
 	/**
 	 * Unit's current energy.
