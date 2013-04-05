@@ -662,7 +662,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
 			            		if(getGame().getCount() != 0){
 					        		JSONArray array = ob.getJSONArray("Moves");
-					        		
+					        		Log.d("Array", array.toString());
 					        		deselectCharacter(false);
 					            	((OnlineGame)getGame()).getCompPlayer().startTurn((OnlineGame)getGame(), array);
 					            	ob.deleteInBackground();

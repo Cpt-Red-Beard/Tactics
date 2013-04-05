@@ -179,6 +179,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void ComputerMove(int xNew, int yNew, final int energy, final ComputerPlayer player){
+		Log.d("Moving", "In computer move method");
 		map.setUnoccupied(x, y);
 		this.x = xNew;
 		this.y = yNew;
@@ -412,9 +413,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public ArrayList<Point> availableMoves() {
 
 		if (unitType.equals("Base")) return new ArrayList<Point>();
-		Log.d("AndEngine", "computing available moves for "+x+", "+y);
+		
 		HashSet<Point> moves = map.bfs(new Point(x , y), energy / range);
-		Log.d("AndEngine", moves.toString());
+		
 		ArrayList<Point> result = new ArrayList<Point>();
 		result.addAll(moves);
 		return result;
@@ -424,10 +425,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 	// all the squares of enemies you can attack
 	public ArrayList<AUnit> availableTargets() {
 		if (unitType.equals("Base")) return new ArrayList<AUnit>();
-		if(this.energy < this.attackenergy) return new ArrayList<AUnit>();
-		Log.d("AndEngine", "computing available targets for "+x+", "+y);
+		if(this.energy < this.attackenergy) return new ArrayList<AUnit>();	
 		HashSet<AUnit> moves = map.bfsTarget(new Point(x , y), attackrange, player);
-		Log.d("AndEngine", moves.toString());
 		ArrayList<AUnit> result = new ArrayList<AUnit>();
 		result.addAll(moves);
 		return result;
@@ -503,6 +502,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 		if(this.getType().equals("Base")){
 			unit.reduceHealth(attack);
 			game.getGame().endGame();
+			game.working = false;
+			if(computerPlayer != null){
+				computerPlayer.performNext();
+			}
 			return;
 		}
 		ResourcesManager.getInstance().attack_sound.play();
@@ -518,6 +521,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	                u.setCurrentTileIndex(start_frame);
 	                unit.reduceHealth(attack);
 	                computerPlayer.performNext();
+	                game.working = false;
 	                
 	            }
 	        }));

@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 
 import android.graphics.Point;
+import android.util.Log;
 
 import com.testgame.AGame;
 import com.testgame.OnlineGame;
@@ -25,14 +26,14 @@ public class ComputerPlayer extends APlayer {
 	}
 	
 	public void startTurn(final OnlineGame game, JSONArray array){
-		
+		Log.d("Array", array.length()+"");
 		this.actionsToPerform = array;
 		this.game = game;
 		this.beginTurn();
 		performNext(); // perform all of the animations
-		
 		if(game.isFirstTurn()) 
 			game.incrementCount();
+		
 		
 		game.getPlayer().beginTurn(); // this calls turn init on all the units
 		this.endTurn();
@@ -42,6 +43,8 @@ public class ComputerPlayer extends APlayer {
 	
 	public void performNext() {
 		if(actionsToPerform.length() == 0){
+			
+			
 			game.getGameScene().activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
@@ -79,7 +82,7 @@ public class ComputerPlayer extends APlayer {
 					AUnit unit = game.gameMap.getOccupyingUnit(unitX, unitY);
 					
 					if (moveType.equals("MOVE")) {
-						
+						Log.d("Moving", "Moving");
 						
 						int destX = nextAction.getInt("DestX");
 						int destY = nextAction.getInt("DestY");
@@ -101,7 +104,11 @@ public class ComputerPlayer extends APlayer {
 						AUnit target = game.gameMap.getOccupyingUnit(targetX, targetY);
 						
 						actionsToPerform.put(i, null); // finished action, clear it out
-						
+						Log.d("Target", target+"");
+						Log.d("Attack", attack+"");
+						Log.d("Unit", unit+"");
+						Log.d("Energy", energy+"");
+						Log.d("Unit2", this+"");
 						unit.ComputerAttack(target, attack, energy, this);
 					}
 					
