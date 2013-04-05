@@ -1,6 +1,7 @@
 package com.testgame.mechanics.unit;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 import org.andengine.engine.handler.timer.ITimerCallback;
@@ -62,7 +63,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	
 	protected int sightRange = 7; // TODO: must be bigger ? than all movement ranges
 	
-	protected String unitType;
+	public String unitType;
 
 	/**
 	 * The player who owns this unit.
@@ -425,7 +426,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		if (occupyingUnit == null) { // not occupied
 			if (moves.contains(p)) return;
-			int dist = map.manhattanDistance(s, d);
+			int dist = map.aStar(s, d);
 			if (dist > range) return;
 			else moves.add(p);
 		} 
@@ -433,69 +434,27 @@ public class AUnit extends CharacterSprite implements IUnit {
 	
 	// all the squares you can move to 
 	public ArrayList<Point> availableMoves() {
-		Log.d("Moving", "Here");
-		ArrayList<Point> moves = new ArrayList<Point>();
-		if(this.range == 0)
-			return moves;
-		int movementRange = this.energy/this.range;
-		
-		for (int i = 0; i <= movementRange; i++) {
-			for (int j = 0; j <= movementRange - i; j++){
-				
-				if (i == 0 && j == 0) continue;
-				
-				checkPointForMove(i, j, movementRange, moves);
-				checkPointForMove(i, -j, movementRange, moves);
-				checkPointForMove(-i, j, movementRange, moves);
-				checkPointForMove(-i, -j, movementRange, moves);
-			}
-		}
 
-		return moves;
+		if (unitType.equals("Base")) return new ArrayList<Point>();
+		Log.d("AndEngine", "computing available moves for "+x+", "+y);
+		HashSet<Point> moves = map.bfs(new Point(x , y), energy / range);
+		Log.d("AndEngine", moves.toString());
+		ArrayList<Point> result = new ArrayList<Point>();
+		result.addAll(moves);
+		return result;
+
 	}
 	
 	// all the squares of enemies you can attack
 	public ArrayList<AUnit> availableTargets() {
-		ArrayList<AUnit> targets = new ArrayList<AUnit>();
-		
-		int attackRange = this.attackrange;
-		if (this.attackenergy > this.energy) attackRange = 0; // no available moves b/c no energy
-		
-		for (int i = 0; i <= attackRange; i++) {
-			for (int j = 0; j <= attackRange - i; j++){ // check all the points at most attackrange distance away
-				
-				if (i == 0 && j == 0) continue; // no movement, not a move
-				
-				checkPointForTargets(i, j, attackRange, targets);
-				checkPointForTargets(i, -j, attackRange, targets);
-				checkPointForTargets(-i, j, attackRange, targets);
-				checkPointForTargets(-i, -j, attackRange, targets);
-			}
-		}
-		return targets;
-	}
-	
-	// checks to see if a square offsetX, offsetY distance from this unit has an ENEMY unit, if so adds it to the array
-	private void checkPointForTargets(int offsetX, int offsetY, int attackRange, ArrayList<AUnit> targets) {
-		
-		if (this.x + offsetX < 0 || this.y + offsetY < 0) return; // off of map, not occupied
-		
-		if (this.x + offsetX >= map.xDim || this.y + offsetY >= map.yDim) return; // ditto
-		
-		if (this.manhattanDistance(this.x, this.y, this.x + offsetX, this.y + offsetY) > attackRange)
-			return;
-		
-		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
-		
-		if (occupyingUnit != null) { // occupied
-			if (occupyingUnit.unitType.equals("Dummy")) return; // not truly a target, just a dummy obstacle
-			if (targets.contains(occupyingUnit)) return;
-			else {
-				if (occupyingUnit.getPlayer() == this.player) return; // same player, not an enemy
-				occupyingUnit.inSelectedCharactersAttackRange = true;
-				targets.add(occupyingUnit);
-			}
-		}
+		if (unitType.equals("Base")) return new ArrayList<AUnit>();
+		Log.d("AndEngine", "computing available targets for "+x+", "+y);
+		HashSet<AUnit> moves = map.bfsTarget(new Point(x , y), attackrange, player);
+		Log.d("AndEngine", moves.toString());
+		ArrayList<AUnit> result = new ArrayList<AUnit>();
+		result.addAll(moves);
+		return result;
+
 	}
 
 	/**
@@ -507,6 +466,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 */
 	public int manhattanDistance(int x1, int y1, int x2, int y2) {
 		return Math.abs(x1-x2) + Math.abs(y1-y2);
+
 	}
 	
 	public void init() {

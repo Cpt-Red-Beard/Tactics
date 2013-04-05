@@ -11,6 +11,7 @@ import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
@@ -28,6 +29,7 @@ import org.andengine.input.touch.detector.PinchZoomDetector.IPinchZoomDetectorLi
 import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.util.Constants;
 import org.andengine.util.adt.align.HorizontalAlign;
+import org.andengine.util.adt.color.Color;
 import org.andengine.util.modifier.IModifier;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +53,7 @@ import com.parse.ParseQuery;
 import com.testgame.AGame;
 import com.testgame.LocalGame;
 import com.testgame.OnlineGame;
+import com.testgame.mechanics.map.GameMap;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
@@ -79,7 +82,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public IEntityModifierListener animationListener;
 	//public IEntityModifierListener computerAnimationListener;
 	
-	private AGame game;
+	public AGame game;
 	
 	public HUD hud;
 	
@@ -402,14 +405,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			
 			this.highlightedSquares.add(availableMove);
 			availableMove.setOffsetCenter(0, 0);
-			float redValue;
-			if (selectedCharacter == null || t == null) { // checks because of that weird occasional null pointer exception
-				redValue = 1;
-			}
-			else {
-				redValue = 1.0f/selectedCharacter.getAttackRange() * selectedCharacter.manhattanDistance(selectedCharacter.getMapX(), selectedCharacter.getMapY(), t.getTileColumn(), heightInTiles - t.getTileRow() - 1) / 2 + .1f;
-			}
-			availableMove.setColor(1, 0, 0, redValue);
+			
+			availableMove.setColor(1, 0, 0, .5f); // attacks take constant energy, no point in shading
 			attachChild(availableMove);
 			
 		}
@@ -427,8 +424,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		for (Point p : moves){
 			
-			int x = (int) (p.x*tileSize + sprite.getX());
-			int y = (int) (p.y*tileSize + sprite.getY());
+			int x = (int) p.x*tileSize;
+			int y = (int) p.y*tileSize;
 			
 			TMXTile t = this.tmxLayer.getTMXTileAt(x, y);
 			
@@ -495,6 +492,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				}
 			}
 			
+			removePath();
 			this.deselectCharacter(true);
 		}
 	}
@@ -617,7 +615,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.selectedCharacter.stopAnimation();
 		this.selectedCharacter = null;
 		
-		
+		removePath();
 		
 		clearSquares();
 		
@@ -647,8 +645,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		return tmxTile;
 	}
-	
-	
 	
 	public void startCompTurn(){
 		
@@ -736,7 +732,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             }
         });
         ll.addView(b3);
-         
+
         pausemenu.setContentView(ll);      
         pausemenu.setCanceledOnTouchOutside(false);
         pausemenu.show();        
@@ -884,5 +880,46 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		}
 		
 		this.mode = newMode;
+	}
+
+	private Line[] arrowPath;
+	
+	public void drawPath(ArrayList<Point> path) {
+		Log.d("AndEngine", "drawing path...");
+		
+		arrowPath = new Line[path.size()-1];
+	
+		// TODO: make the line actually pretty
+		
+		for (int i = 0; i < path.size() - 1; i++) {
+			Point a = path.get(i);
+			Point b = path.get(i+1);
+			
+			arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize + 32, 20, vbom);
+		}
+		
+		for (Line l : arrowPath) {
+			l.setColor(Color.BLUE);
+			this.attachChild(l);
+		}
+	}
+	
+	public void removePath() {
+		Log.d("AndEngine", "removing path.");
+		
+		if (arrowPath == null) return;
+		for (Line l : arrowPath) {
+			detachChild(l);
+		}
+	}
+	
+	public int costOfPath(ArrayList<Point> path) {
+		int cost = 0;
+		for (int i = 0; i < path.size() - 1; i++){
+			Point a = path.get(i);
+			Point b = path.get(i+1);
+			cost += GameMap.manhattanDistance(a, b);
+		}
+		return cost;
 	}
 }

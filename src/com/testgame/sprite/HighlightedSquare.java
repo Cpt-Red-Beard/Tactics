@@ -10,10 +10,12 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 import org.andengine.extension.tmx.TMXTile;
 
+import com.testgame.mechanics.map.GameMap;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
 
+import android.graphics.Point;
 import android.util.Log;
 
 public class HighlightedSquare extends Rectangle {
@@ -62,6 +64,7 @@ public class HighlightedSquare extends Rectangle {
 				if (touched) {
 					Log.d("AndEngine", "already selected, calling gamescne");
 					this.removeBorder();
+					game.removePath();
 					this.game.squareTouched(this, pSceneTouchEvent);
 					this.touched = false;
 					this.game.currentlySelectedMoveTile = null;
@@ -71,12 +74,21 @@ public class HighlightedSquare extends Rectangle {
 					// remove border from previously selected square.
 					if (game.currentlySelectedMoveTile != null) {
 						game.currentlySelectedMoveTile.removeBorder();
+						game.removePath();
 						game.currentlySelectedMoveTile.touched = false;
-
 					}
 					this.touched = true;
 					this.game.currentlySelectedMoveTile = this;
-					drawBorder();
+					
+					
+					Point me = new Point(tile.getTileColumn(), game.heightInTiles - tile.getTileRow() - 1);
+					Point other = new Point(game.getSelectedCharacter().getMapX(), game.getSelectedCharacter().getMapY());
+					
+					ArrayList<Point> path = game.game.gameMap.computePath(other, me);
+					Log.d("AndEngine", "path = "+path.toString());
+					game.drawPath(path);
+					int cost = game.costOfPath(path);
+					drawBorder(cost);
 					return true;
 				}
 			}
@@ -84,16 +96,21 @@ public class HighlightedSquare extends Rectangle {
 		return true;
 	}
 	
-	public void drawBorder() {
+	public void drawBorder(int cost) {
+		
 		for (Line l : this.borderLines){
 			l.setColor(Color.BLACK);
 			this.attachChild(l);
 		}
 		
 		AUnit myUnit = ((AUnit) this.unit);
-		int mDist = myUnit.manhattanDistance(tile.getTileColumn(), game.heightInTiles - tile.getTileRow() - 1, myUnit.getMapX(), myUnit.getMapY());
-		Log.d("AndEngine", "Manhattan dist is " + mDist);
-		energyCostText.setText(myUnit.getRange() * mDist + "");
+		
+		int tileX = tile.getTileColumn();
+		int tileY = game.heightInTiles - tile.getTileRow() - 1;
+		
+		int mDist = GameMap.manhattanDistance(new Point(tileX, tileY), new Point(myUnit.getMapX(), myUnit.getMapY()));
+		Log.d("AndEngine", tileX+", "+tileY+"  to "+myUnit.getMapX() + ", "+myUnit.getMapY()+" -> Manhattan dist is " + mDist);
+		energyCostText.setText(myUnit.getRange() * cost + "");
 		this.attachChild(energyCostText);
 	}
 	

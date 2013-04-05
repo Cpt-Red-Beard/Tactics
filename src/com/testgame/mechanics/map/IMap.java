@@ -53,6 +53,6 @@ public interface IMap {
 	 * @param s The source.
 	 * @param d The destination.
 	 */ 
-	public int manhattanDistance(Point s, Point d);
+	public int aStar(Point s, Point d);
 
 }
