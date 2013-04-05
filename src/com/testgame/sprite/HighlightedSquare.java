@@ -10,6 +10,7 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 import org.andengine.extension.tmx.TMXTile;
 
+import com.testgame.mechanics.map.GameMap;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.GameScene;
@@ -78,8 +79,16 @@ public class HighlightedSquare extends Rectangle {
 					}
 					this.touched = true;
 					this.game.currentlySelectedMoveTile = this;
-					drawBorder();
-					game.drawPath(new Point((int) this.getX(), (int) this.getY()));
+					
+					
+					Point me = new Point(tile.getTileColumn(), game.heightInTiles - tile.getTileRow() - 1);
+					Point other = new Point(game.getSelectedCharacter().getMapX(), game.getSelectedCharacter().getMapY());
+					
+					ArrayList<Point> path = game.game.gameMap.computePath(other, me);
+					Log.d("AndEngine", "path = "+path.toString());
+					game.drawPath(path);
+					int cost = game.costOfPath(path);
+					drawBorder(cost);
 					return true;
 				}
 			}
@@ -87,7 +96,7 @@ public class HighlightedSquare extends Rectangle {
 		return true;
 	}
 	
-	public void drawBorder() {
+	public void drawBorder(int cost) {
 		
 		for (Line l : this.borderLines){
 			l.setColor(Color.BLACK);
@@ -95,9 +104,13 @@ public class HighlightedSquare extends Rectangle {
 		}
 		
 		AUnit myUnit = ((AUnit) this.unit);
-		int mDist = myUnit.manhattanDistance(tile.getTileColumn(), game.heightInTiles - tile.getTileRow() - 1, myUnit.getMapX(), myUnit.getMapY());
-		Log.d("AndEngine", "Manhattan dist is " + mDist);
-		energyCostText.setText(myUnit.getRange() * mDist + "");
+		
+		int tileX = tile.getTileColumn();
+		int tileY = game.heightInTiles - tile.getTileRow() - 1;
+		
+		int mDist = GameMap.manhattanDistance(new Point(tileX, tileY), new Point(myUnit.getMapX(), myUnit.getMapY()));
+		Log.d("AndEngine", tileX+", "+tileY+"  to "+myUnit.getMapX() + ", "+myUnit.getMapY()+" -> Manhattan dist is " + mDist);
+		energyCostText.setText(myUnit.getRange() * cost + "");
 		this.attachChild(energyCostText);
 	}
 	
