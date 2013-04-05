@@ -18,11 +18,16 @@ import com.testgame.scene.GameScene;
  * @author Alen Lukic
  *
  */
-public abstract class AGame implements IGame {
+public abstract class AGame {
 
-	
+	/**
+	 * Resource Manager which contains all information shared across scenes.
+	 */
 	public ResourcesManager resourcesManager;
 	
+	/**
+	 * The game scene.
+	 */
 	protected GameScene gameScene;
 	
 	/**
@@ -30,6 +35,9 @@ public abstract class AGame implements IGame {
 	 */
 	protected APlayer player;
 	
+	/**
+	 * Variable which keeps track of the current turn.
+	 */
 	protected int turncount;
 
 	/**
@@ -83,6 +91,9 @@ public abstract class AGame implements IGame {
 		
 	}
 
+	/**
+	 * Sets up the obstacles in the map. Needs to be called from any expansion of this method in implementations of AGame.
+	 */
 	public void init() {
 		for (Point p : ResourcesManager.getInstance().obstacles) {
 			Log.d("AndEngine", "Obstacle at ("+p.x+", "+p.y+")");
@@ -90,25 +101,50 @@ public abstract class AGame implements IGame {
 		}
 	}
 	
+	/**
+	 * Abstract method for ending the game.
+	 */
 	public abstract void endGame();
 	
+	/**
+	 * Abstract method for changing the game to the next turn.
+	 */
 	public abstract void nextTurn();
 
+	/**
+	 * Method to get the current turn.
+	 * @return the integer representing the current turn.
+	 */
 	public int getCount(){
 		return turncount;
 	}
 	
+	/**
+	 * Increments the turn.
+	 */
 	public void incrementCount(){
 		turncount++;
 	}
 
+	/**
+	 * Gets player one.
+	 * @return player one.
+	 */
 	public APlayer getPlayer() {
 		return this.player;
 	}
 
+	/**
+	 * Abstract methods for adding a move. Only implemented in Online game. Every other implementation should have nothing occur here.
+	 * @param move
+	 */
 	public void addMove(JSONObject move){ 
 	}
 
+	/**
+	 * Gets the game scene.
+	 * @return gameScene.
+	 */
 	public GameScene getGameScene() {
 	
 		return gameScene;

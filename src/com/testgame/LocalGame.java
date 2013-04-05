@@ -3,8 +3,6 @@ package com.testgame;
 
 
 import android.graphics.Point;
-import android.util.Log;
-
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.mechanics.unit.Base;
 import com.testgame.mechanics.unit.Ditz;
@@ -15,16 +13,28 @@ import com.testgame.scene.GameScene;
 
 public class LocalGame extends AGame {
 	
+	/**
+	 * Player two.
+	 */
 	protected APlayer player2;
 	
+	/**
+	 * Constructor for a local game. Calls super constructor before setting specific variables.
+	 * @param pOne is player one.
+	 * @param pTwo is player two.
+	 * @param xDim is the x dimension of the map.
+	 * @param yDim is the y dimension of the map.
+	 * @param game is the game scene in which the GUI is based.
+	 */
 	public LocalGame(APlayer pOne, APlayer pTwo, int xDim, int yDim, GameScene game) {
 		super(pOne, xDim, yDim, game);
-		Log.d("xDim", xDim+"");
-		Log.d("yDim", yDim+"");
 		this.player2 = pTwo;
 		init();
 	}
 
+	/**
+	 * Ends the game by checking for any win cases.
+	 */
 	@Override
 	public void endGame() {
 		if(player.getActiveUnits().size() == 0 || player.getBase() == null){
@@ -54,6 +64,9 @@ public class LocalGame extends AGame {
 
 	}
 
+	/**
+	 * Starts the next turn of the game.
+	 */
 	@Override
 	public void nextTurn() {
 		
@@ -68,6 +81,9 @@ public class LocalGame extends AGame {
 		}
 	}
 
+	/**
+	 * Initilizes the game by spawning all players and starting the first turn. Calls the super init method.
+	 */
 	@Override
 	public void init() {
 		
@@ -144,6 +160,10 @@ public class LocalGame extends AGame {
 		player.beginTurn();
 	}
 
+	/**
+	 * Gets player two.
+	 * @return player2.
+	 */
 	public APlayer getOtherPlayer() {
 		return player2;
 	}

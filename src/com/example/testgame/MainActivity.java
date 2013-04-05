@@ -37,7 +37,6 @@ public class MainActivity extends BaseGameActivity {
      private BoundCamera mCamera;
      private BroadcastReceiver newTurn;
      private IntentFilter turnIntent;
-     //public Scene mScene;
      private ResourcesManager resourcesManager;
 
      @Override

@@ -30,9 +30,20 @@ public class OnlineGame extends AGame{
 	 */
 	private ComputerPlayer compPlayer;
 	
-	
+	/**
+	 * Variable used to determine if the player on the device has the last or first move in any turn.
+	 */
 	private boolean firstTurn;
 	
+	/**
+	 * Constructor of an online game. Calls the super constructor.
+	 * @param pOne player one.
+	 * @param pTwo player two.
+	 * @param xDim x dimension of the map.
+	 * @param yDim y dimension of the map.
+	 * @param game the game GUI.
+	 * @param turn whether the player on the current device moves first.
+	 */
 	public OnlineGame(APlayer pOne, ComputerPlayer pTwo, int xDim, int yDim, GameScene game, boolean turn) {
 		super(pOne,xDim, yDim, game);
 		Log.d("xDim", xDim+"");
@@ -45,7 +56,7 @@ public class OnlineGame extends AGame{
 	}
 	
 	/**
-	 * Performs initialization needed to begin the game.
+	 * Performs initialization needed to begin the game. Calls super init method.
 	 */
 	public void init() {
 		super.init();
@@ -93,7 +104,7 @@ public class OnlineGame extends AGame{
 	}
 	
 	/**
-	 * Ends the game.
+	 * Ends the game by checking win cases between the two players..
 	 */
 	public void endGame() {
 		if(player.getActiveUnits().size() == 0 || player.getBase() == null){
@@ -124,6 +135,9 @@ public class OnlineGame extends AGame{
 		
 	}
 	
+	/**
+	 * Starts the next turn. Sends the turn data into the cloud for the other player to use.
+	 */
 	public void nextTurn() {
 		if(!getPlayer().isTurn())
 			return;
@@ -154,23 +168,42 @@ public class OnlineGame extends AGame{
 		
 	}
 	
+	/**
+	 * Adds a move to the JSON array.
+	 */
 	@Override
 	public void addMove(JSONObject move){ 
 		moves.put(move);
 	}
 	
+	/**
+	 * Returns the player who you are playing against online.
+	 * @return compPlayer.
+	 */
 	public ComputerPlayer getCompPlayer() {
 		return compPlayer;
 	}
 
+	/**
+	 * Sets the player who you are playing against online.
+	 * @param compPlayer the person on the other device.
+	 */
 	public void setCompPlayer(ComputerPlayer compPlayer) {
 		this.compPlayer = compPlayer;
 	}
 
+	/**
+	 * Gets the boolean which is used to determine whether the player had the first or last move of the turn.
+	 * @return firstTurn.
+	 */
 	public boolean isFirstTurn() {
 		return firstTurn;
 	}
 
+	/**
+	 * Sets the boolean which is used to determine whether the player had the first or last move of the turn.
+	 * @param firstTurn boolean.
+	 */
 	public void setFirstTurn(boolean firstTurn) {
 		this.firstTurn = firstTurn;
 	}
