@@ -179,11 +179,19 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void ComputerMove(int xNew, int yNew, final int energy, final ComputerPlayer player){
+		int oldX = x;
+		int oldY = y;
 		map.setUnoccupied(x, y);
 		this.x = xNew;
 		this.y = yNew;
 		map.setOccupied(x, y, this);
 		this.reduceEnergy(energy);
+		
+		ArrayList<Point> path = map.computePath(new Point(oldX, oldY), new Point(xNew, yNew));
+		
+		walkAlongPath(path, true, energy);
+		
+		/*
 		int destX = this.game.getTileSceneX(xNew, yNew);
 		int destY = this.game.getTileSceneY(xNew, yNew);
 		
@@ -220,6 +228,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		//this.clearEntityModifiers();
 		this.registerEntityModifier(seq);
+		
+		*/
 	}
 	
 	@Override
@@ -236,6 +246,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 			this.reduceEnergy(eCost);
 			//this.energyUsedLastTurn += eCost;
 			// TODO: code to actually move the sprite on the map
+			
+			
 			
 			int destX = this.game.getTileSceneX(xNew, yNew);
 			int destY = this.game.getTileSceneY(xNew, yNew);
@@ -259,7 +271,11 @@ public class AUnit extends CharacterSprite implements IUnit {
 				((OnlineGame)this.game.getGame()).addMove(temp);
 
 			
+			ArrayList<Point> path = map.computePath(new Point(origX, origY), new Point(xNew, yNew));
 			
+			walkAlongPath(path, true, eCost);
+			
+			/*
 			float timePerTile = .2f; 
 			float numTilesX = Math.abs(this.getX() - destX) / game.tileSize;
 			float numTilesY = Math.abs(this.getY() - destY) / game.tileSize;
@@ -275,7 +291,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 			
 			this.registerEntityModifier(seq);
 			
-			this.game.setEventText("Moved using "+eCost+" energy.");
+			this.game.setEventText("Moved using "+eCost+" energy.");*/
 
         	
         	
@@ -586,4 +602,72 @@ public class AUnit extends CharacterSprite implements IUnit {
 		return this.unitType;
 	}
 
+	public void walkAlongPath(ArrayList<Point> path, boolean computer, final int cost) {
+		
+		IEntityModifierListener animationListener;
+		
+		if (computer) {
+			animationListener = new IEntityModifierListener() {
+				@Override
+				public void onModifierStarted(IModifier<IEntity> pModifier,
+						IEntity pItem) {
+					game.animating = true;
+					game.camera.setChaseEntity(pItem);
+					ResourcesManager.getInstance().walking_sound.play();
+					
+				}
+				@Override
+				public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
+					game.animating = false;
+					game.camera.setChaseEntity(null);
+					ResourcesManager.getInstance().walking_sound.pause();
+					((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
+					game.setEventText("Moved using "+cost+" energy.");
+					((ComputerPlayer)player).performNext(); // finished this action, call next
+				}
+			};
+		} else {
+			animationListener = new IEntityModifierListener() {
+				@Override
+				public void onModifierStarted(IModifier<IEntity> pModifier,
+						IEntity pItem) {
+					Log.d("AndEngine", "animation modifier started.");
+					game.animating = true;
+					game.camera.setChaseEntity(pItem);
+					game.resourcesManager.walking_sound.play();
+				}
+				@Override
+				public void onModifierFinished(IModifier<IEntity> pModifier,
+						IEntity pItem) {
+					Log.d("AndEngine", "animation modifier ended.");
+					game.animating = false;
+					game.camera.setChaseEntity(null);
+					((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
+					game.resourcesManager.walking_sound.pause();
+				}
+			};
+		}
+		
+		WalkMoveModifier[] walks = new WalkMoveModifier[path.size() - 1];
+		
+		for (int i = 0; i < path.size() - 1; i++) {
+			
+			Point a = path.get(i);
+			Point b = path.get(i+1);
+			
+			int length = GameMap.manhattanDistance(a, b);
+			
+			boolean horiz = Math.abs(a.y - b.y) == 0 ? true : false;
+			
+			walks[i] = new WalkMoveModifier(length * .1f, a.x*game.tileSize, a.y*game.tileSize, b.x*game.tileSize, b.y*game.tileSize, horiz);
+			
+		}
+		
+		SequenceEntityModifier seq = new SequenceEntityModifier(animationListener, walks);
+		
+		clearEntityModifiers();
+		
+		registerEntityModifier(seq);
+		
+	}
 }
