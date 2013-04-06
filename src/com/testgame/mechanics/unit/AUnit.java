@@ -105,7 +105,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	/**
 	 * Unit's range stat.
 	 */
-	protected int range; // ratio b/w energy
+	protected int range; 
 	
 	/**
 	 * Unit's current energy.
@@ -181,6 +181,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void ComputerMove(int xNew, int yNew, final int energy, final ComputerPlayer player){
 		int oldX = x;
 		int oldY = y;
+		Log.d("Moving", "In computer move method");
 		map.setUnoccupied(x, y);
 		this.x = xNew;
 		this.y = yNew;
@@ -233,17 +234,15 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	@Override
-	public void move(int xNew, int yNew) {
-		int dist = manhattanDistance(this.x, this.y, xNew, yNew);
-		final int eCost = dist*this.range; // Energy expense of this move 
-		if (eCost <= this.energy) {
+	public void move(int xNew, int yNew, ArrayList<Point> path, int cost) {
+			cost = this.range * cost;
 			map.setUnoccupied(this.x, this.y);
 			int origX = this.x;
 			int origY = this.y;
 			this.x = xNew;
 			this.y = yNew;
 			map.setOccupied(x, y, this);
-			this.reduceEnergy(eCost);
+			this.reduceEnergy(cost);
 			//this.energyUsedLastTurn += eCost;
 			// TODO: code to actually move the sprite on the map
 			
@@ -263,7 +262,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 				temp.put("DestY", yNew);
 				temp.put("UnitX", origX);
 				temp.put("UnitY", origY);
-				temp.put("Energy", eCost);
+				temp.put("Energy", cost);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -271,9 +270,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 				((OnlineGame)this.game.getGame()).addMove(temp);
 
 			
-			ArrayList<Point> path = map.computePath(new Point(origX, origY), new Point(xNew, yNew));
-			
-			walkAlongPath(path, true, eCost);
+			walkAlongPath(path, true, cost);
 			
 			/*
 			float timePerTile = .2f; 
@@ -294,8 +291,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 			this.game.setEventText("Moved using "+eCost+" energy.");*/
 
         	
-        	
-		}
 	}
 	
 	@Override
@@ -426,49 +421,30 @@ public class AUnit extends CharacterSprite implements IUnit {
 		this.isDefending = false;
 	}
 	
-	/*
-	 * checks a point x,y
-	 */
-	public void checkPointForMove(int offsetX, int offsetY, int range, ArrayList<Point> moves) {
-
-		if (this.x + offsetX < 0 || this.y + offsetY < 0) return; // off of map, not occupied
-		if (this.x + offsetX >= map.xDim || this.y + offsetY >= map.yDim) return; // ditto
-		
-		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
-		
-		Point s = new Point(this.x, this.y);
-		Point d = new Point(this.x + offsetX, this.y + offsetY);
-		Point p = new Point(offsetX, offsetY);
-		
-		if (occupyingUnit == null) { // not occupied
-			if (moves.contains(p)) return;
-			int dist = map.aStar(s, d);
-			if (dist > range) return;
-			else moves.add(p);
-		} 
-	}
+	
 	
 	// all the squares you can move to 
 	public ArrayList<Point> availableMoves() {
+
 		if (unitType.equals("Base")) return new ArrayList<Point>();
-		Log.d("AndEngine", "computing available moves for "+x+", "+y);
+		
 		HashSet<Point> moves = map.bfs(new Point(x , y), energy / range);
-		Log.d("AndEngine", moves.toString());
+		
 		ArrayList<Point> result = new ArrayList<Point>();
 		result.addAll(moves);
 		return result;
+
 	}
 	
 	// all the squares of enemies you can attack
 	public ArrayList<AUnit> availableTargets() {
 		if (unitType.equals("Base")) return new ArrayList<AUnit>();
-		
-		Log.d("AndEngine", "computing available targets for "+x+", "+y);
+		if(this.energy < this.attackenergy) return new ArrayList<AUnit>();	
 		HashSet<AUnit> moves = map.bfsTarget(new Point(x , y), attackrange, player);
-		Log.d("AndEngine", moves.toString());
 		ArrayList<AUnit> result = new ArrayList<AUnit>();
 		result.addAll(moves);
 		return result;
+
 	}
 
 	/**
@@ -479,7 +455,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 * @param y2 The y-coordinate of the second location.
 	 */
 	public int manhattanDistance(int x1, int y1, int x2, int y2) {
-		return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+		return Math.abs(x1-x2) + Math.abs(y1-y2);
+
 	}
 	
 	public void init() {
@@ -539,6 +516,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 		if(this.getType().equals("Base")){
 			unit.reduceHealth(attack);
 			game.getGame().endGame();
+			game.working = false;
+			if(computerPlayer != null){
+				computerPlayer.performNext();
+			}
 			return;
 		}
 		ResourcesManager.getInstance().attack_sound.play();
@@ -554,6 +535,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	                u.setCurrentTileIndex(start_frame);
 	                unit.reduceHealth(attack);
 	                computerPlayer.performNext();
+	                game.working = false;
 	                
 	            }
 	        }));

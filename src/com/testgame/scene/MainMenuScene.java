@@ -22,6 +22,8 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.util.Log;
+
 import com.example.testgame.MainActivity;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -87,7 +89,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void disposeScene() {
-		// TODO Unload all of the resources.
+		// Nothing to do here since we never want to unload game resources unless quitting the game.
 	}
 	
 	private void createBackground()
@@ -183,32 +185,13 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	            return true;
 	        case MENU_PLAY:
-	        	//resourcesManager.isLocal = true;
-	        	//SceneManager.getInstance().loadSetupScene(engine);
-	        	
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
 	        	    	 gameOptions();
 	        	    }
 	        	});
-	        /*	if(!loggedin){
-
-	        		activity.runOnUiThread(new Runnable() {
-		        	    @Override
-		        	    public void run() {
-		        	        createDialog("Please Log In!");
-		        	    }
-		        	});
-	        		return true;
-	        	}
-	        		
-	        	activity.runOnUiThread(new Runnable() {
-	        	    @Override
-	        	    public void run() {
-	        	        showDialog();
-	        	    }
-	        	});*/
+	       
 	        	 
 	        	
 	            return true;
@@ -305,7 +288,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
                 resourcesManager.opponent = (String) de[pos];
                 resourcesManager.opponentString = usernames.get((String)de[pos]);
                 try {
-					JSONObject data = new JSONObject("{\"alert\": \"Invitation to Game\", \"action\": \"com.testgame.INVITE\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\", \"map\": \""+selectedMapName+"\", \"userid\": \""+ParseUser.getCurrentUser().getObjectId()+"\"}");
+					JSONObject data = new JSONObject("{\"alert\": \"Invitation to Game\", \"action\": \"com.testgame.INVITE\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\", \"map\": \""+resourcesManager.mapString+"\", \"userid\": \""+ParseUser.getCurrentUser().getObjectId()+"\"}");
 					 ParsePush push = new ParsePush();
 		             push.setChannel("user_"+resourcesManager.opponentString);
 		             push.setData(data);
@@ -356,7 +339,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 						createMapDialog();
 					}
 				});
-				SceneManager.getInstance().loadSetupScene(engine);
+				
 			}
 		});
 
@@ -365,7 +348,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				// Launch an online game.
 				
 				gameOptionsDialog.dismiss();
-				resourcesManager.isLocal = false;
 				activity.runOnUiThread(new Runnable () {
 					@Override
 					public void run() {
@@ -407,9 +389,10 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
             public void onClick(DialogInterface dialog, int whichButton) {
             				try {
 								resourcesManager.opponentDeviceID = object.getString("deviceId");
+								Log.d("Map", object.getString("map"));
 								resourcesManager.setMap(object.getString("map"));
 							} catch (JSONException e) {
-								// TODO Auto-generated catch block
+								
 								e.printStackTrace();
 							}
             				resourcesManager.isLocal = false;
@@ -428,7 +411,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
         	            		resourcesManager.opponent = object.getString("name");
         						resourcesManager.opponentString = object.getString("userid");
         					} catch (JSONException e1) {
-        						// TODO Auto-generated catch block
+        						
         						e1.printStackTrace();
         					}
         	            	try {
@@ -472,21 +455,35 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 	}
 	
-	public void createAcceptDialog(JSONObject object){
+	public void createAcceptDialog(final JSONObject object){
 		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
 		try {
 			dia.setTitle(object.getString("name")+ " accepted the invitation!");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) { 
-            				resourcesManager.isLocal = false;
-            				resourcesManager.inGame = true;
-        		        	acceptDialog.dismiss();
-        		           	SceneManager.getInstance().loadSetupScene(engine);
-
+        		try {
+					
+        			if(object.getString("turn").equals("true")){
+						resourcesManager.turn = true;
+					}
+					else 
+						resourcesManager.turn = false;
+			
+		
+    				resourcesManager.gameId = object.getString("GameId");
+    				resourcesManager.opponentDeviceID = object.getString("deviceId");
+    				resourcesManager.isLocal = false;
+    				resourcesManager.inGame = true;
+		        	acceptDialog.dismiss();
+		           	SceneManager.getInstance().loadSetupScene(engine);
+        		} catch (JSONException e) {
+					
+					e.printStackTrace();
+				}
             }
         });
 		
@@ -502,6 +499,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 			public void onClick(DialogInterface dialog, int whichButton) { 
 				selectedMapName = (resourcesManager.maps()[whichButton]).toString();
 				resourcesManager.setMap(selectedMapName);
+				
 				mapDialog.dismiss();
 				
 				if (!resourcesManager.isLocal) {
@@ -512,6 +510,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 						}
 					});
 				}
+				else
+					SceneManager.getInstance().loadSetupScene(engine);
 			}
 		});
 		

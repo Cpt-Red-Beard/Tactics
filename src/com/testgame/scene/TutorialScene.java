@@ -8,7 +8,6 @@ import android.util.Log;
 import com.testgame.scene.SceneManager.SceneType;
 
 import org.andengine.engine.camera.Camera;
-import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
@@ -37,9 +36,6 @@ public class TutorialScene extends BaseScene {
 	@Override
 	public void createScene() {
 		this.setBackgroundEnabled(false);
-		((SmoothCamera) this.camera).setZoomFactor(1.0f);
-		this.camera.setCenter(240, 400);
-		this.camera.setHUD(null);
 		
 		attachChild(new Sprite(240, 400, resourcesManager.tutorial_background_region, vbom)
 	    {
@@ -84,6 +80,7 @@ public class TutorialScene extends BaseScene {
 		basicsButton = new ButtonSprite(245, 700, resourcesManager.basics_region, vbom, new OnClickListener() {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				
 				showBasics();
 			}
 		});
@@ -91,6 +88,7 @@ public class TutorialScene extends BaseScene {
 		controlsButton = new ButtonSprite(245, 600, resourcesManager.controls_region, vbom, new OnClickListener() {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				
 				showControls();
 			}
 		});
@@ -98,6 +96,7 @@ public class TutorialScene extends BaseScene {
 		unitsButton = new ButtonSprite(245, 500, resourcesManager.units_region, vbom, new OnClickListener() {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				
 				showUnits();
 			}
 		});
@@ -108,6 +107,8 @@ public class TutorialScene extends BaseScene {
 	    attachChild(controlsButton); registerTouchArea(controlsButton);
 	    attachChild(unitsButton); registerTouchArea(unitsButton);
 	}
+	
+	
 
 	@Override
 	public void onBackKeyPressed() {
@@ -116,23 +117,23 @@ public class TutorialScene extends BaseScene {
 		
 		if (!inMenu) { // menu not up, pop it back
 			final TutorialScene tutorial = this;
-			engine.runOnUpdateThread(new Runnable() {
-				@Override
-				public void run() {
+			tutorial.detachChild(whiteLayer);
+			
 					tutorial.detachChild(whiteLayer);
 					switch(which) {
 					case BASICS:
 						tutorial.detachChild(basicText);
+						
 					case CONTROLS:
 						tutorial.detachChild(controlText);
+						
 					case UNITS:
 						tutorial.detachChild(unitText);
+						
 					default:
 						break;
 					}
-				}
-			});
-			
+				
 			restoreMenu();
 		} else {
 			SceneManager.getInstance().restorePrevious();
@@ -142,8 +143,11 @@ public class TutorialScene extends BaseScene {
 	private void restoreMenu() {
 		inMenu = true;
 		attachChild(basicsButton);
+		registerTouchArea(basicsButton);
 		attachChild(controlsButton);
+		registerTouchArea(controlsButton);
 		attachChild(unitsButton);
+		registerTouchArea(unitsButton);
 	}
 
 	@Override
@@ -173,15 +177,15 @@ public class TutorialScene extends BaseScene {
 	
 	private void clearMenu() {
 		final TutorialScene tutorial = this;
-		engine.runOnUpdateThread(new Runnable() {
-			@Override
-			public void run() {
+		
 				tutorial.detachChild(basicsButton);
+				tutorial.unregisterTouchArea(basicsButton);
 				tutorial.detachChild(controlsButton);
+				tutorial.unregisterTouchArea(controlsButton);
 				tutorial.detachChild(unitsButton);
+				tutorial.unregisterTouchArea(unitsButton);
 			}
-		});
-	}
+	
 
 	private void showControls() {
 		clearMenu();

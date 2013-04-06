@@ -41,10 +41,11 @@ public class SetupScene extends BaseScene {
 	// TODO Need some sort of scrollable or drop-downn menu for level selection; hard-coding buttons for now
 	private ButtonSprite play, reset, jock, nerd, ditz;
 	
-	private int MAX_UNITS = 10;
+	private int MAX_UNITS = resourcesManager.getNumber(resourcesManager.mapString);
 	
 	@Override
 	public void createScene() {
+		MAX_UNITS = resourcesManager.getNumber(resourcesManager.mapString);
 		twice = false;
 		attachChild(new Sprite(240, 400, resourcesManager.setup_background, vbom)
 	    {
@@ -64,7 +65,7 @@ public class SetupScene extends BaseScene {
 		jockText = new Text(32, 80, resourcesManager.cartoon_font_white, jocks + "", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
 		nerdText = new Text(32, 80, resourcesManager.cartoon_font_white, nerds + "", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
 		ditzText = new Text(32, 80, resourcesManager.cartoon_font_white, ditzes + "", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
-		totText = new Text(240, 500, resourcesManager.cartoon_font_white, "Total: " + tot + "/10", 25, new TextOptions(HorizontalAlign.LEFT), vbom);
+		totText = new Text(240, 500, resourcesManager.cartoon_font_white, "Total: " + tot + "/"+MAX_UNITS, 25, new TextOptions(HorizontalAlign.LEFT), vbom);
 		// what the hell is this?
 		setupText = new Text(240, 720, resourcesManager.cartoon_font_white, resourcesManager.getLocalName(), new TextOptions(HorizontalAlign.LEFT), vbom);
 		// not implemented yet..
@@ -83,7 +84,7 @@ public class SetupScene extends BaseScene {
 
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				if(tot < 10){
+				if(tot < MAX_UNITS){
 					return;
 				}
 				
@@ -209,7 +210,7 @@ public class SetupScene extends BaseScene {
 
 	@Override
 	public void onBackKeyPressed() {
-		SceneManager.getInstance().loadMenuScene(engine);		
+		//Do Nothing here unsafe when online.
 	}
 
 	@Override

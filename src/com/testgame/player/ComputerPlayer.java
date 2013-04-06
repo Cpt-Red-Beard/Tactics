@@ -5,6 +5,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import android.graphics.Point;
+import android.util.Log;
+
 import com.testgame.AGame;
 import com.testgame.OnlineGame;
 import com.testgame.mechanics.unit.AUnit;
@@ -16,30 +19,32 @@ import com.testgame.mechanics.unit.Nerd;
 public class ComputerPlayer extends APlayer {
 	
 	JSONArray actionsToPerform;
-	AGame game;
+	OnlineGame game;
 	
 	public ComputerPlayer(String name) {
 		super(name);
 	}
 	
-	public void startTurn(final OnlineGame game, JSONArray array){
-		
+	public void startTurn(JSONArray array){
+		Log.d("Array", array.length()+"");
 		this.actionsToPerform = array;
-		this.game = game;
 		this.beginTurn();
 		performNext(); // perform all of the animations
 		
-		if(game.isFirstTurn()) 
-			game.incrementCount();
 		
-		game.getPlayer().beginTurn(); // this calls turn init on all the units
-		this.endTurn();
+		
 		
 		
 	}
 	
 	public void performNext() {
 		if(actionsToPerform.length() == 0){
+			if(game.isFirstTurn()) 
+				game.incrementCount();
+			
+			this.endTurn();
+			game.getPlayer().beginTurn(); // this calls turn init on all the units
+			
 			game.getGameScene().activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
@@ -53,6 +58,11 @@ public class ComputerPlayer extends APlayer {
 
 			if (actionsToPerform.isNull(i)) {
 				if (i == actionsToPerform.length() - 1) {
+					if(game.isFirstTurn()) 
+						game.incrementCount();
+					this.endTurn();
+					game.getPlayer().beginTurn(); // this calls turn init on all the units
+					
 					game.getGameScene().activity.runOnUiThread(new Runnable() {
 		        	    @Override
 		        	    public void run() {
@@ -77,7 +87,7 @@ public class ComputerPlayer extends APlayer {
 					AUnit unit = game.gameMap.getOccupyingUnit(unitX, unitY);
 					
 					if (moveType.equals("MOVE")) {
-						
+						Log.d("Moving", "Moving");
 						
 						int destX = nextAction.getInt("DestX");
 						int destY = nextAction.getInt("DestY");
@@ -99,7 +109,11 @@ public class ComputerPlayer extends APlayer {
 						AUnit target = game.gameMap.getOccupyingUnit(targetX, targetY);
 						
 						actionsToPerform.put(i, null); // finished action, clear it out
-						
+						Log.d("Target", target+"");
+						Log.d("Attack", attack+"");
+						Log.d("Unit", unit+"");
+						Log.d("Energy", energy+"");
+						Log.d("Unit2", this+"");
 						unit.ComputerAttack(target, attack, energy, this);
 					}
 					
@@ -114,7 +128,7 @@ public class ComputerPlayer extends APlayer {
 		
 	}
 	
-	public void init(final OnlineGame game, JSONObject object) {
+	public void init(JSONObject object) {
 		int nerds = 0;
 		int jocks = 0;
 		int ditz = 0;
@@ -128,39 +142,46 @@ public class ComputerPlayer extends APlayer {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		int j = 10;
-		int x = 11;
+		
+		Point[] spawns;
+		
 		if(game.isFirstTurn()){
-			x = 0;
-			j = 1;
+			spawns = game.resourcesManager.getSpawn1(game.resourcesManager.mapString);
+		}
+		else{
+			spawns = game.resourcesManager.getSpawn2(game.resourcesManager.mapString);
 		}
 		
 		
-			for(int i = 0; i < 10; i++){
+			for(Point i : spawns){
 				if(nerds > 0){
-					AUnit unit = new Nerd(game.gameMap, i, j, game.getGameScene(), "red");
+					AUnit unit = new Nerd(game.gameMap, i.x, i.y, game.getGameScene(), "red");
 					unit.init(); 
 					game.getCompPlayer().addUnit(unit);
 					nerds--;
 				}
 				else if(ditz > 0){
-					AUnit unit = new Ditz(game.gameMap, i, j, game.getGameScene(), "red");
+					AUnit unit = new Ditz(game.gameMap, i.x, i.y, game.getGameScene(), "red");
 					unit.init();
 					game.getCompPlayer().addUnit(unit);
 					ditz--;
 				}
 				else if(jocks > 0){
-					AUnit unit = new Jock(game.gameMap, i, j, game.getGameScene(), "red");
+					AUnit unit = new Jock(game.gameMap, i.x, i.y, game.getGameScene(), "red");
 					unit.init(); 
 					game.getCompPlayer().addUnit(unit);
 					jocks--;
 				}
+				else{
+					AUnit unitbase = new Base(game.gameMap, i.x, i.y, game.getGameScene(), "red");
+					unitbase.init();
+					game.getCompPlayer().setBase(unitbase);
+				}
 			}
-			AUnit unitbase = new Base(game.gameMap, 5, x, game.getGameScene(), "red");
-			game.getCompPlayer().setBase(unitbase);
+			
 			
 		
-
+		
 		game.incrementCount();
 		if(game.isFirstTurn()) {
 			game.getPlayer().beginTurn();
@@ -173,6 +194,10 @@ public class ComputerPlayer extends APlayer {
         	});
 		}
 		
+	}
+	
+	public void setGame(OnlineGame game){
+		this.game = game;
 	}
 
 }

@@ -211,9 +211,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		// Initialize the game.
 		if(!resourcesManager.isLocal){
 			this.setGame(new OnlineGame(new APlayer("Your"), new ComputerPlayer("Opponent's"), widthInTiles, heightInTiles, this, resourcesManager.turn));
+			((OnlineGame)this.getGame()).getCompPlayer().setGame(((OnlineGame)this.getGame()));
 		}
 		else{
-			this.setGame(new LocalGame(new APlayer("One's"), new APlayer("Two"), widthInTiles, heightInTiles, this));
+			this.setGame(new LocalGame(new APlayer("One's"), new APlayer("Two's"), widthInTiles, heightInTiles, this));
 		}
 		
 		createHUD();
@@ -268,6 +269,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 				OldX = camera.getCenterX();
 				OldY = camera.getCenterY();
+				//deselectCharacter(true);
 				SceneManager.getInstance().previousScene = game.getSceneType();
 				SceneManager.getInstance().loadTutorialScene(game.engine);
 			}
@@ -428,8 +430,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			
 			TMXTile t = this.tmxLayer.getTMXTileAt(x, y);
 			
-			//if(resourcesManager.selectedMap.getTMXTileProperties(t.getGlobalTileID()) != null)
-		    //    if (resourcesManager.selectedMap.getTMXTileProperties(t.getGlobalTileID()).containsTMXProperty("obstacle", "1")) continue;
 						
 			HighlightedSquare availableMove = new HighlightedSquare(t, x, y, tileSize, this, getSelectedCharacter());
 			
@@ -489,7 +489,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				if (tmxTile == h.tile) {
 					//selectedCharacter.setPosition(x, y);
 					
-					getSelectedCharacter().move(x, heightInTiles - y - 1);
+					getSelectedCharacter().move(x, heightInTiles - y - 1, sq.path, sq.cost);
 				}
 			}
 			
@@ -574,12 +574,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
     	((SmoothCamera) this.camera).setZoomFactor(this.mPinchZoomStartedCameraZoomFactor * pZoomFactor);
     }
     
-   // public void attack(CharacterSprite unit)
-   // {
-    	// TODO: is this ever used?
-    //	this.getSelectedCharacter().attack((AUnit)unit);
-	//	this.deselectCharacter(true);
-  //  }
 
 	public AUnit getSelectedCharacter() {
 		return selectedCharacter;
@@ -592,13 +586,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		if (this.selectedCharacter != null)  deselectCharacter(false);
 		else showBar();
 		this.selectedCharacter = selectedCharacter;
-		
 		placeSelectionRectangle(selectedCharacter);
-		
 		this.camera.setCenter(this.selectedCharacter.getX(), this.selectedCharacter.getY());
-		
-		
-			this.selectedCharacter.idleAnimate();
+		this.selectedCharacter.idleAnimate();
 		
 		this.curUnitAttack.setText(attackStatusString(selectedCharacter.getAttack(), selectedCharacter.getAttackRange(), selectedCharacter.getAttackCost()));
 		this.curUnitEnergy.setText("Energy: " + selectedCharacter.getEnergy()+"/100");
@@ -665,17 +655,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		query.findInBackground(new FindCallback() {
 		    public void done(List<ParseObject> itemList, ParseException e) {
 		        if (e == null) {
-		            
+		           Log.d("Items", itemList.size()+""); 
 		            for(ParseObject ob : itemList){
 		            	
 		            	if (ob.getString("Device").equals(resourcesManager.opponentDeviceID)) {
 			            	
 			            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
 			            		if(getGame().getCount() != 0){
+			            			Log.d("Turns", "Found turn data");
 					        		JSONArray array = ob.getJSONArray("Moves");
-					        		
+					        		Log.d("Array", array.toString());
 					        		deselectCharacter(false);
-					            	((OnlineGame)getGame()).getCompPlayer().startTurn((OnlineGame)getGame(), array);
+					            	((OnlineGame)getGame()).getCompPlayer().startTurn( array);
 					            	ob.deleteInBackground();
 					            	return;
 					        	}
@@ -683,7 +674,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 					        		JSONObject object = ob.getJSONObject("Init");
 					        		
 					        		deselectCharacter(false);
-					            	((OnlineGame)getGame()).getCompPlayer().init((OnlineGame)getGame(), object);
+					            	((OnlineGame)getGame()).getCompPlayer().init(object);
 					            	ob.deleteInBackground();
 					            	return;
 					        		
@@ -705,6 +696,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		pausemenu.setTitle("Paused! Turn: "+getGame().getCount());
 		LinearLayout ll = new LinearLayout(activity);
 		ll.setOrientation(LinearLayout.VERTICAL);
+		
+		
+		
+		Button b0 = new Button(activity);
+        b0.setText("Refresh");
+        b0.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				startCompTurn();
+				pausemenu.dismiss();
+				
+			}
+        });        
+        ll.addView(b0);
+		
 		
 		Button b1 = new Button(activity);
         b1.setText("End Turn");
@@ -743,7 +750,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             }
         });
         ll.addView(b3);
-        
+
         pausemenu.setContentView(ll);      
         pausemenu.setCanceledOnTouchOutside(false);
         pausemenu.show();        
@@ -755,14 +762,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		
 		
-		/*ButtonSprite okButton = new ButtonSprite(0, 0, resourcesManager.continue_region, vbom, new OnClickListener() {
-			@Override
-			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				gameScene.dismissDialog();
-			}
-		});*/
 		
-		//this.setChildScene(new GameDialogBox(this, "Your Turn!", ((ButtonSprite[]) null)), false, true, true);
 		
 		
 		
@@ -778,7 +778,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			@Override
 			public void onClick(View v) {
 				pausemenu.dismiss();
-				game.endGame();
 				
 			}
         });        
@@ -799,7 +798,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             public void onClick(DialogInterface dialog, int whichButton) {
             	if(!resourcesManager.isLocal){
 	            	try {
-						JSONObject data = new JSONObject("{\"alert\": \"Game Ended\", \"action\": \"com.testgame.QUIT\"}");
+						JSONObject data = new JSONObject("{\"alert\": \"Game Ended\", \"action\": \"com.testgame.QUIT\",  \"gameId\": \""+resourcesManager.gameId+"\"}");
 						 ParsePush push = new ParsePush();
 			             push.setChannel("user_"+resourcesManager.opponentString); 
 			             push.setData(data);

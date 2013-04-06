@@ -1,5 +1,9 @@
 package com.testgame.mechanics.unit;
 
+import java.util.ArrayList;
+
+import android.graphics.Point;
+
 import com.testgame.player.APlayer;
 
 /**
@@ -68,7 +72,7 @@ public interface IUnit {
 	 * @param xNew Unit's new x-coordinate.
 	 * @param yNew Unit's new y-coordinate.
 	 */
-	public void move(int xNew, int yNew);
+	public void move(int xNew, int yNew, ArrayList<Point> path, int cost);
 	
 	
 	

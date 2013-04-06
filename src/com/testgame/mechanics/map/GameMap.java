@@ -1,7 +1,6 @@
 package com.testgame.mechanics.map;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -19,10 +18,6 @@ public class GameMap implements IMap {
 	 */
 	protected HashMap<String, AUnit> coordMap;
 
-	/**
-	 * Maps each coordinate as a string to a corresponding Node object.
-	 */
-	protected HashMap<String, Node> graph;
 	
 	/**
 	 * X-dimensionality of the map.
@@ -39,12 +34,14 @@ public class GameMap implements IMap {
 	 */
 	public GameMap(int xDim, int yDim) {
 		this.coordMap = new HashMap<String, AUnit>();
-		this.graph = new HashMap<String, Node>();
 		this.xDim = xDim;
 		this.yDim = yDim;
-		buildGraph();
+		
 	}
 
+	/**
+	 * Determines if the point (x,y) is occupied by a unit or some other obstacle.
+	 */
 	@Override
 	public boolean isOccupied(int x, int y) {		
 		if (x < 0 || y < 0) {
@@ -61,11 +58,17 @@ public class GameMap implements IMap {
 		return false;
 	}
 	
+	/**
+	 * Returns the occupying unit at point (x,y).
+	 */
 	@Override
 	public AUnit getOccupyingUnit(int x, int y) {
 		return coordMap.get(entry(x,y));
 	}
 
+	/**
+	 * Sets the point (x,y) as occupied.
+	 */
 	@Override
 	public void setOccupied(int x, int y, AUnit unit) {
 		if (x <= (xDim - 1) && x >= 0) {
@@ -75,18 +78,28 @@ public class GameMap implements IMap {
 		}
 	}
 
+	/**
+	 * Sets the point (x,y) as unoccupied.
+	 */
 	@Override
 	public void setUnoccupied(int x, int y) {
 		if (coordMap.get(entry(x, y)) != null)
 			coordMap.remove(entry(x,y));
 	}
 	
+	//TODO: Actually figure out what this does. Some sort of conversion?
 	@Override
 	public String entry(int x, int y) {
 		return x + ", " + y;
 	}
 
-	// returns a path, array-list of points in order, from start to finish
+	
+	/**
+	 * Rreturns a path, array-list of points in order, from start to finish
+	 * @param start start point for the A* path.
+	 * @param dest end point for the A* path.
+	 * @return arrayList containing points in the path. 
+	 */
 	public ArrayList<Point> computePath(Point start, Point dest) {
 		ArrayList<Point> path = new ArrayList<Point>();
 		path.add(dest);
@@ -130,6 +143,13 @@ public class GameMap implements IMap {
 		return path;
 	}
 	
+	/**
+	 * BFS search for targets in a units range.
+	 * @param start Point at which attacking unit is located.
+	 * @param range The distance at which someone can attack from.
+	 * @param me unit in which targets need to be in distance of to attack.
+	 * @return Returns an arraylist of all points of which the unit can attack.
+	 */
 	public HashSet<AUnit> bfsTarget(Point start, int range, APlayer me) {
 		HashSet<AUnit> targets = new HashSet<AUnit>();
 		
@@ -145,6 +165,8 @@ public class GameMap implements IMap {
 			
 			Point[] neighbors = { new Point(next.x + 1, next.y) , new Point(next.x - 1, next.y), new Point(next.x, next.y + 1),
 					new Point(next.x, next.y -1)};
+			
+			
 			
 			for (Point p : neighbors) {
 				if (!visited.contains(p)) {
@@ -170,7 +192,14 @@ public class GameMap implements IMap {
 		return targets;
 	}
 	
+	/**
+	 * BFS search for all possible moves
+	 * @param start Start point(Where unit is located)
+	 * @param range Range from which the unit can move.
+	 * @return ArrayList of all possible moves.
+	 */
 	public HashSet<Point> bfs(Point start, int range) {
+		Log.d("Range", range+"");
 		HashSet<Point> accessiblePoints = new HashSet<Point>();
 		
 		HashSet<Point> visited = new HashSet<Point>();
@@ -178,137 +207,55 @@ public class GameMap implements IMap {
 		ArrayList<Point> frontier = new ArrayList<Point>();
 		frontier.add(start);
 		visited.add(start);
-		
+		int i = 0;
+		boolean pendingdepthIncrease = false;
+		int timetoIncrease = 0;
 		while (frontier.size() > 0) {
 			Point next = frontier.get(0);
 			frontier.remove(0); // pseudo-pop
-			if (manhattanDistance(start, next) <= range) { // within range, accessible
-				accessiblePoints.add(next);
+			if (i > range) { // within range, accessible
+				break;
 			}
-			else continue; // point not accessible, no point to branch out.
+			else accessiblePoints.add(next); // point not accessible, no point to branch out.
 			
 			Point[] neighbors = { new Point(next.x + 1, next.y) , new Point(next.x - 1, next.y), new Point(next.x, next.y + 1),
 					new Point(next.x, next.y -1)};
 			
 			for (Point p : neighbors) {
 				if (!visited.contains(p)) {
-					if (!isOccupied(p.x, p.y)) { 
+					if (!isOccupied(p.x, p.y)) {
+						if(pendingdepthIncrease == false){
+							pendingdepthIncrease = true;
+							timetoIncrease = frontier.size();
+						}
 						visited.add(p);
 						frontier.add(p);
 					}
 				}
+				
 			}
+			if(timetoIncrease == 0 && pendingdepthIncrease == true){
+				pendingdepthIncrease = false;
+				i++;
+			}
+			timetoIncrease--;
 			
 		}
 		
 		return accessiblePoints;
 	}
 	
+	/**
+	 * Calculates the manhatten distance from point a to b
+	 * @param a Point a
+	 * @param b Point b
+	 * @return Math.abs(a.x - b.x) +  Math.abs(a.y - b.y)
+	 */
 	public static int manhattanDistance(Point a, Point b) {
 		return Math.abs(a.x - b.x) +  Math.abs(a.y - b.y);
 	}
-	
-	@Override
-	public int aStar(Point s, Point d) {
-		//Log.d("AndEngine", "Calculating shortest path!");
-		Node startNode = graph.get(this.entry(s.x, s.y));
-		Node goal = graph.get(this.entry(d.x, d.y));
-		if (goal == null) return -1;
 
-		ArrayList<Node> closedSet = new ArrayList<Node>(); // Nodes already evaluated
-		ArrayList<Node> openSet = new ArrayList<Node>(); // Nodes for tentative evaluation
-
-		startNode.setParentNode(null);
-		startNode.setGScore(0.0);
-		startNode.setFScore(Node.h(startNode, goal));
-		openSet.add(startNode);
-		
-		// A* search
-		while (openSet.size() > 0) {
-			Collections.sort(openSet);
-			Node cur = openSet.remove(0);
-			double curGScore = cur.gScore();
-			
-			if (cur.equals(goal)) {
-				//Log.d("AndEngine", "A* found the goal!");
-				closedSet.add(cur);
-				int pathLength = getSteps(cur);
-				resetParentNodes(); // Shortest path may be different as map changes	
-				return pathLength;	
-			}
-			
-			closedSet.add(cur);
-			HashSet<Node> neighbors = cur.neighbors();
-			for (Node neigh : neighbors) {
-				if (closedSet.contains(neigh) || neigh.isObstacle())
-					continue;
-				double tentativeGScore = curGScore + 1.0;
-				
-				if (!(openSet.contains(neigh)) || (tentativeGScore < neigh.gScore())) {
-					neigh.setParentNode(cur);
-					neigh.setGScore(tentativeGScore);
-					neigh.setFScore(tentativeGScore + Node.h(neigh, goal));
-					if (!(openSet.contains(neigh)))
-						openSet.add(neigh);
-				}
-			}
-		}
-
-		return -1; // Didn't find a path...
-	}
 
 	
-	/**
-	 * Returns number of steps in calculated shortest path.
-	 * @param goal The goal node.
-	 */
-	private int getSteps(Node goal) {
-		int steps = 0;
-		Node curNode = goal;
-		while (curNode.parent() != null) {
-			steps++;
-			curNode = curNode.parent();
-		}
-		return steps;
-	}
-
-	
-	/**
-	 * Resets all nodes' parent nodes.
-	 */
-	private void resetParentNodes() {
-		for (int i = 0; i < this.xDim; i++) {
-			for (int j = 0; j < this.yDim; j++) {
-				(graph.get(this.entry(i, j))).setParentNode((Node) null);
-			}
-		}
-	}
-
-
-	/**
-	 * Builds the graph representation of the grid.
-	 */
-	private void buildGraph() {
-		// First add all nodes to the graph
-		for (int i = 0; i < this.xDim; i++) {
-			for (int j = 0; j < this.yDim; j++) 				
-				graph.put(this.entry(i, j), new Node(this, i, j));
-			
-		}
-		// Add neighbors to each node
-		for (int i = 0; i < this.xDim; i++) {
-			for (int j = 0; j < this.yDim; j++) {
-				Node curNode = graph.get(this.entry(i, j));
-				Node leftNeigh = graph.get(this.entry(i-1, j));
-				Node rightNeigh = graph.get(this.entry(i+1, j));
-				Node topNeigh = graph.get(this.entry(i, j+1));
-				Node bottomNeigh = graph.get(this.entry(i, j-1));
-				if (leftNeigh != null) curNode.setNeighbor(leftNeigh);
-				if (rightNeigh != null) curNode.setNeighbor(rightNeigh);
-				if (topNeigh != null) curNode.setNeighbor(topNeigh);
-				if (bottomNeigh != null) curNode.setNeighbor(bottomNeigh);
-			}
-		}
-	}
 
 }

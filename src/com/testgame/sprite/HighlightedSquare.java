@@ -33,6 +33,8 @@ public class HighlightedSquare extends Rectangle {
 	boolean touched;
 	
 	private ArrayList<Line> borderLines;
+	public ArrayList<Point> path;
+	public int cost;
 	
 	public HighlightedSquare(TMXTile tile, int x, int y, int tileSize, GameScene gameScene, CharacterSprite unit) {
 		super(x, y, tileSize, tileSize, gameScene.vbom);
@@ -84,10 +86,10 @@ public class HighlightedSquare extends Rectangle {
 					Point me = new Point(tile.getTileColumn(), game.heightInTiles - tile.getTileRow() - 1);
 					Point other = new Point(game.getSelectedCharacter().getMapX(), game.getSelectedCharacter().getMapY());
 					
-					ArrayList<Point> path = game.game.gameMap.computePath(other, me);
-					Log.d("AndEngine", "path = "+path.toString());
+					path = game.game.gameMap.computePath(other, me);
+					
 					game.drawPath(path);
-					int cost = game.costOfPath(path);
+					cost = game.costOfPath(path);
 					drawBorder(cost);
 					return true;
 				}

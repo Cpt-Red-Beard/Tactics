@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.parse.Parse;
@@ -37,7 +38,6 @@ public class MainActivity extends BaseGameActivity {
      private BoundCamera mCamera;
      private BroadcastReceiver newTurn;
      private IntentFilter turnIntent;
-     //public Scene mScene;
      private ResourcesManager resourcesManager;
 
      @Override
@@ -57,11 +57,13 @@ public class MainActivity extends BaseGameActivity {
      					if(resourcesManager.inGame == false){
      						return;
      					}
+     					
      					JSONObject json;
     					try {
     						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
      					if(json.getString("deviceId").equals(resourcesManager.opponentDeviceID)){
 	     					if(SceneManager.getInstance().getGameScene() != null)
+	     						Log.d("Turn", "New Turn starting");
 	     						((GameScene) SceneManager.getInstance().getGameScene()).startCompTurn();
 	    					}
     					}
@@ -112,7 +114,7 @@ public class MainActivity extends BaseGameActivity {
 
       				@Override
       				public void onReceive(Context context, Intent intent) {
-      					resourcesManager.inGame = false;
+      					
       					JSONObject json;
     					try {
     						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
@@ -131,19 +133,11 @@ public class MainActivity extends BaseGameActivity {
                		
       				@Override
       				public void onReceive(Context context, Intent intent) {
-      					resourcesManager.inGame = true;
       					JSONObject json;
     					try {
     						
     						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
-    						if(json.getString("turn").equals("true")){
-    							resourcesManager.turn = true;
-    						}
-    						else 
-    							resourcesManager.turn = false;
     						
-    						resourcesManager.gameId = json.getString("GameId");
-    						resourcesManager.opponentDeviceID = json.getString("deviceId");
     						
     						if(SceneManager.getInstance().getMainMenuScene() != null)
     						((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createAcceptDialog(json);
@@ -161,9 +155,15 @@ public class MainActivity extends BaseGameActivity {
       				@Override
       				public void onReceive(Context context, Intent intent) {
       					
-    						
-      					if(SceneManager.getInstance().getGameScene() != null)
-    						((GameScene) SceneManager.getInstance().getGameScene()).quitDialog("Opponent has quit the game! You win!");
+      					JSONObject json;
+    					try {
+    						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));	
+    						if(SceneManager.getInstance().getGameScene() != null && resourcesManager.gameId.equals(json.getString("gameId")))
+    							((GameScene) SceneManager.getInstance().getGameScene()).quitDialog("Opponent has quit the game! You win!");
+    					}
+      					catch(Exception e){
+      						
+      					}
     					
  	
       				}

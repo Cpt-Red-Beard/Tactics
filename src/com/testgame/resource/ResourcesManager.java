@@ -40,11 +40,35 @@ import com.example.testgame.MainActivity;
 
 public class ResourcesManager {
     
-    // TODO: I think maybe this info shouldn't be stored here. This is just for graphics/music/fonts. -Carrie
+	
+	/*
+	 * MAP INFORMATION
+	 */
+	
+	//Basic.tmx
+	Point[] basic1 = {new Point( 1, 1), new Point(2,2), new Point( 1, 1), new Point(2,2), new Point( 1, 1), 
+			new Point(2,2), new Point( 1, 1), new Point(2,2), new Point( 1, 1), new Point(2,2), new Point( 1, 1)};
+	
+	Point[] basic2 = {new Point( 1, 1), new Point(2,2), new Point( 1, 1), new Point(2,2), new Point( 1, 1), 
+			new Point(2,2), new Point( 1, 1), new Point(2,2), new Point( 1, 1), new Point(2,2), new Point( 1, 1)};
+	
+	Point[] classroom1 = {new Point(3,2), new Point(1,2), new Point(7, 2), new Point(9, 2), new Point(4, 0)};
+	
+	Point[] classroom2 = {new Point(2,6), new Point(4,6), new Point(6,6), new Point(8,6), new Point(4, 7)};
+	
+	Point[] defaultSpawns = {};
+	
+	
+	/*
+	 * END MAP INFORMATION
+	 */
+	
+	
+	
     public String userString;
     public String opponent;
     public String opponentString;
-    public String mapString = "Default";;
+    public String mapString = "Default";
     public boolean turn;
     public boolean inGame;
     public boolean isLocal;
@@ -322,12 +346,12 @@ public class ResourcesManager {
         //loadGameMap();
     }
     
-    private void loadGameMap() {
+    @SuppressWarnings("unused")
+	private void loadGameMap() {
     	
     	try {
             final TMXLoader tmxLoader = new TMXLoader(activity.getAssets(), activity.getTextureManager(), TextureOptions.NEAREST, vbom);
             this.tiledMap = tmxLoader.loadFromAsset("tmx/basic.tmx");
-            //this.tiledMap.setOffsetCenter(0, 0);
         } catch (final TMXLoadException e) {
              Debug.e(e);
         }
@@ -475,7 +499,6 @@ public class ResourcesManager {
 		inGame = false;
 		opponent = null;
 		opponentString = null;
-
 		isLocal = false;
 	}
 
@@ -501,6 +524,41 @@ public class ResourcesManager {
 			Log.d("Error", e.toString());
 			return null;
 		}
+	} 
+	
+	public int getNumber(String map){
+		if(map.equals("basic.tmx")){
+			return 10;
+		}
+		else if(map.equals("classroom.tmx")){
+				return 4;
+		}
+		return -1;
+						
+	}
+	
+	
+	public Point[] getSpawn1(String map){
+		if(map.equals("basic.tmx")){
+			return basic1;
+		}
+		else if(map.equals("classroom.tmx")){
+				return classroom1;
+		} else
+			return defaultSpawns;
+		
+						
+	}
+	
+	public Point[] getSpawn2(String map){
+		if(map.equals("basic.tmx")){
+			return basic2;
+		}
+		else if(map.equals("classroom.tmx")){
+				return classroom2;
+		}
+		return defaultSpawns;
+						
 	}
 
 }
