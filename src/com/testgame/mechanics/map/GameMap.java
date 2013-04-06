@@ -127,7 +127,7 @@ public class GameMap implements IMap {
 						visited.add(p);
 						frontier.add(p);
 						parents.put(p, next);
-					}
+					} 
 				}
 			}
 		}

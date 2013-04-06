@@ -270,7 +270,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 				((OnlineGame)this.game.getGame()).addMove(temp);
 
 			
-			walkAlongPath(path, true, cost);
+			walkAlongPath(path, false, cost);
 			
 			/*
 			float timePerTile = .2f; 
@@ -641,7 +641,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 			
 			boolean horiz = Math.abs(a.y - b.y) == 0 ? true : false;
 			
-			walks[i] = new WalkMoveModifier(length * .1f, a.x*game.tileSize, a.y*game.tileSize, b.x*game.tileSize, b.y*game.tileSize, horiz);
+			walks[i] = new WalkMoveModifier(length * .2f, a.x*game.tileSize, a.y*game.tileSize, b.x*game.tileSize, b.y*game.tileSize, horiz);
 			
 		}
 		
