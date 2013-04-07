@@ -119,7 +119,7 @@ public class MainActivity extends BaseGameActivity {
     					try {
     						json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
     						if(SceneManager.getInstance().getMainMenuScene() != null)
-    							((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createDialog(json.getString("name")+ "does not wish to play.");
+    							((MainMenuScene) SceneManager.getInstance().getMainMenuScene()).createDialog(json.getString("name")+ " does not wish to play.");
     					} catch (JSONException e) {
     						
     						e.printStackTrace();
