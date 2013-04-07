@@ -40,7 +40,7 @@ public class ComputerPlayer extends APlayer {
 		if(actionsToPerform.length() == 0){
 			if(game.isFirstTurn()) 
 				game.incrementCount();
-			
+			game.endGame();
 			this.endTurn();
 			 // this calls turn init on all the units
 			
@@ -61,7 +61,7 @@ public class ComputerPlayer extends APlayer {
 						game.incrementCount();
 					this.endTurn();
 					 // this calls turn init on all the units
-					
+					game.endGame();
 					game.getGameScene().activity.runOnUiThread(new Runnable() {
 		        	    @Override
 		        	    public void run() {
