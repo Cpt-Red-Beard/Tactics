@@ -46,11 +46,11 @@ public class ResourcesManager {
 	 */
 	
 	//Basic.tmx
-	Point[] basic1 = {new Point( 1, 1), new Point(2,2), new Point( 1, 1), new Point(2,2), new Point( 1, 1), 
-			new Point(2,2), new Point( 1, 1), new Point(2,2), new Point( 1, 1), new Point(2,2), new Point( 1, 1)};
+	Point[] basic1 = {new Point( 5, 11), new Point(4,10), new Point( 3, 9), new Point(2,8), new Point( 1, 7), 
+			new Point(1,5), new Point( 2, 4), new Point(3,3), new Point( 4, 2), new Point(5,1), new Point( 0, 6)};
 	
-	Point[] basic2 = {new Point( 1, 1), new Point(2,2), new Point( 1, 1), new Point(2,2), new Point( 1, 1), 
-			new Point(2,2), new Point( 1, 1), new Point(2,2), new Point( 1, 1), new Point(2,2), new Point( 1, 1)};
+	Point[] basic2 = {new Point( 9, 11), new Point(10,10), new Point( 11, 9), new Point(12,8), new Point( 13, 7), 
+			new Point(13,5), new Point( 12, 4), new Point(11,3), new Point( 10, 2), new Point(9,1), new Point( 14, 6)};
 	
 	Point[] classroom1 = {new Point(3,2), new Point(1,2), new Point(7, 2), new Point(9, 2), new Point(4, 0)};
 	
