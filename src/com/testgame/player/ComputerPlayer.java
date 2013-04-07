@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import android.graphics.Point;
 import android.util.Log;
 
-import com.testgame.AGame;
 import com.testgame.OnlineGame;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.mechanics.unit.Base;
