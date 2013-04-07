@@ -698,20 +698,20 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		ll.setOrientation(LinearLayout.VERTICAL);
 		
 		
-		
-		Button b0 = new Button(activity);
-        b0.setText("Refresh");
-        b0.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				startCompTurn();
-				pausemenu.dismiss();
-				
-			}
-        });        
-        ll.addView(b0);
-		
+		if(!resourcesManager.isLocal){
+			Button b0 = new Button(activity);
+	        b0.setText("Refresh");
+	        b0.setOnClickListener(new View.OnClickListener() {
+	
+				@Override
+				public void onClick(View v) {
+					startCompTurn();
+					pausemenu.dismiss();
+					
+				}
+	        });        
+	        ll.addView(b0);
+		}
 		
 		Button b1 = new Button(activity);
         b1.setText("End Turn");
