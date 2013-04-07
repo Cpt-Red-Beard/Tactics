@@ -179,17 +179,20 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void ComputerMove(int xNew, int yNew, final int energy, final ComputerPlayer player){
-		int oldX = x;
-		int oldY = y;
+		
 		Log.d("Moving", "In computer move method");
+		Log.d("xOld", x+"");
+		Log.d("yOld", y+"");
+		Log.d("xNew", xNew+"");
+		Log.d("yNew", yNew+"");
+		ArrayList<Point> path = map.computePath(new Point(x, y), new Point(xNew, yNew));
 		map.setUnoccupied(x, y);
 		this.x = xNew;
 		this.y = yNew;
 		map.setOccupied(x, y, this);
 		this.reduceEnergy(energy);
 		
-		ArrayList<Point> path = map.computePath(new Point(oldX, oldY), new Point(xNew, yNew));
-		
+		Log.d("Path", path.toString());
 		walkAlongPath(path, true, energy);
 		
 		/*

@@ -176,7 +176,7 @@ public class ComputerPlayer extends APlayer {
 					unitbase.init();
 					game.getCompPlayer().setBase(unitbase);
 				}
-			}
+		 	}
 			
 			
 		

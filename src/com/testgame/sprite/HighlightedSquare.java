@@ -91,6 +91,7 @@ public class HighlightedSquare extends Rectangle {
 					
 					Point other = new Point(game.getSelectedCharacter().getMapX(), game.getSelectedCharacter().getMapY());
 					
+					
 					path = game.game.gameMap.computePath(other, me);
 					
 					game.drawPath(path);
