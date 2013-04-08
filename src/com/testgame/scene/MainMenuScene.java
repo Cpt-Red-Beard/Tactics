@@ -144,6 +144,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    quitMenuItem.setPosition(0, -125);
 	    logoutMenuItem.setPosition(0, -325); // place log out all the way at the bottom.
 	    logoutMenuItem.setVisible(false);
+	    menuChildScene.unregisterTouchArea(logoutMenuItem);
 	    //optionsMenuItem.disabled(true);
 	    
 	    menuChildScene.setOnMenuItemClickListener(this);
@@ -315,6 +316,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		});
 		ButtonSprite[] buttons = {okayButton};
 		welcome = new GameDialogBox(camera.getHUD(), "Welcome \n"+name+"!", buttons);
+
 
 	}
 	
