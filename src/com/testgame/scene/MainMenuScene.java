@@ -49,12 +49,15 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private final int MENU_PLAY = 1;
 	private final int MENU_HOWTOPLAY = 2;
 	private final int MENU_LOGOUT = 3;
+	private final int MENU_QUIT = 4;
 	private static IMenuItem loginMenuItem;
 	private static IMenuItem playMenuItem;
+	private static IMenuItem quitMenuItem;
 	private static String name;
 	private static IMenuItem logoutMenuItem;
 	private static List<String> userslist = new ArrayList<String>();
 	private AlertDialog dialog;
+	private AlertDialog quitDialog;
 	private static AlertDialog loading;
 	private static AlertDialog invitation;
 	private static AlertDialog gameOptionsDialog;
@@ -63,6 +66,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static AlertDialog mapDialog;
 	private static Map<String, String> usernames;
 	private static String selectedMapName = "Default"; 
+	
 	
 	@Override
 	public void createScene() {
@@ -113,12 +117,14 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    logoutMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGOUT, resourcesManager.logout_region, vbom), 1.2f, 1);
 	    loginMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_LOGIN, resourcesManager.login_region, vbom), 1.2f, 1);
 	    playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.newgame_region, vbom), 1.2f, 1);
+	    quitMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_QUIT, resourcesManager.quit_region, vbom), 1.2f, 1);
 	    final IMenuItem conintueMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_HOWTOPLAY, resourcesManager.howtoplay_region, vbom), 1.2f, 1);
 	    
 	    menuChildScene.addMenuItem(loginMenuItem);
 	    menuChildScene.addMenuItem(playMenuItem);
 	    menuChildScene.addMenuItem(logoutMenuItem);
 	    menuChildScene.addMenuItem(conintueMenuItem);
+	    menuChildScene.addMenuItem(quitMenuItem);
 	    
 	    menuChildScene.buildAnimations();
 	    menuChildScene.setBackgroundEnabled(false);
@@ -126,6 +132,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    loginMenuItem.setPosition(0, 175); 
 	    playMenuItem.setPosition(0, 75);
 	    conintueMenuItem.setPosition(0, -25);
+	    quitMenuItem.setPosition(0, -125);
 	    logoutMenuItem.setPosition(0, -325); // place log out all the way at the bottom.
 	    logoutMenuItem.setVisible(false);
 	    //optionsMenuItem.disabled(true);
@@ -140,6 +147,16 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 	        switch(pMenuItem.getID())
 	        {
+	        
+	        case MENU_QUIT:
+	        	activity.runOnUiThread(new Runnable() {
+	        	    @Override
+	        	    public void run() {
+	        	    	 createQuit();
+	          			 
+	        	    }
+	        	});
+	        
 	        case MENU_LOGIN:
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
@@ -203,8 +220,13 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	return true;
 	        	
 	        case MENU_LOGOUT:
+	        	if(!logoutMenuItem.isVisible()){
+	        		return true;
+	        	}
+
 	        	PushService.unsubscribe(activity, resourcesManager.userString);
 	    		Session.getActiveSession().closeAndClearTokenInformation();
+	    		logoutMenuItem.setVisible(false);
 	        	return true;
 	        	
 	        	
@@ -490,6 +512,35 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		acceptDialog = dia.create();
 		acceptDialog.setCanceledOnTouchOutside(false);
 		acceptDialog.show();
+	}
+	
+	public void createQuit(){
+		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
+		
+			dia.setTitle("Are you sure you wish to quit?");
+		
+		dia.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) { 
+        		if(logoutMenuItem.isVisible()){
+        			PushService.unsubscribe(activity, resourcesManager.userString);
+    	    		Session.getActiveSession().closeAndClearTokenInformation();
+        		}
+        		System.exit(0);
+            }
+        });
+		dia.setNegativeButton("No", new DialogInterface.OnClickListener(){
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				quitDialog.dismiss();
+				
+			}
+			
+		});
+		
+		quitDialog = dia.create();
+		quitDialog.setCanceledOnTouchOutside(false);
+		quitDialog.show();
 	}
 	
 	public void createMapDialog(){
