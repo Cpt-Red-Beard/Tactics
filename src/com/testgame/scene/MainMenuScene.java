@@ -156,6 +156,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	          			 
 	        	    }
 	        	});
+	        	return true;
 	        
 	        case MENU_LOGIN:
 	        	activity.runOnUiThread(new Runnable() {
