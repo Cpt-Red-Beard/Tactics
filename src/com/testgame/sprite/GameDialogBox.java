@@ -39,16 +39,6 @@ public class GameDialogBox {
 		
 		hud.attachChild(messageText = new Text(240, 450, resourcesManager.font, message, resourcesManager.vbom));
 		
-		/*
-		int startY = 0;
-		for (ButtonSprite b : buttons) {
-			this.attachChild(b);
-			this.registerTouchArea(b);
-			b.setPosition(0, startY);
-			startY += offset;
-		}	
-		*/	
-		
 		
 		// default attach an okay button which dismisses the window.
 		final GameDialogBox box = this;
