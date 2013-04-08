@@ -564,17 +564,17 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void switchMode(int newMode) {
 		switch(newMode) {
 			case (GameScene.SPRITE_MODE):
-				//this.setVisible(true);
+				this.setVisible(true);
 				healthBar.setVisible(false);
 				energyBar.setVisible(false);
 				break;
 			case (GameScene.HEALTH_MODE):
-				//this.setVisible(true);
+				this.setVisible(true);
 				healthBar.setVisible(true);
 				energyBar.setVisible(false);
 				break;
 			case (GameScene.ENERGY_MODE):
-				//this.setVisible(false);
+				this.setVisible(false);
 				healthBar.setVisible(false);
 				energyBar.setVisible(true);
 				break;
