@@ -25,6 +25,7 @@ public class ComputerPlayer extends APlayer {
 	}
 	
 	public void startTurn(JSONArray array){
+		Log.d("Array", array.toString());
 		Log.d("Array", array.length()+"");
 		this.actionsToPerform = array;
 		this.beginTurn();

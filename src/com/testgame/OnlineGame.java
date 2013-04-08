@@ -46,8 +46,6 @@ public class OnlineGame extends AGame{
 	 */
 	public OnlineGame(APlayer pOne, ComputerPlayer pTwo, int xDim, int yDim, GameScene game, boolean turn) {
 		super(pOne,xDim, yDim, game);
-		Log.d("xDim", xDim+"");
-		Log.d("yDim", yDim+"");
 		this.setFirstTurn(turn);
 		moves = new JSONArray();
 		this.setCompPlayer(pTwo);
