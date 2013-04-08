@@ -165,27 +165,31 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void ComputerMove(int xNew, int yNew, final int energy, final ComputerPlayer player){
-		int oldX = x;
-		int oldY = y;
+		
 		Log.d("Moving", "In computer move method");
+		Log.d("xOld", x+"");
+		Log.d("yOld", y+"");
+		Log.d("xNew", xNew+"");
+		Log.d("yNew", yNew+"");
+		ArrayList<Point> path = map.computePath(new Point(x, y), new Point(xNew, yNew));
 		map.setUnoccupied(x, y);
 		this.x = xNew;
 		this.y = yNew;
 		map.setOccupied(x, y, this);
 		this.reduceEnergy(energy);
-		
+
+		Log.d("Path", path.toString());
+
 		int destX = this.game.getTileSceneX(xNew, yNew);
 		int destY = this.game.getTileSceneY(xNew, yNew);
 		
 		energyBar.setPosition(destX, destY);
 		healthBar.setPosition(destX, destY);
 		
-		ArrayList<Point> path = map.computePath(new Point(oldX, oldY), new Point(xNew, yNew));
+		//ArrayList<Point> path = map.computePath(new Point(oldX, oldY), new Point(xNew, yNew));
 		
 		walkAnimateAlongPath(path, true, energy);
-		
-		
-		
+
 		/*
 		int destX = this.game.getTileSceneX(xNew, yNew);
 		int destY = this.game.getTileSceneY(xNew, yNew);
@@ -606,7 +610,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void attackedAnimate(final ComputerPlayer computerPlayer, final AUnit unit, final int attack) {
 		if(this.getType().equals("Base")){
 			unit.reduceHealth(attack);
-			game.getGame().endGame();
+			if(game.resourcesManager.isLocal){
+				game.getGame().endGame();
+			}
 			game.working = false;
 			if(computerPlayer != null){
 				computerPlayer.performNext();

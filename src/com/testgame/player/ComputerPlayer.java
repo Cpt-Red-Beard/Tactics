@@ -8,7 +8,6 @@ import org.json.JSONObject;
 import android.graphics.Point;
 import android.util.Log;
 
-import com.testgame.AGame;
 import com.testgame.OnlineGame;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.mechanics.unit.Base;
@@ -26,6 +25,7 @@ public class ComputerPlayer extends APlayer {
 	}
 	
 	public void startTurn(JSONArray array){
+		Log.d("Array", array.toString());
 		Log.d("Array", array.length()+"");
 		this.actionsToPerform = array;
 		this.beginTurn();
@@ -41,9 +41,12 @@ public class ComputerPlayer extends APlayer {
 		if(actionsToPerform.length() == 0){
 			if(game.isFirstTurn()) 
 				game.incrementCount();
-			
 			this.endTurn();
-			game.getPlayer().beginTurn(); // this calls turn init on all the units
+			if(game.endGame()){
+				return;
+			}
+			
+			 // this calls turn init on all the units
 			
 			game.getGameScene().activity.runOnUiThread(new Runnable() {
         	    @Override
@@ -60,8 +63,11 @@ public class ComputerPlayer extends APlayer {
 				if (i == actionsToPerform.length() - 1) {
 					if(game.isFirstTurn()) 
 						game.incrementCount();
+					
 					this.endTurn();
-					game.getPlayer().beginTurn(); // this calls turn init on all the units
+					 // this calls turn init on all the units
+					if(game.endGame())
+						return;
 					
 					game.getGameScene().activity.runOnUiThread(new Runnable() {
 		        	    @Override
@@ -84,7 +90,10 @@ public class ComputerPlayer extends APlayer {
 					int unitX = nextAction.getInt("UnitX");
 					int unitY = nextAction.getInt("UnitY");
 					
+					Log.d("Unitx", unitX+"");
+					Log.d("Unity", unitY+"");
 					AUnit unit = game.gameMap.getOccupyingUnit(unitX, unitY);
+					
 					
 					if (moveType.equals("MOVE")) {
 						Log.d("Moving", "Moving");
@@ -177,14 +186,14 @@ public class ComputerPlayer extends APlayer {
 					unitbase.init();
 					game.getCompPlayer().setBase(unitbase);
 				}
-			}
+		 	}
 			
 			
 		
 		
 		game.incrementCount();
 		if(game.isFirstTurn()) {
-			game.getPlayer().beginTurn();
+			
 			game.getGameScene().activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {

@@ -46,8 +46,6 @@ public class OnlineGame extends AGame{
 	 */
 	public OnlineGame(APlayer pOne, ComputerPlayer pTwo, int xDim, int yDim, GameScene game, boolean turn) {
 		super(pOne,xDim, yDim, game);
-		Log.d("xDim", xDim+"");
-		Log.d("yDim", yDim+"");
 		this.setFirstTurn(turn);
 		moves = new JSONArray();
 		this.setCompPlayer(pTwo);
@@ -105,7 +103,7 @@ public class OnlineGame extends AGame{
 	/**
 	 * Ends the game by checking win cases between the two players..
 	 */
-	public void endGame() {
+	public boolean endGame() {
 		if(player.getActiveUnits().size() == 0 || player.getBase() == null){
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
@@ -114,7 +112,7 @@ public class OnlineGame extends AGame{
           			 
         	    }
         	});
-			
+			return true;
 			
 			
 		}
@@ -128,9 +126,10 @@ public class OnlineGame extends AGame{
         	    }
         	});
 			
-			
+			return true;
 			
 		}
+		return false;
 		
 	}
 	

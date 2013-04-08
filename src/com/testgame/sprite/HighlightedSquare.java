@@ -72,6 +72,10 @@ public class HighlightedSquare extends Rectangle {
 					this.game.currentlySelectedMoveTile = null;
 					return true;
 				} else {
+					//TODO:Make this error less hackish
+					if(game.getSelectedCharacter() == null){
+						return true;
+					}
 					Log.d("AndEngine", "drawing border");
 					// remove border from previously selected square.
 					if (game.currentlySelectedMoveTile != null) {
@@ -84,7 +88,9 @@ public class HighlightedSquare extends Rectangle {
 					
 					
 					Point me = new Point(tile.getTileColumn(), game.heightInTiles - tile.getTileRow() - 1);
+					
 					Point other = new Point(game.getSelectedCharacter().getMapX(), game.getSelectedCharacter().getMapY());
+					
 					
 					path = game.game.gameMap.computePath(other, me);
 					

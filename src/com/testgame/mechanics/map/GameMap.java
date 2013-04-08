@@ -139,7 +139,7 @@ public class GameMap implements IMap {
 			if (parent!=null) path.add(0, parent);
 			child = parent;
 		}
-		
+		Log.d("Path", path.toString());
 		return path;
 	}
 	

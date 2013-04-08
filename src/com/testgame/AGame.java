@@ -104,7 +104,7 @@ public abstract class AGame {
 	/**
 	 * Abstract method for ending the game.
 	 */
-	public abstract void endGame();
+	public abstract boolean endGame();
 	
 	/**
 	 * Abstract method for changing the game to the next turn.
