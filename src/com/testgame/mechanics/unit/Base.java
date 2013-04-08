@@ -22,9 +22,9 @@ public class Base extends AUnit {
 		this.maxHealth = 500;
 		this.currentHealth = 500;
 		this.attack = 0;
-		this.attackenergy = 0;
-		this.range = 0;
-		this.attackrange = 0;
+		this.attackEnergy = 0;
+		this.movementRange = 0;
+		this.attackRange = 0;
 		this.energy = 0;
 		this.energyUsedLastTurn = 0;
 		this.isDefending = false;

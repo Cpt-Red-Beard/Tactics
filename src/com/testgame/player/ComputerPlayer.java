@@ -104,7 +104,7 @@ public class ComputerPlayer extends APlayer {
 						
 						actionsToPerform.put(i, null); // finished action, clear it out
 						
-						unit.ComputerMove(destX, destY, energy, this);
+						unit.computerMove(destX, destY, energy, this);
 					}
 					
 					else if (moveType.equals("ATTACK")) {
@@ -123,7 +123,7 @@ public class ComputerPlayer extends APlayer {
 						Log.d("Unit", unit+"");
 						Log.d("Energy", energy+"");
 						Log.d("Unit2", this+"");
-						unit.ComputerAttack(target, attack, energy, this);
+						unit.computerAttack(target, attack, energy, this);
 					}
 					
 					return;

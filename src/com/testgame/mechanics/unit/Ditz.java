@@ -25,9 +25,9 @@ public class Ditz extends AUnit {
 		this.maxHealth = 100;
 		this.currentHealth = 100;
 		this.attack = 60;
-		this.attackenergy = 40;
-		this.range = 30;
-		this.attackrange = 3;
+		this.attackEnergy = 40;
+		this.movementRange = 30;
+		this.attackRange = 3;
 		this.energy = 100;
 		this.energyUsedLastTurn = 0;
 		this.isDefending = false;
