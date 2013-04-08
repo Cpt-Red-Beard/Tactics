@@ -32,6 +32,10 @@ import com.testgame.OnlineGame;
  * @author Alen Lukic
  *
  */
+/**
+ * @author Carrie
+ *
+ */
 public class AUnit extends CharacterSprite implements IUnit {
 	
 	public AUnit(float pX, float pY, ITextureRegion pTextureRegion,
@@ -39,27 +43,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 		super(pX, pY, pTextureRegion, pVertexBufferObjectManager);
 	}
 	
-	public int start_frame = 0;
-	
-	protected int IDLE_START_FRAME;
-	protected int IDLE_END_FRAME;
-	
-	protected int WALK_RIGHT_START_FRAME;
-	protected int WALK_RIGHT_END_FRAME;
-	
-	protected int WALK_LEFT_START_FRAME;
-	protected int WALK_LEFT_END_FRAME;
-	
-	protected int WALK_UP_START_FRAME;
-	protected int WALK_UP_END_FRAME;
-	
-	protected int WALK_DOWN_START_FRAME;
-	protected int WALK_DOWN_END_FRAME;
-	
-	protected int GUARD_FRAME;
-	
-	protected int ATTACKED_START_FRAME;
-	protected int ATTACKED_END_FRAME;
+	// --------------------------------------
+	//      Properties with Get/Set
+	// --------------------------------------
 	
 	protected int sightRange = 7; // TODO: must be bigger ? than all movement ranges
 	
@@ -202,8 +188,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		//ArrayList<Point> path = map.computePath(new Point(oldX, oldY), new Point(xNew, yNew));
 		
+		walkAnimateAlongPath(path, true, energy);
 
-		walkAlongPath(path, true, energy);
 		
 		
 		
@@ -282,7 +268,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 				((OnlineGame)this.game.getGame()).addMove(temp);
 
 			
-			walkAlongPath(path, false, cost);
+			walkAnimateAlongPath(path, false, cost);
 			
 			/*
 			float timePerTile = .2f; 
@@ -493,12 +479,103 @@ public class AUnit extends CharacterSprite implements IUnit {
 		// TODO: make tiles within sight range visible
 	}
 	
+	
+
+	
+	public void switchMode(int newMode) {
+		switch(newMode) {
+			case (GameScene.SPRITE_MODE):
+				this.setVisible(true);
+				healthBar.setVisible(false);
+				energyBar.setVisible(false);
+				break;
+			case (GameScene.HEALTH_MODE):
+				this.setVisible(true);
+				healthBar.setVisible(true);
+				energyBar.setVisible(false);
+				break;
+			case (GameScene.ENERGY_MODE):
+				this.setVisible(false);
+				healthBar.setVisible(false);
+				energyBar.setVisible(true);
+				break;
+			default:
+				break;
+			
+		}		
+	}
+
+	
+	public String getType(){
+		return this.unitType;
+	}
+
+	
+
+	// ------------------------------------------
+	//      Animation Code
+	// ------------------------------------------
+	
+	/**
+	 * Default texture frame for this unit.
+	 */
+	public int start_frame = 0;
+	
+	/** 
+	 * Start and end frames for idling.
+	 */
+	protected int IDLE_START_FRAME;
+	protected int IDLE_END_FRAME;
+	
+	/** 
+	 * Start and end frames for walking to the right.
+	 */
+	protected int WALK_RIGHT_START_FRAME;
+	protected int WALK_RIGHT_END_FRAME;
+	
+	/**
+	 * Start and end frames for walking to the left.
+	 */
+	protected int WALK_LEFT_START_FRAME;
+	protected int WALK_LEFT_END_FRAME;
+	
+	/**
+	 * Start and end frames for walking up.
+	 */
+	protected int WALK_UP_START_FRAME;
+	protected int WALK_UP_END_FRAME;
+	
+	/**
+	 * Start and end frames for walking down.
+	 */
+	protected int WALK_DOWN_START_FRAME;
+	protected int WALK_DOWN_END_FRAME;
+	
+	/**
+	 * Frame for guarding.
+	 */
+	protected int GUARD_FRAME;
+	
+	/**
+	 * Start and end frames for being attacked.
+	 */
+	protected int ATTACKED_START_FRAME;
+	protected int ATTACKED_END_FRAME;
+	
+	/**
+	 * Animates this unit being idle.
+	 */
 	public void idleAnimate() {
 		if(this.getType().equals("Base"))
 			return;
 		this.animate(new long[] { 100, 100 }, start_frame + IDLE_START_FRAME, start_frame + IDLE_END_FRAME, true);
 	}
 	
+	/**
+	 * Animates this unit walking
+	 * @param xDirection indicates left of right (1 or -1)
+	 * @param yDirection indicates up or down (1 or -1)
+	 */
 	public void walkAnimate(int xDirection, int yDirection) {
 		if(this.getType().equals("Base"))
 			return;
@@ -518,12 +595,21 @@ public class AUnit extends CharacterSprite implements IUnit {
 		}
 	}
 	
+	/**
+	 * Animates this unit guarding.
+	 */
 	public void guardAnimate() {
 		if(this.getType().equals("Base"))
 			return;
 		this.setCurrentTileIndex(start_frame + GUARD_FRAME);
 	}
 	
+	/**
+	 * Animates this unit being attacked.
+	 * @param computerPlayer null if local, player if online
+	 * @param unit who attacked this unit
+	 * @param attack cost in energy
+	 */
 	public void attackedAnimate(final ComputerPlayer computerPlayer, final AUnit unit, final int attack) {
 		if(this.getType().equals("Base")){
 			unit.reduceHealth(attack);
@@ -568,37 +654,14 @@ public class AUnit extends CharacterSprite implements IUnit {
 	        }));
 		}
 	}
-
 	
-	public void switchMode(int newMode) {
-		switch(newMode) {
-			case (GameScene.SPRITE_MODE):
-				this.setVisible(true);
-				healthBar.setVisible(false);
-				energyBar.setVisible(false);
-				break;
-			case (GameScene.HEALTH_MODE):
-				this.setVisible(true);
-				healthBar.setVisible(true);
-				energyBar.setVisible(false);
-				break;
-			case (GameScene.ENERGY_MODE):
-				this.setVisible(false);
-				healthBar.setVisible(false);
-				energyBar.setVisible(true);
-				break;
-			default:
-				break;
-			
-		}		
-	}
-
-	
-	public String getType(){
-		return this.unitType;
-	}
-
-	public void walkAlongPath(ArrayList<Point> path, boolean computer, final int cost) {
+	/**
+	 * Animates this unit to walk along a given path.
+	 * @param path to walk along
+	 * @param computer boolean to indicate local versus computer player
+	 * @param cost energy used to walk on this path
+	 */
+	public void walkAnimateAlongPath(ArrayList<Point> path, boolean computer, final int cost) {
 		
 		IEntityModifierListener animationListener;
 		
