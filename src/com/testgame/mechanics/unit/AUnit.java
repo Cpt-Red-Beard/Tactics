@@ -1,6 +1,7 @@
 package com.testgame.mechanics.unit;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 
 import org.andengine.engine.handler.timer.ITimerCallback;
@@ -13,8 +14,12 @@ import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.modifier.IModifier;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.graphics.Point;
+
+import com.testgame.OnlineGame;
 import com.testgame.mechanics.map.GameMap;
+import com.testgame.mechanics.map.Node;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
 import com.testgame.resource.ResourcesManager;
@@ -23,7 +28,6 @@ import com.testgame.sprite.CharacterSprite;
 import com.testgame.sprite.HighlightedSquare;
 import com.testgame.sprite.ProgressBar;
 import com.testgame.sprite.WalkMoveModifier;
-import com.testgame.OnlineGame;
 
 /**
  * Class which represents an abstract unit.
@@ -444,41 +448,36 @@ public class AUnit extends CharacterSprite implements IUnit {
 	/*
 	 * checks a point x,y
 	 */
-	public void checkPointForMove(int offsetX, int offsetY, int range, ArrayList<Point> moves) {
-
-		if (this.x + offsetX < 0 || this.y + offsetY < 0) return; // off of map, not occupied
-		if (this.x + offsetX >= map.xDim || this.y + offsetY >= map.yDim) return; // ditto
-		
-		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
-		
-		Point p = new Point(offsetX, offsetY);
-		
-		if (occupyingUnit == null) { // not occupied
-			if (moves.contains(p)) return;
-			int dist = this.manhattanDistance(this.x, this.y, this.x + offsetX, this.y + offsetY);
-			if (dist > range) return;
-			else moves.add(p);
-		} 
+	public void checkPointForMove(HashSet<Node> possibleMoves, ArrayList<Point> actualMoves) {
+		for (Node n: possibleMoves) {			
+			AUnit occupyingUnit = map.getOccupyingUnit(n.x(), n.y());
+			if (occupyingUnit == null) // not occupied
+				actualMoves.add(new Point(n.x(), n.y()));
+		}
 	}
 	
 	// all the squares you can move to 
 	public ArrayList<Point> availableMoves() {
 		ArrayList<Point> moves = new ArrayList<Point>();
-		if(this.range == 0)
+		if (this.range == 0)
 			return moves;
 		int movementRange = this.energy/this.range;
+		HashSet<Node> possibleMoves = map.manhattanDistanceBFS(
+			new Point(this.x, this.y), this.player, movementRange);
 		
-		for (int i = 0; i <= movementRange; i++) {
-			for (int j = 0; j <= movementRange - i; j++){
+		checkPointForMove(possibleMoves, moves);
+		
+		// for (int i = 0; i <= movementRange; i++) {
+		// 	for (int j = 0; j <= movementRange - i; j++){
 				
-				if (i == 0 && j == 0) continue;
+		// 		if (i == 0 && j == 0) continue;
 				
-				checkPointForMove(i, j, movementRange, moves);
-				checkPointForMove(i, -j, movementRange, moves);
-				checkPointForMove(-i, j, movementRange, moves);
-				checkPointForMove(-i, -j, movementRange, moves);
-			}
-		}
+		// 		checkPointForMove(i, j, movementRange, moves);
+		// 		checkPointForMove(i, -j, movementRange, moves);
+		// 		checkPointForMove(-i, j, movementRange, moves);
+		// 		checkPointForMove(-i, -j, movementRange, moves);
+		// 	}
+		// }
 
 		return moves;
 	}
@@ -486,40 +485,29 @@ public class AUnit extends CharacterSprite implements IUnit {
 	// all the squares of enemies you can attack
 	public ArrayList<AUnit> availableTargets() {
 		ArrayList<AUnit> targets = new ArrayList<AUnit>();
-		
 		int attackRange = this.attackrange;
 		if (this.attackenergy > this.energy) attackRange = 0; // no available moves b/c no energy
+
+		HashSet<Node> possibleTargets = map.manhattanDistanceBFS(
+			new Point(this.x, this.y), this.player, attackRange);
+
+		checkPointForTargets(possibleTargets, targets);
 		
-		for (int i = 0; i <= attackRange; i++) {
-			for (int j = 0; j <= attackRange - i; j++){ // check all the points at most attackrange distance away
-				
-				if (i == 0 && j == 0) continue; // no movement, not a move
-				
-				checkPointForTargets(i, j, attackRange, targets);
-				checkPointForTargets(i, -j, attackRange, targets);
-				checkPointForTargets(-i, j, attackRange, targets);
-				checkPointForTargets(-i, -j, attackRange, targets);
-			}
-		}
 		return targets;
 	}
 	
 	// checks to see if a square offsetX, offsetY distance from this unit has an ENEMY unit, if so adds it to the array
-	private void checkPointForTargets(int offsetX, int offsetY, int attackRange, ArrayList<AUnit> targets) {
-		
-		if (this.x + offsetX < 0 || this.y + offsetY < 0) return; // off of map, not occupied
-		if (this.x + offsetX >= map.xDim || this.y + offsetY >= map.yDim) return; // ditto
-		if (this.manhattanDistance(this.x, this.y, this.x + offsetX, this.y + offsetY) > attackRange)
-			return;
-		AUnit occupyingUnit = map.getOccupyingUnit(this.x + offsetX, this.y + offsetY);
-		
-		if (occupyingUnit != null) { // occupied
-			if (occupyingUnit.unitType.equals("Dummy")) return; // not truly a target, just a dummy obstacle
-			if (targets.contains(occupyingUnit)) return;
-			else {
-				if (occupyingUnit.getPlayer() == this.player) return; // same player, not an enemy
-				occupyingUnit.inSelectedCharactersAttackRange = true;
-				targets.add(occupyingUnit);
+	private void checkPointForTargets(HashSet<Node> possibleTargets, ArrayList<AUnit> actualTargets) {
+		for (Node n : possibleTargets) {
+			AUnit occupyingUnit = map.getOccupyingUnit(n.x(), n.y());
+			if (occupyingUnit != null) { // occupied
+				if (occupyingUnit.unitType.equals("Dummy")) return; // not truly a target, just a dummy obstacle
+				if (targets.contains(occupyingUnit)) return;
+				else {
+					if (occupyingUnit.getPlayer() == this.player) return; // same player, not an enemy
+					occupyingUnit.inSelectedCharactersAttackRange = true;
+					actualTargets.add(occupyingUnit);
+				}
 			}
 		}
 	}

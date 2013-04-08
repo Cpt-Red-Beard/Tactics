@@ -147,35 +147,27 @@ public class GameMap implements IMap {
 		return -1; // Didn't find a path
 	}
 	
-	public int manhattanDistanceBFS(Point s, Point d, APlayer requestingPlayer) {
+	public HashSet<Node> manhattanDistanceBFS(Point s, APlayer requestingPlayer, int depth) {
 		Node startNode = graph.get(this.entry(s.x, s.y));
 		if (startNode == null) {
-			// System.out.println("The start node is invalid! Game dims: " + this.xDim + " by " + this.yDim + 
-			// 	" Given start coordinates: " + s.x + ", " + s.y);
-			return -1;
-		}
-		Node goal = graph.get(this.entry(d.x, d.y));
-		if (goal == null || goal.isObstacle()) {
-			// System.out.println("The goal node is invalid! Game dims: " + this.xDim + " by " + this.yDim + 
-			// 	" Given start coordinates: " + d.x + ", " + d.y);
-			return -1;
+			System.out.println("The start node is invalid! Game dims: " + this.xDim + " by " + this.yDim + 
+				" Given start coordinates: " + s.x + ", " + s.y);
+			return null;
 		}
 		
 		HashSet<Node> processed = new HashSet<Node>();
 		ArrayList<Node> queue = new ArrayList<Node>();
 		queue.add(startNode);
 		startNode.setParentNode(null);
+		startNode.setDepth(0);
 
 		// Begin BFS search
 		while (queue.size() > 0) {
 			Node cur = queue.remove(0);
-
-			// Found the goal
-			if (cur.equals(goal)) {
-				int pathLength = getSteps(cur);
-				resetParentNodes();
-				return pathLength;
-			}
+			Integer curDepth = cur.depth();
+			System.out.println("curDepth: " + curDepth);
+			if (curDepth > depth)
+				break;
 
 			// Process neighbors
 			HashSet<Node> neighbors = cur.neighbors();
@@ -189,14 +181,17 @@ public class GameMap implements IMap {
 							continue;
 					}
 					neigh.setParentNode(cur);
+					neigh.setDepth(curDepth + 1);
 					queue.add(neigh);
 				}
 			}
+
 			processed.add(cur);
 		}
-
-		System.out.println("Could not find a path!");
-		return -1; // Didn't find a path
+		
+		resetParentNodes();
+		System.out.println("Returning from BFS!");
+		return processed;
 	}
 
 	
@@ -220,9 +215,8 @@ public class GameMap implements IMap {
 	 */
 	private void resetParentNodes() {
 		for (int i = 0; i < this.xDim; i++) {
-			for (int j = 0; j < this.yDim; j++) {
+			for (int j = 0; j < this.yDim; j++) 
 				(graph.get(this.entry(i, j))).setParentNode(null);
-			}
 		}
 	}
 

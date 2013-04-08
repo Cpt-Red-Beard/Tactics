@@ -1,7 +1,6 @@
 package com.testgame.scene;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.andengine.engine.camera.BoundCamera;

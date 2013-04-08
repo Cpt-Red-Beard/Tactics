@@ -25,24 +25,29 @@ public class Node implements Comparable<Node> {
 	private int y;
 	
 	/**
-	 * Rover number who discovered this space; or, -2 if obstacle.
+	 * Obstacle or not obstacle.
 	 */
 	private int value;
 	
 	/**
-	 * F-score for dynamic A*.
+	 * F-score for A*.
 	 */
 	private double fScore;
 	
 	/**
-	 * G-score for dynamic A*.
+	 * G-score for A*.
 	 */
 	private double gScore;
 	
 	/**
-	 * Parent node in dynamic A*.
+	 * Parent node in A*.
 	 */
 	private Node parent;
+
+	/**
+	 * Node's depth in the current BFS search.
+	 */
+	private Integer depth;
 	
 	/**
 	 * Set of neighbors.
@@ -132,6 +137,21 @@ public class Node implements Comparable<Node> {
 	 */
 	public Node parent() {
 		return this.parent;
+	}
+
+	/**
+	 * Returns the depth.
+	 */
+	public Integer depth() {
+		return this.depth;
+	}
+
+	/**
+	 * Sets depth.
+	 * @param d The depth.
+	 */
+	public void setDepth(Integer d) {
+		this.depth = d;
 	}
 	
 	/**
