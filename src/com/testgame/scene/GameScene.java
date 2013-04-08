@@ -13,6 +13,7 @@ import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
+
 import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
@@ -59,10 +60,12 @@ import com.testgame.mechanics.map.GameMap;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
+
 import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.SceneManager.SceneType;
 import com.testgame.sprite.CharacterSprite;
 import com.testgame.sprite.GameDialogBox;
+
 import com.testgame.sprite.HighlightedSquare;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinchZoomDetectorListener {
@@ -76,7 +79,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public boolean working = false;
 
 	private float mTouchX = 0, mTouchY = 0, mTouchOffsetX = 0, mTouchOffsetY = 0;
+
 	private GameDialogBox pausemenu;
+
 	private Rectangle currentTileRectangle;
 	private AUnit selectedCharacter;
 	
@@ -85,7 +90,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	public IEntityModifierListener animationListener;
 	//public IEntityModifierListener computerAnimationListener;
-	boolean start;
+
 	public AGame game;
 	
 	public HUD hud;
@@ -221,8 +226,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			this.setGame(new LocalGame(new APlayer("One's"), new APlayer("Two's"), widthInTiles, heightInTiles, this));
 		}
 		
-	
-		
+
 		createHUD();
 	    
 		// Initialize selection rectangle.
@@ -230,6 +234,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		currentTileRectangle.setOffsetCenter(0, 0);
 		currentTileRectangle.setColor(1, 0, 0, 0);
 		attachChild(currentTileRectangle);
+
 		//if(!resourcesManager.isLocal){
 			//startCompTurn();
 		//}
@@ -243,7 +248,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			
 		}));
 			
-		
 		
 	}
 	
@@ -673,29 +677,37 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		    public void done(List<ParseObject> itemList, ParseException e) {
 		        if (e == null) {
 		           Log.d("Items", itemList.size()+""); 
+
 		            for(ParseObject ob : itemList){ 	
 		            	if (ob.getString("Device").equals(resourcesManager.opponentDeviceID)) {
+
 			            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
 			            		if(getGame().getCount() != 0){
 			            			Log.d("Turns", "Found turn data");
 					        		JSONArray array = ob.getJSONArray("Moves");
 					        		Log.d("Array", array.toString());
 					        		deselectCharacter(false);
-					            	((OnlineGame)getGame()).getCompPlayer().startTurn(array);
+
+					            	((OnlineGame)getGame()).getCompPlayer().startTurn( array);
+
 					            	ob.deleteInBackground();
 					            	return;
 					        	}
 					        	else{
 					        		JSONObject object = ob.getJSONObject("Init");
+
 					        		deselectCharacter(false);
 					            	((OnlineGame)getGame()).getCompPlayer().init(object);
 					            	ob.deleteInBackground();
 					            	return;
+
 					        	}
 			            	}
 			            	ob.deleteInBackground();
 		            	} 
+
 		            } 
+
 		        } 
 		    }
 		});
@@ -709,6 +721,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		LinearLayout ll = new LinearLayout(activity);
 		ll.setOrientation(LinearLayout.VERTICAL);
 		
+
 		Button b1 = new Button(activity);
         b1.setText("End Turn");
         b1.setOnClickListener(new View.OnClickListener() {
@@ -822,34 +835,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		quitDialog.show();
 	}
 	
-	/*public void quitDialog(String Text){
-		final Dialog pausemenu = new Dialog(activity);
-		pausemenu.setTitle(Text);
-		LinearLayout ll = new LinearLayout(activity);
-		ll.setOrientation(LinearLayout.VERTICAL);
-		
-		Button b1 = new Button(activity);
-        b1.setText("Return to Main Menu");
-        b1.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				pausemenu.dismiss();
-				disposeScene();
-		    	SceneManager.getInstance().loadMenuScene(engine);
-		    	resourcesManager.resetGame();
-				
-			}
-        });        
-        ll.addView(b1);
-
-       
-        
-        pausemenu.setContentView(ll);      
-        pausemenu.setCanceledOnTouchOutside(false);
-        pausemenu.show();        
-		
-	}*/
 	public void quitDialog(String Text) {
 		
 		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
@@ -865,6 +851,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		});
 		ButtonSprite[] buttons = {okay};
 		pausemenu = new GameDialogBox(camera.getHUD(), Text, buttons);
+
 	}
 
 	@Override
@@ -904,9 +891,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		this.mode = newMode;
 	}
-	
-	
-	
+
 
 	private Line[] arrowPath;
 	
@@ -948,6 +933,5 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		}
 		return cost;
 	}
-	
-	
+
 }

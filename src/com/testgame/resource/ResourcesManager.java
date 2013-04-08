@@ -173,6 +173,7 @@ public class ResourcesManager {
     // Button texture regions
     private BuildableBitmapTextureAtlas menuTextureAtlas;
     public ITextureRegion quit_region, newgame_region, options_region, continue_region, login_region, reset_region, blank_region, howtoplay_region, logout_region, play_region;
+
     public Music menu_background_music, select_sound;
 
     public Font font;
@@ -207,6 +208,7 @@ public class ResourcesManager {
     	menu_background_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu.png");
     	
     	quit_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "quitbutton.png");
+
     	newgame_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "newgamebutton.png");
     	options_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "optionsbutton.png");
     	login_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "loginbutton.png");
@@ -449,6 +451,7 @@ public class ResourcesManager {
     	bottom_bar_atlas.unload();
     	top_bar_atlas.unload();
     	map_tiles_atlas.unload();
+
         
     }
 

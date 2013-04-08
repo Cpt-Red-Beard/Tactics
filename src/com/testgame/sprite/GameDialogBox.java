@@ -2,12 +2,19 @@ package com.testgame.sprite;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.sprite.ButtonSprite;
+
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.AutoWrap;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.adt.align.HorizontalAlign;
+import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
+import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
+import org.andengine.opengl.texture.region.ITextureRegion;
+
+import android.util.Log;
 
 import com.testgame.resource.ResourcesManager;
 
@@ -16,7 +23,9 @@ public class GameDialogBox {
 	private HUD hud;
 	private float width;
 	private float height;
+
 	private ButtonSprite[] buttons;
+
 	private Sprite backgroundSprite;
 	private Text messageText;
 	private ButtonSprite okayButton;
@@ -24,6 +33,7 @@ public class GameDialogBox {
 	public GameDialogBox(HUD hud, String message, ButtonSprite ... buttons) {
 		super();
 		this.buttons = buttons;	
+
 		this.hud = hud;
 		
 		ResourcesManager resourcesManager = ResourcesManager.getInstance();
@@ -33,9 +43,7 @@ public class GameDialogBox {
 		this.setWidth(background.getWidth());
 		this.setHeight(background.getHeight());
 		
-		// Attach Background
-		hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background, resourcesManager.vbom));
-		
+		// Attach Background		
 		
 		hud.attachChild(messageText = new Text(240, 450, resourcesManager.font, message, new TextOptions(AutoWrap.WORDS, backgroundSprite.getWidth(), HorizontalAlign.CENTER, Text.LEADING_DEFAULT), resourcesManager.vbom));
 		
@@ -54,17 +62,20 @@ public class GameDialogBox {
 	}
 
 	public void dismiss() {
+
 		ResourcesManager.getInstance().engine.runOnUpdateThread(new Runnable() {
 			@Override
 			public void run() {
 				hud.detachChild(backgroundSprite);
 				hud.unregisterTouchArea(okayButton);
 				hud.detachChild(messageText);
+
 				for(ButtonSprite button: buttons){
 					hud.detachChild(button);
 					hud.unregisterTouchArea(button);
 				}
 				
+
 			}
 		});
 	}

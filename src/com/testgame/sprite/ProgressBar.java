@@ -2,6 +2,8 @@ package com.testgame.sprite;
 
 import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.util.adt.color.Color;
+
 import com.testgame.scene.GameScene;
 
 public class ProgressBar extends Rectangle {
