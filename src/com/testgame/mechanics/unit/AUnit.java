@@ -687,7 +687,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 					ResourcesManager.getInstance().walking_sound.pause();
 					((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
 					game.setEventText("Moved using "+cost+" energy.");
-					((ComputerPlayer)player).performNext(); // finished this action, call next
+					
+					Log.d("AndEngine", "Calling perform next!");
+					((ComputerPlayer)player).performNext();
 				}
 			};
 		} else {
@@ -729,7 +731,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		SequenceEntityModifier seq = new SequenceEntityModifier(animationListener, walks);
 		
-		clearEntityModifiers();
+		//clearEntityModifiers();
 		
 		registerEntityModifier(seq);
 		
