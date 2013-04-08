@@ -105,7 +105,7 @@ public class OnlineGame extends AGame{
 	/**
 	 * Ends the game by checking win cases between the two players..
 	 */
-	public void endGame() {
+	public boolean endGame() {
 		if(player.getActiveUnits().size() == 0 || player.getBase() == null){
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
@@ -114,7 +114,7 @@ public class OnlineGame extends AGame{
           			 
         	    }
         	});
-			
+			return true;
 			
 			
 		}
@@ -128,9 +128,10 @@ public class OnlineGame extends AGame{
         	    }
         	});
 			
-			
+			return true;
 			
 		}
+		return false;
 		
 	}
 	

@@ -36,7 +36,7 @@ public class LocalGame extends AGame {
 	 * Ends the game by checking for any win cases.
 	 */
 	@Override
-	public void endGame() {
+	public boolean endGame() {
 		if(player.getActiveUnits().size() == 0 || player.getBase() == null){
 			gameScene.activity.runOnUiThread(new Runnable() {
         	    @Override
@@ -47,7 +47,7 @@ public class LocalGame extends AGame {
         	});
 			
 			this.gameScene.setEndGameText(player2);
-			
+			return true;
 		}
 		else if(player2.getActiveUnits().size() == 0 || player2.getBase() == null){
 			gameScene.activity.runOnUiThread(new Runnable() {
@@ -59,9 +59,9 @@ public class LocalGame extends AGame {
         	});
 			
 			this.gameScene.setEndGameText(player);
-			
+			return true;
 		}
-
+		return false;
 	}
 
 	/**

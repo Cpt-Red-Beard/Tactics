@@ -518,7 +518,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void attackedAnimate(final ComputerPlayer computerPlayer, final AUnit unit, final int attack) {
 		if(this.getType().equals("Base")){
 			unit.reduceHealth(attack);
-			game.getGame().endGame();
+			if(game.resourcesManager.isLocal){
+				game.getGame().endGame();
+			}
 			game.working = false;
 			if(computerPlayer != null){
 				computerPlayer.performNext();
