@@ -11,6 +11,7 @@ import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
+import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
@@ -217,6 +218,24 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			this.setGame(new LocalGame(new APlayer("One's"), new APlayer("Two's"), widthInTiles, heightInTiles, this));
 		}
 		
+	/*	this.registerUpdateHandler(new IUpdateHandler() {
+			
+
+			@Override
+			public void reset() {
+				
+				
+			}
+
+			@Override
+			public void onUpdate(float pSecondsElapsed) {
+				if(getGame().getCount() == 0 || !getGame().getPlayer().isTurn()){
+					startCompTurn();
+				}
+				
+			}
+		});*/
+		
 		createHUD();
 	    
 		// Initialize selection rectangle.
@@ -227,6 +246,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		if(!resourcesManager.isLocal){
 			startCompTurn();
 		}
+		
 		
 	}
 	
@@ -679,7 +699,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			            	ob.deleteInBackground();
 		            	} 
 		            }
-		            //startCompTurn();   
+		            startCompTurn();   
 		        } 
 		    }
 		});
@@ -929,4 +949,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		}
 		return cost;
 	}
+	
+	
 }
