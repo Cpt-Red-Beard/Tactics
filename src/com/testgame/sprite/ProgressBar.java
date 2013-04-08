@@ -21,7 +21,7 @@ public class ProgressBar extends Rectangle {
 	private float mPixelsPerPercentRatio;
 
 	private final static int height = 64;
-	private final static int width = 50;
+	private final static int width = 64;
 	
 	private final float maxValue;
 	
@@ -31,9 +31,11 @@ public class ProgressBar extends Rectangle {
 	public ProgressBar(final GameScene gameScene, final float pX, final float pY, final float maxValue) {
 		super(pX, pY, width, height, gameScene.vbom);
 		setOffsetCenter(0, 0);
-		
+				
 		this.mBackgroundRectangle = new Rectangle(0, 0, width, height, gameScene.vbom);
-		this.mBackgroundRectangle.setColor(Color.WHITE);
+		this.mBackgroundRectangle.setColor(1, 1, 1, .5f);
+		//this.mBackgroundRectangle.setColor(Color.WHITE);
+		//mBackgroundRectangle.setAlpha(.5f);
 		mBackgroundRectangle.setOffsetCenter(0, 0);
 		
 		this.mFrameLines[0] = new Line(0, 0, width, 0, FRAME_LINE_WIDTH, gameScene.vbom); //Top line.
@@ -42,12 +44,13 @@ public class ProgressBar extends Rectangle {
 		this.mFrameLines[3] = new Line(0, height, 0, 0, FRAME_LINE_WIDTH, gameScene.vbom); //Left line.
 		
 		this.mProgressRectangle = new Rectangle(0, 0, width, height, gameScene.vbom);
+		this.mProgressRectangle.setAlpha(.5f);
 		mProgressRectangle.setOffsetCenter(0, 0);
 		
 		attachChild(this.mBackgroundRectangle); //This one is drawn first.
 		attachChild(this.mProgressRectangle); //The progress is drawn afterwards.
 		for(int i = 0; i < this.mFrameLines.length; i++) {
-			this.mFrameLines[i].setColor(Color.BLACK);
+			this.mFrameLines[i].setColor(0, 0, 0, .5f);
 			attachChild(this.mFrameLines[i]); //Lines are drawn last, so they'll override everything.
 		}
 		
