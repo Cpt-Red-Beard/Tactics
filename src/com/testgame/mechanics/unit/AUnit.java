@@ -188,9 +188,17 @@ public class AUnit extends CharacterSprite implements IUnit {
 		map.setOccupied(x, y, this);
 		this.reduceEnergy(energy);
 		
+		int destX = this.game.getTileSceneX(xNew, yNew);
+		int destY = this.game.getTileSceneY(xNew, yNew);
+		
+		energyBar.setPosition(destX, destY);
+		healthBar.setPosition(destX, destY);
+		
 		ArrayList<Point> path = map.computePath(new Point(oldX, oldY), new Point(xNew, yNew));
 		
 		walkAlongPath(path, true, energy);
+		
+		
 		
 		/*
 		int destX = this.game.getTileSceneX(xNew, yNew);
@@ -200,9 +208,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 		float numTilesX = Math.abs(this.getX() - destX) / game.tileSize;
 		float numTilesY = Math.abs(this.getY() - destY) / game.tileSize;
 		
-		
-		energyBar.setPosition(destX, destY);
-		healthBar.setPosition(destX, destY);
 		
 		WalkMoveModifier one = new WalkMoveModifier(timePerTile*numTilesX + .1f, this.getX(), this.getY(), destX, this.getY(), true);
 		WalkMoveModifier two = new WalkMoveModifier(timePerTile*numTilesY + .1f, destX, this.getY(), destX, destY, false);
@@ -467,13 +472,13 @@ public class AUnit extends CharacterSprite implements IUnit {
 		this.game.registerTouchArea(this);
 		
 		healthBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize, this.maxHealth);
-		healthBar.setProgressColor(1, 0, 0, .7f);
+		healthBar.setProgressColor(1, 0, 0, .5f);
 		healthBar.setProgress(this.energy);
 		healthBar.setVisible(false);
 		game.attachChild(healthBar);
 		
 		energyBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize, 100);
-		energyBar.setProgressColor(0, 0, 1, .7f);
+		energyBar.setProgressColor(0, 0, 1, .5f);
 		energyBar.setProgress(this.energy);
 		energyBar.setVisible(false);
 		game.attachChild(energyBar);
@@ -559,17 +564,17 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void switchMode(int newMode) {
 		switch(newMode) {
 			case (GameScene.SPRITE_MODE):
-				this.setVisible(true);
+				//this.setVisible(true);
 				healthBar.setVisible(false);
 				energyBar.setVisible(false);
 				break;
 			case (GameScene.HEALTH_MODE):
-				this.setVisible(false);
+				//this.setVisible(true);
 				healthBar.setVisible(true);
 				energyBar.setVisible(false);
 				break;
 			case (GameScene.ENERGY_MODE):
-				this.setVisible(false);
+				//this.setVisible(false);
 				healthBar.setVisible(false);
 				energyBar.setVisible(true);
 				break;
