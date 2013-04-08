@@ -268,9 +268,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		     
 		    }
 		  });
-		  
-		  
-		 
 		}
 	
 	private void welcomeDialog() {
