@@ -63,6 +63,10 @@ import com.testgame.sprite.HighlightedSquare;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinchZoomDetectorListener {
 
+	public final static int SQUARE_Z = 1;
+	public final static int SPRITE_Z = 2;
+	public final static int TEXT_Z = 3;
+	
 	public final static int SPRITE_MODE = 0;
 	public final static int HEALTH_MODE = 1;
 	public final static int ENERGY_MODE = 2;
@@ -223,7 +227,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.currentTileRectangle = new Rectangle(0, 0, resourcesManager.tiledMap.getTileWidth(), resourcesManager.tiledMap.getTileHeight(), vbom);
 		currentTileRectangle.setOffsetCenter(0, 0);
 		currentTileRectangle.setColor(1, 0, 0, 0);
+		
 		attachChild(currentTileRectangle);
+		
+		currentTileRectangle.setZIndex(SQUARE_Z);
+		sortChildren();
+		
 		if(!resourcesManager.isLocal){
 			startCompTurn();
 		}
@@ -384,8 +393,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			
 			this.setSelectedCharacter((AUnit) sprite);
 			
+			
 			highlightAvailableTargets(sprite);
 			highlightAvailableMoves(sprite);
+			
+			sortChildren();
+			
 			working = false;
 			return;
 		}
@@ -409,6 +422,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			
 			availableMove.setColor(1, 0, 0, .5f); // attacks take constant energy, no point in shading
 			attachChild(availableMove);
+			
+			availableMove.setZIndex(SQUARE_Z);
+			//sortChildren();
 			
 		}
 	}
@@ -453,6 +469,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			availableMove.setColor(0, 0, 1, blueValue);
 			attachChild(availableMove);
 			this.registerTouchArea(availableMove);
+			
+			availableMove.setZIndex(SQUARE_Z);
 		}
 	}
 

@@ -53,12 +53,18 @@ public class AUnit extends CharacterSprite implements IUnit {
 		healthBar.setProgress(this.energy);
 		healthBar.setVisible(false);
 		game.attachChild(healthBar);
+		healthBar.setZIndex(GameScene.SQUARE_Z);
 		
 		energyBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize, 100);
 		energyBar.setProgressColor(0, 0, 1, .5f);
 		energyBar.setProgress(this.energy);
 		energyBar.setVisible(false);
 		game.attachChild(energyBar);
+		energyBar.setZIndex(GameScene.SQUARE_Z);
+		
+		this.setZIndex(GameScene.SPRITE_Z);
+		
+		game.sortChildren();
 		
 		// TODO: make tiles within sight range visible
 	}
@@ -200,7 +206,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		int diff = energy - this.energy;  // positive if regaining, negative if losing
 		this.energy = energy;
 		//this.setText(this.energy, this.currentHealth);
-		animatePoints(diff, "blue"); // recharging energy;
+		//animatePoints(diff, "blue"); // recharging energy;
 		//this.setAlpha(this.energy / 100 + .1f);
 		this.energyBar.setProgress(this.energy);
 	}
@@ -432,7 +438,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void reduceEnergy(int energy) {
 		this.energy -= energy;
 		//this.setText(this.energy, this.currentHealth);
-		animatePoints(-energy, "blue");
+		//animatePoints(-energy, "blue");
 		this.energyBar.setProgress(this.energy);
 	}
 	
@@ -496,17 +502,17 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void switchMode(int newMode) {
 		switch(newMode) {
 			case (GameScene.SPRITE_MODE):
-				this.setVisible(true);
+				//this.setVisible(true);
 				healthBar.setVisible(false);
 				energyBar.setVisible(false);
 				break;
 			case (GameScene.HEALTH_MODE):
-				this.setVisible(true);
+				//this.setVisible(true);
 				healthBar.setVisible(true);
 				energyBar.setVisible(false);
 				break;
 			case (GameScene.ENERGY_MODE):
-				this.setVisible(false);
+				//this.setVisible(false);
 				healthBar.setVisible(false);
 				energyBar.setVisible(true);
 				break;
@@ -687,6 +693,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 					((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
 					game.setEventText("Moved using "+cost+" energy.");
 					
+					((AUnit)pItem).animatePoints(-cost, "blue");
 					Log.d("AndEngine", "Calling perform next!");
 					((ComputerPlayer)player).performNext();
 				}
@@ -699,6 +706,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 					Log.d("AndEngine", "animation modifier started.");
 					game.animating = true;
 					game.camera.setChaseEntity(pItem);
+					Log.d("AndEngine", "position is now "+pItem.getX()+", "+pItem.getY());
 					game.resourcesManager.walking_sound.play();
 				}
 				@Override
@@ -708,6 +716,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 					game.animating = false;
 					game.camera.setChaseEntity(null);
 					((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
+					((AUnit)pItem).animatePoints(-cost, "blue");
+					Log.d("AndEngine", "position is now "+pItem.getX()+", "+pItem.getY());
 					game.resourcesManager.walking_sound.pause();
 				}
 			};
@@ -730,7 +740,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		SequenceEntityModifier seq = new SequenceEntityModifier(animationListener, walks);
 		
-		//clearEntityModifiers();
+		clearEntityModifiers();
 		
 		registerEntityModifier(seq);
 		
