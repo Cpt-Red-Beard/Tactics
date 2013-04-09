@@ -16,6 +16,7 @@ import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.opengl.util.GLState;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +40,7 @@ import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.PushService;
+import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.SceneManager.SceneType;
 import com.testgame.sprite.GameDialogBox;
 
@@ -66,6 +68,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static AlertDialog mapDialog;
 	private static Map<String, String> usernames;
 	private static String selectedMapName = "Default"; 
+	private static ButtonSprite okayButton;
+	private static GameDialogBox welcome;
 	
 	
 	@Override
@@ -175,8 +179,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		    if (user == null) {
 	        		      
 	        		      loading.dismiss();
-	        		      
-	        		    
+
 	        		    } else if (user.isNew()) {
 	        		      
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
@@ -189,7 +192,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		    } else {
 	        		     
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
-	        		      
 	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getInstallationId();
 	        		     
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
@@ -298,7 +300,16 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private void welcomeDialog() {
 		camera.setHUD(new HUD());
 		logoutMenuItem.setVisible(true);
-		new GameDialogBox(camera.getHUD(), "Welcome \n"+name+"!", ((ButtonSprite[]) null));
+		okayButton = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				Log.d("AndEngine", "dismissing dialog box");
+				ResourcesManager.getInstance().select_sound.play();
+				welcome.dismiss();
+			}
+		});
+		ButtonSprite[] buttons = {okayButton};
+		welcome = new GameDialogBox(camera.getHUD(), "Welcome \n"+name+"!", buttons);
 	}
 	
 	private void showDialog(){

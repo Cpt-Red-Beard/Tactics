@@ -693,8 +693,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			            	}
 			            	ob.deleteInBackground();
 		            	} 
-		            }
-		            //startCompTurn();   
+		            } 
 		        } 
 		    }
 		});

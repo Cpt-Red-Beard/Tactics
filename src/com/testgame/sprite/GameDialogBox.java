@@ -2,12 +2,9 @@ package com.testgame.sprite;
 
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.sprite.ButtonSprite;
-import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.opengl.texture.region.ITextureRegion;
-
-import android.util.Log;
 
 import com.testgame.resource.ResourcesManager;
 
@@ -16,14 +13,14 @@ public class GameDialogBox {
 	private HUD hud;
 	private float width;
 	private float height;
-	
+	private ButtonSprite[] buttons;
 	private Sprite backgroundSprite;
 	private Text messageText;
 	private ButtonSprite okayButton;
 	
 	public GameDialogBox(HUD hud, String message, ButtonSprite ... buttons) {
 		super();
-				
+		this.buttons = buttons;	
 		this.hud = hud;
 		
 		ResourcesManager resourcesManager = ResourcesManager.getInstance();
@@ -40,29 +37,29 @@ public class GameDialogBox {
 		hud.attachChild(messageText = new Text(240, 450, resourcesManager.font, message, resourcesManager.vbom));
 		
 		
-		// default attach an okay button which dismisses the window.
-		final GameDialogBox box = this;
 		
-		hud.attachChild(okayButton = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
-			@Override
-			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				Log.d("AndEngine", "dismissing dialog box");
-				ResourcesManager.getInstance().select_sound.play();
-				box.dismiss();
-			}
-		}));
+		for(ButtonSprite button : buttons){
+			hud.attachChild(button);
+			hud.registerTouchArea(button);
+		}
 		
-		hud.registerTouchArea(okayButton);
+		
+		
+		//hud.registerTouchArea(okayButton);
 	}
 
-	protected void dismiss() {
+	public void dismiss() {
 		ResourcesManager.getInstance().engine.runOnUpdateThread(new Runnable() {
 			@Override
 			public void run() {
 				hud.detachChild(backgroundSprite);
 				hud.unregisterTouchArea(okayButton);
 				hud.detachChild(messageText);
-				hud.detachChild(okayButton);
+				for(ButtonSprite button: buttons){
+					hud.detachChild(button);
+					hud.unregisterTouchArea(button);
+				}
+				
 			}
 		});
 	}
