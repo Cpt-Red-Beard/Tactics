@@ -11,7 +11,8 @@ import org.andengine.entity.modifier.MoveModifier;
 import org.andengine.engine.camera.BoundCamera;
 import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.engine.handler.IUpdateHandler;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
@@ -218,23 +219,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			this.setGame(new LocalGame(new APlayer("One's"), new APlayer("Two's"), widthInTiles, heightInTiles, this));
 		}
 		
-	/*	this.registerUpdateHandler(new IUpdateHandler() {
-			
-
-			@Override
-			public void reset() {
-				
-				
-			}
-
-			@Override
-			public void onUpdate(float pSecondsElapsed) {
-				if(getGame().getCount() == 0 || !getGame().getPlayer().isTurn()){
-					startCompTurn();
-				}
-				
-			}
-		});*/
+	
 		
 		createHUD();
 	    
@@ -243,9 +228,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		currentTileRectangle.setOffsetCenter(0, 0);
 		currentTileRectangle.setColor(1, 0, 0, 0);
 		attachChild(currentTileRectangle);
-		if(!resourcesManager.isLocal){
-			startCompTurn();
-		}
+		//if(!resourcesManager.isLocal){
+			//startCompTurn();
+		//}
+		this.registerUpdateHandler(new TimerHandler(5f, true, new ITimerCallback(){
+
+			@Override
+			public void onTimePassed(TimerHandler pTimerHandler) {
+				if(!game.getPlayer().isTurn() || game.getCount() == 0)
+					startCompTurn();
+			}
+			
+		}));
+			
 		
 		
 	}
@@ -699,7 +694,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			            	ob.deleteInBackground();
 		            	} 
 		            }
-		            startCompTurn();   
+		            //startCompTurn();   
 		        } 
 		    }
 		});
@@ -712,22 +707,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		pausemenu.setTitle("Paused! Turn: "+getGame().getCount());
 		LinearLayout ll = new LinearLayout(activity);
 		ll.setOrientation(LinearLayout.VERTICAL);
-		
-		
-		if(!resourcesManager.isLocal){
-			Button b0 = new Button(activity);
-	        b0.setText("Refresh");
-	        b0.setOnClickListener(new View.OnClickListener() {
-	
-				@Override
-				public void onClick(View v) {
-					startCompTurn();
-					pausemenu.dismiss();
-					
-				}
-	        });        
-	        ll.addView(b0);
-		}
 		
 		Button b1 = new Button(activity);
         b1.setText("End Turn");
