@@ -35,7 +35,7 @@ public class GameDialogBox {
 		
 		// Attach Background
 		hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background, resourcesManager.vbom));
-		backgroundSprite.setScale(2f);
+		
 		
 		hud.attachChild(messageText = new Text(240, 450, resourcesManager.font, message, new TextOptions(AutoWrap.WORDS, backgroundSprite.getWidth(), HorizontalAlign.CENTER, Text.LEADING_DEFAULT), resourcesManager.vbom));
 		
