@@ -59,8 +59,10 @@ import com.testgame.mechanics.map.GameMap;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
+import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.SceneManager.SceneType;
 import com.testgame.sprite.CharacterSprite;
+import com.testgame.sprite.GameDialogBox;
 import com.testgame.sprite.HighlightedSquare;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinchZoomDetectorListener {
@@ -74,7 +76,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public boolean working = false;
 
 	private float mTouchX = 0, mTouchY = 0, mTouchOffsetX = 0, mTouchOffsetY = 0;
-	
+	private GameDialogBox pausemenu;
 	private Rectangle currentTileRectangle;
 	private AUnit selectedCharacter;
 	
@@ -820,7 +822,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		quitDialog.show();
 	}
 	
-	public void quitDialog(String Text){
+	/*public void quitDialog(String Text){
 		final Dialog pausemenu = new Dialog(activity);
 		pausemenu.setTitle(Text);
 		LinearLayout ll = new LinearLayout(activity);
@@ -847,6 +849,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
         pausemenu.setCanceledOnTouchOutside(false);
         pausemenu.show();        
 		
+	}*/
+	public void quitDialog(String Text) {
+		
+		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				Log.d("AndEngine", "dismissing dialog box");
+				ResourcesManager.getInstance().select_sound.play();
+				pausemenu.dismiss();
+				disposeScene();
+		    	SceneManager.getInstance().loadMenuScene(engine);
+		    	resourcesManager.resetGame();
+			}
+		});
+		ButtonSprite[] buttons = {okay};
+		pausemenu = new GameDialogBox(camera.getHUD(), Text, buttons);
 	}
 
 	@Override
@@ -886,6 +904,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		this.mode = newMode;
 	}
+	
+	
+	
 
 	private Line[] arrowPath;
 	
