@@ -90,13 +90,13 @@ public class ComputerPlayer extends APlayer {
 					int unitX = nextAction.getInt("UnitX");
 					int unitY = nextAction.getInt("UnitY");
 					
-					Log.d("Unitx", unitX+"");
-					Log.d("Unity", unitY+"");
+					//Log.d("Unitx", unitX+"");
+					//Log.d("Unity", unitY+"");
 					AUnit unit = game.gameMap.getOccupyingUnit(unitX, unitY);
 					
 					
 					if (moveType.equals("MOVE")) {
-						Log.d("Moving", "Moving");
+						//Log.d("Moving", "Moving");
 						
 						int destX = nextAction.getInt("DestX");
 						int destY = nextAction.getInt("DestY");
