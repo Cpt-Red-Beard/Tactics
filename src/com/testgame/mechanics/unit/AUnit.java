@@ -222,10 +222,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void computerMove(int xNew, int yNew, final int energy, final ComputerPlayer player){
 		
 		Log.d("Moving", "In computer move method");
-		Log.d("xOld", x+"");
-		Log.d("yOld", y+"");
-		Log.d("xNew", xNew+"");
-		Log.d("yNew", yNew+"");
+		//Log.d("xOld", x+"");
+		//Log.d("yOld", y+"");
+		//Log.d("xNew", xNew+"");
+		//Log.d("yNew", yNew+"");
 		ArrayList<Point> path = map.computePath(new Point(x, y), new Point(xNew, yNew));
 		map.setUnoccupied(x, y);
 		this.x = xNew;
@@ -675,6 +675,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		IEntityModifierListener animationListener;
 		
+		Log.d("AndEngine", "Creating walk animation...");
+		
 		if (computer) {
 			animationListener = new IEntityModifierListener() {
 				@Override
@@ -683,6 +685,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 					game.animating = true;
 					game.camera.setChaseEntity(pItem);
 					ResourcesManager.getInstance().walking_sound.play();
+					Log.d("AndEngine", "Started animating walk...");
 					
 				}
 				@Override
@@ -694,7 +697,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 					game.setEventText("Moved using "+cost+" energy.");
 					
 					((AUnit)pItem).animatePoints(-cost, "blue");
-					Log.d("AndEngine", "Calling perform next!");
+					Log.d("AndEngine", "Finished animating walk, calling perform next!");
 					((ComputerPlayer)player).performNext();
 				}
 			};
@@ -740,7 +743,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		SequenceEntityModifier seq = new SequenceEntityModifier(animationListener, walks);
 		
-		clearEntityModifiers();
+		//clearEntityModifiers();
 		
 		registerEntityModifier(seq);
 		
