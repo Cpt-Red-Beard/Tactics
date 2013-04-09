@@ -3,8 +3,11 @@ package com.testgame.sprite;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.AutoWrap;
 import org.andengine.entity.text.Text;
+import org.andengine.entity.text.TextOptions;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.util.adt.align.HorizontalAlign;
 
 import com.testgame.resource.ResourcesManager;
 
@@ -32,15 +35,17 @@ public class GameDialogBox {
 		
 		// Attach Background
 		hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background, resourcesManager.vbom));
-		backgroundSprite.setScale(1.75f);
+		backgroundSprite.setScale(2f);
 		
-		hud.attachChild(messageText = new Text(240, 450, resourcesManager.font, message, resourcesManager.vbom));
+		hud.attachChild(messageText = new Text(240, 450, resourcesManager.font, message, new TextOptions(AutoWrap.WORDS, backgroundSprite.getWidth(), HorizontalAlign.CENTER, Text.LEADING_DEFAULT), resourcesManager.vbom));
 		
 		
-		
+		int i = 0;
 		for(ButtonSprite button : buttons){
 			hud.attachChild(button);
+			button.setPosition(240, 340-(100*i));
 			hud.registerTouchArea(button);
+			i++;
 		}
 		
 		
