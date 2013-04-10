@@ -18,6 +18,7 @@ import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
+import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.AutoWrap;
@@ -176,6 +177,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.setOnSceneTouchListener(this);
 		this.engine.setTouchController(new MultiTouchController());
 		this.mPinchZoomDetector = new PinchZoomDetector(this);
+		setBackground(new Background(Color.GREEN));
 		
 		this.mode = SPRITE_MODE;
 		
