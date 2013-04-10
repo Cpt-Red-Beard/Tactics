@@ -203,7 +203,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public void setEnergy(int energy){
-		int diff = energy - this.energy;  // positive if regaining, negative if losing
+		// positive if regaining, negative if losing
 		this.energy = energy;
 		//this.setText(this.energy, this.currentHealth);
 		//animatePoints(diff, "blue"); // recharging energy;
