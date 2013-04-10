@@ -63,7 +63,7 @@ public class SceneManager {
             case SCENE_GAME:
             	GameScene g = (GameScene) getGameScene();
             	g.camera.setHUD(g.hud);
-            	g.camera.setCenter(g.OldX, g.OldY);
+            	((SmoothCamera)g.camera).setCenterDirect(g.OldX, g.OldY);
             	((BoundCamera)g.camera).setBoundsEnabled(true);
         	    ((SmoothCamera) g.camera).setZoomFactor(1.0f);
                 setScene(getGameScene());
@@ -77,7 +77,7 @@ public class SceneManager {
         	    ((SmoothCamera) l.camera).setZoomFactor(1.0f);
         	    
             	l.camera.setHUD(null);
-            	l.camera.setCenter(240, 400);
+            	((SmoothCamera)l.camera).setCenterDirect(240, 400);
             	
                 setScene(loadingScene);
                 break;
@@ -88,7 +88,7 @@ public class SceneManager {
             	((BoundCamera)t.camera).setBoundsEnabled(false);
         	    ((SmoothCamera)t.camera).setZoomFactor(1.0f);
             	t.camera.setHUD(null);
-            	t.camera.setCenter(240, 400);
+            	((SmoothCamera)t.camera).setCenterDirect(240, 400);
             	
             	setScene(tutorialScene);
             default:
