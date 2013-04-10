@@ -154,6 +154,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        {
 	        
 	        case MENU_QUIT:
+	        	
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
@@ -161,9 +162,11 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	          			 
 	        	    }
 	        	});
+	        	
 	        	return true;
 	        
 	        case MENU_LOGIN:
+	        	
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
@@ -171,6 +174,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	          			 
 	        	    }
 	        	});
+	        	
 	        	usernames.clear();
 	        	userslist.clear();
 	        	ParseFacebookUtils.logIn(activity, new LogInCallback() {
@@ -182,19 +186,16 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        		      loading.dismiss();
 
 	        		    } else if (user.isNew()) {
-	        		      
+	        		    	
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
 	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getInstallationId();
-	        		     
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
 	        		      getFacebookIdInBackground();
-	        		      
-	        		     
+	        		      	        		     
 	        		    } else {
 	        		     
 	        		      resourcesManager.userString = "user_"+ParseUser.getCurrentUser().getObjectId();
 	        		      resourcesManager.deviceID = ParseInstallation.getCurrentInstallation().getInstallationId();
-	        		     
 	        		      PushService.subscribe(activity, resourcesManager.userString, MainActivity.class);
 	        		      getFacebookIdInBackground();
 	        		     
@@ -239,7 +240,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    }
 	}
 	
-	// NOTE!: I removed static here so that I can popup up a message dialog. Will put it back in if this breaks networking.
 	private void getFacebookIdInBackground() {
 		
 		  Request.executeMeRequestAsync(ParseFacebookUtils.getSession(), new Request.GraphUserCallback() {
@@ -263,10 +263,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				      for (GraphUser user : users) {
 				        friendsList.add(user.getId());
 				      }
-				      //Log.d("Friends", friendsList.toString());
-
-				      // Construct a ParseUser query that will find friends whose
-				      // facebook IDs are contained in the current user's friend list.
 				     
 				      ParseQuery query = ParseUser.getQuery();
 				      query.whereContainedIn("fbId", friendsList);
@@ -289,8 +285,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				      });
 				    }
 				  }
-				});
-		     
+				});   
 		    }
 		  });
 		}
@@ -330,10 +325,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
                 } catch (JSONException e) {
 					e.printStackTrace();
 				}
-               
-                
-                
-
          }});
 		 
 		 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
