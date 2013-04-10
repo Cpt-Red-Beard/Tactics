@@ -25,9 +25,9 @@ public class Jock extends AUnit {
 		this.maxHealth = 100;
 		this.currentHealth = 100;
 		this.attack = 70;
-		this.attackenergy = 50;
-		this.range = 10;
-		this.attackrange = 1;
+		this.attackEnergy = 50;
+		this.movementRange = 10;
+		this.attackRange = 1;
 		this.energy = 100;
 		this.energyUsedLastTurn = 0;
 		this.isDefending = false;

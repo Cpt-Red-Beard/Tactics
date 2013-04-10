@@ -13,7 +13,7 @@ public class ProgressBar extends Rectangle {
 	// Fields         
 	// =========================================================== 
 	private final Line[] mFrameLines = new Line[4];
-	private final Rectangle mBackgroundRectangle;
+	//private final Rectangle mBackgroundRectangle;
 	private final Rectangle mProgressRectangle;
 	
 	private float mPixelsPerPercentRatio;
@@ -28,13 +28,15 @@ public class ProgressBar extends Rectangle {
 	// =========================================================== 
 	public ProgressBar(final GameScene gameScene, final float pX, final float pY, final float maxValue) {
 		super(pX, pY, width, height, gameScene.vbom);
+		
+		setColor(0, 0, 0, 0);
 		setOffsetCenter(0, 0);
 				
-		this.mBackgroundRectangle = new Rectangle(0, 0, width, height, gameScene.vbom);
-		this.mBackgroundRectangle.setColor(1, 1, 1, .5f);
+		//this.mBackgroundRectangle = new Rectangle(0, 0, width, height, gameScene.vbom);
+		//this.mBackgroundRectangle.setColor(1, 1, 1, .5f);
 		//this.mBackgroundRectangle.setColor(Color.WHITE);
 		//mBackgroundRectangle.setAlpha(.5f);
-		mBackgroundRectangle.setOffsetCenter(0, 0);
+		//mBackgroundRectangle.setOffsetCenter(0, 0);
 		
 		this.mFrameLines[0] = new Line(0, 0, width, 0, FRAME_LINE_WIDTH, gameScene.vbom); //Top line.
 		this.mFrameLines[1] = new Line(width, 0, width, height, FRAME_LINE_WIDTH, gameScene.vbom); //Right line.
@@ -45,7 +47,7 @@ public class ProgressBar extends Rectangle {
 		this.mProgressRectangle.setAlpha(.5f);
 		mProgressRectangle.setOffsetCenter(0, 0);
 		
-		attachChild(this.mBackgroundRectangle); //This one is drawn first.
+		//attachChild(this.mBackgroundRectangle); //This one is drawn first.
 		attachChild(this.mProgressRectangle); //The progress is drawn afterwards.
 		for(int i = 0; i < this.mFrameLines.length; i++) {
 			this.mFrameLines[i].setColor(0, 0, 0, .5f);
@@ -56,12 +58,13 @@ public class ProgressBar extends Rectangle {
 		
 		this.mPixelsPerPercentRatio = (float) (height * 1f  / this.maxValue);
 		
+		
 	}
 	// ===========================================================          
 	// Getter & Setter          
 	// =========================================================== 
 	public void setBackColor(final float pRed, final float pGreen, final float pBlue, final float pAlpha) {
-		this.mBackgroundRectangle.setColor(pRed, pGreen, pBlue, pAlpha);
+		//this.mBackgroundRectangle.setColor(pRed, pGreen, pBlue, pAlpha);
 	}
 	public void setFrameColor(final float pRed, final float pGreen, final float pBlue, final float pAlpha) {
 		for(int i = 0; i < this.mFrameLines.length; i++)

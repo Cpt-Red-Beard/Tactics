@@ -114,16 +114,14 @@ public class CharacterSprite extends AnimatedSprite {
 		
 		Text message;
 		if (points > 0) {
-			message = new Text(this.getWidth()/2, this.getHeight() + 10, whichFont, "+"+points, game.vbom);
+			message = new Text(this.getX() + this.getWidth()/2, this.getY() + this.getHeight() + 10, whichFont, "+"+points, game.vbom);
 		} else {
-			message = new Text(this.getWidth()/2, this.getHeight() + 10, whichFont, ""+points, game.vbom);
+			message = new Text(this.getX() + this.getWidth()/2, this.getY() + this.getHeight() + 10, whichFont, ""+points, game.vbom);
 		}
 		
-		this.setZIndex(10);
+		game.attachChild(message);
 		
-		this.getParent().sortChildren();
-		
-		this.attachChild(message);
+		message.setZIndex(game.TEXT_Z);
 		
 		final CharacterSprite sprite = this;
 		
@@ -135,8 +133,7 @@ public class CharacterSprite extends AnimatedSprite {
 				game.engine.runOnUpdateThread(new Runnable() {
 					@Override
 					public void run() {
-						sprite.detachChild(pItem);
-						sprite.setZIndex(ZINDEX_DEFAULT);
+						game.detachChild(pItem);
 					}});
 			}
 		});

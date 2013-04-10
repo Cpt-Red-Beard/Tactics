@@ -29,40 +29,55 @@ import com.testgame.OnlineGame;
 
 /**
  * Class which represents an abstract unit.
- * @author Alen Lukic
- *
  */
 public class AUnit extends CharacterSprite implements IUnit {
+	
+	// --------------------------------------
+	//     Constructors & Initialization
+	// --------------------------------------
 	
 	public AUnit(float pX, float pY, ITextureRegion pTextureRegion,
 			VertexBufferObjectManager pVertexBufferObjectManager) {
 		super(pX, pY, pTextureRegion, pVertexBufferObjectManager);
 	}
 	
-	public int start_frame = 0;
+	public void init() {
+		this.setPosition(this.x*this.game.tileSize, this.y*this.game.tileSize);
+		//this.initializeText(this.energy, this.currentHealth);
+		this.setOffsetCenter(0, 0);
+		this.game.attachChild(this);
+		this.game.registerTouchArea(this);
+		
+		healthBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize, this.maxHealth);
+		healthBar.setProgressColor(1, 0, 0, .5f);
+		healthBar.setProgress(this.energy);
+		healthBar.setVisible(false);
+		game.attachChild(healthBar);
+		healthBar.setZIndex(GameScene.SQUARE_Z);
+		
+		energyBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize, 100);
+		energyBar.setProgressColor(0, 0, 1, .5f);
+		energyBar.setProgress(this.energy);
+		energyBar.setVisible(false);
+		game.attachChild(energyBar);
+		energyBar.setZIndex(GameScene.SQUARE_Z);
+		
+		this.setZIndex(GameScene.SPRITE_Z);
+		
+		game.sortChildren();
+		
+		// TODO: make tiles within sight range visible
+	}
 	
-	protected int IDLE_START_FRAME;
-	protected int IDLE_END_FRAME;
-	
-	protected int WALK_RIGHT_START_FRAME;
-	protected int WALK_RIGHT_END_FRAME;
-	
-	protected int WALK_LEFT_START_FRAME;
-	protected int WALK_LEFT_END_FRAME;
-	
-	protected int WALK_UP_START_FRAME;
-	protected int WALK_UP_END_FRAME;
-	
-	protected int WALK_DOWN_START_FRAME;
-	protected int WALK_DOWN_END_FRAME;
-	
-	protected int GUARD_FRAME;
-	
-	protected int ATTACKED_START_FRAME;
-	protected int ATTACKED_END_FRAME;
+	// --------------------------------------
+	//      Properties 
+	// --------------------------------------
 	
 	protected int sightRange = 7; // TODO: must be bigger ? than all movement ranges
 	
+	/**
+	 * String representing unit type, such as "Jock" or "Nerd".
+	 */
 	public String unitType;
 
 	/**
@@ -96,16 +111,16 @@ public class AUnit extends CharacterSprite implements IUnit {
 	protected int currentHealth;
 	
 	/**
-	 * Unit's attack stat.
+	 * Unit's attack statistic.
 	 */
 	protected int attack;
-	protected int attackenergy;
-	protected int attackrange; // straight up radius
+	protected int attackEnergy;
+	protected int attackRange; // straight up radius
 	
 	/**
-	 * Unit's range stat.
+	 * Unit's range statistic.
 	 */
-	protected int range; 
+	protected int movementRange; 
 	
 	/**
 	 * Unit's current energy.
@@ -126,6 +141,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 * Random number generator.
 	 */
 	protected Random rand;
+	
+	// -----------------------------------------
+	//     Getter & Setters
+	// -----------------------------------------
 	
 	@Override
 	public void setPlayer(APlayer player) {
@@ -161,16 +180,16 @@ public class AUnit extends CharacterSprite implements IUnit {
 	}
 	
 	public int getAttackRange() {
-		return attackrange;
+		return attackRange;
 	}
 	
 	public int getAttackCost() {
-		return attackenergy;
+		return attackEnergy;
 	}
 
 	@Override
 	public int getRange() {
-		return range;
+		return movementRange;
 	}
 
 	@Override
@@ -178,13 +197,35 @@ public class AUnit extends CharacterSprite implements IUnit {
 		return energy;
 	}
 	
-	public void ComputerMove(int xNew, int yNew, final int energy, final ComputerPlayer player){
+	@Override
+	public String toString() {
+		return this.owner.getName() +"'s "+this.unitType;
+	}
+	
+	public void setEnergy(int energy){
+		int diff = energy - this.energy;  // positive if regaining, negative if losing
+		this.energy = energy;
+		//this.setText(this.energy, this.currentHealth);
+		//animatePoints(diff, "blue"); // recharging energy;
+		//this.setAlpha(this.energy / 100 + .1f);
+		this.energyBar.setProgress(this.energy);
+	}
+	
+	public String getType(){
+		return this.unitType;
+	}
+
+	// --------------------------------------
+	//          Game Code
+	// --------------------------------------
+	
+	public void computerMove(int xNew, int yNew, final int energy, final ComputerPlayer player){
 		
 		Log.d("Moving", "In computer move method");
-		Log.d("xOld", x+"");
-		Log.d("yOld", y+"");
-		Log.d("xNew", xNew+"");
-		Log.d("yNew", yNew+"");
+		//Log.d("xOld", x+"");
+		//Log.d("yOld", y+"");
+		//Log.d("xNew", xNew+"");
+		//Log.d("yNew", yNew+"");
 		ArrayList<Point> path = map.computePath(new Point(x, y), new Point(xNew, yNew));
 		map.setUnoccupied(x, y);
 		this.x = xNew;
@@ -202,11 +243,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		//ArrayList<Point> path = map.computePath(new Point(oldX, oldY), new Point(xNew, yNew));
 		
+		walkAnimateAlongPath(path, true, energy);
 
-		walkAlongPath(path, true, energy);
-		
-		
-		
 		/*
 		int destX = this.game.getTileSceneX(xNew, yNew);
 		int destY = this.game.getTileSceneY(xNew, yNew);
@@ -247,7 +285,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	
 	@Override
 	public void move(int xNew, int yNew, ArrayList<Point> path, int cost) {
-			cost = this.range * cost;
+			cost = this.movementRange * cost;
 			map.setUnoccupied(this.x, this.y);
 			int origX = this.x;
 			int origY = this.y;
@@ -282,7 +320,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 				((OnlineGame)this.game.getGame()).addMove(temp);
 
 			
-			walkAlongPath(path, false, cost);
+			walkAnimateAlongPath(path, false, cost);
 			
 			/*
 			float timePerTile = .2f; 
@@ -304,38 +342,30 @@ public class AUnit extends CharacterSprite implements IUnit {
 
         	
 	}
-	
-	@Override
-	public String toString() {
-		return this.owner.getName() +"'s "+this.unitType;
-	}
 
-	
-	public void ComputerAttack(AUnit unit, int attack, int energy, ComputerPlayer player){
+	public void computerAttack(AUnit unit, int attack, int energy, ComputerPlayer player){
 		this.reduceEnergy(energy);
-		
-		
+
 		unit.attackedAnimate(player, unit, attack);
 		
 		if (unit.getHealth() > 0) this.game.setEventText("Did "+this.attack+" damage!\n Unit health "+unit.getHealth()+"/"+unit.getMaxHealth());
 		
 	}
 	
-	// Which order does this go? THIS is being attacked or unit is being attacked ?? 
 	@Override
 	public void attack(final AUnit unit) {
 		int dist = this.manhattanDistance(this.x, this.y, unit.getMapX(), unit.getMapY());
-		if(dist <= this.attackrange && this.attackenergy <= this.energy){
+		if(dist <= this.attackRange && this.attackEnergy <= this.energy){
 			rand = new Random(System.currentTimeMillis()); // new rng with random seed
 			int realAttack = this.attack + ((int) (0.15*this.attack*rand.nextGaussian())); // randomize attack
-			this.reduceEnergy(this.attackenergy);
+			this.reduceEnergy(this.attackEnergy);
 			
 			JSONObject temp = new JSONObject();
 			try {
 				temp.put("MoveType", "ATTACK");
 				temp.put("UnitX", this.x);
 				temp.put("UnitY", this.y);
-				temp.put("Energy", this.attackenergy);
+				temp.put("Energy", this.attackEnergy);
 				temp.put("OppX", unit.x);
 				temp.put("OppY", unit.y);
 				temp.put("Attack", realAttack);
@@ -393,15 +423,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 		//this.setText(this.energy, this.currentHealth);
 		this.healthBar.setProgress(this.currentHealth);
 	}
-
-	public void setEnergy(int energy){
-		int diff = energy - this.energy;  // positive if regaining, negative if losing
-		this.energy = energy;
-		//this.setText(this.energy, this.currentHealth);
-		animatePoints(diff, "blue"); // recharging energy;
-		//this.setAlpha(this.energy / 100 + .1f);
-		this.energyBar.setProgress(this.energy);
-	}
 	
 	@Override
 	public void restoreEnergy(int energy) {
@@ -417,7 +438,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void reduceEnergy(int energy) {
 		this.energy -= energy;
 		//this.setText(this.energy, this.currentHealth);
-		animatePoints(-energy, "blue");
+		//animatePoints(-energy, "blue");
 		this.energyBar.setProgress(this.energy);
 	}
 	
@@ -433,14 +454,15 @@ public class AUnit extends CharacterSprite implements IUnit {
 		this.isDefending = false;
 	}
 	
-	
-	
-	// all the squares you can move to 
+	/**
+	 * Calculates all of the available moves for this unit.
+	 * @return list of Points on map that are possible moves
+	 */
 	public ArrayList<Point> availableMoves() {
 
 		if (unitType.equals("Base")) return new ArrayList<Point>();
 		
-		HashSet<Point> moves = map.bfs(new Point(x , y), energy / range);
+		HashSet<Point> moves = map.bfs(new Point(x , y), energy / movementRange);
 		
 		ArrayList<Point> result = new ArrayList<Point>();
 		result.addAll(moves);
@@ -448,11 +470,14 @@ public class AUnit extends CharacterSprite implements IUnit {
 
 	}
 	
-	// all the squares of enemies you can attack
+	/**
+	 * Calculates all possible targets for this unit.
+	 * @return list of units this unit can attack
+	 */
 	public ArrayList<AUnit> availableTargets() {
 		if (unitType.equals("Base")) return new ArrayList<AUnit>();
-		if(this.energy < this.attackenergy) return new ArrayList<AUnit>();	
-		HashSet<AUnit> moves = map.bfsTarget(new Point(x , y), attackrange, player);
+		if(this.energy < this.attackEnergy) return new ArrayList<AUnit>();	
+		HashSet<AUnit> moves = map.bfsTarget(new Point(x , y), attackRange, player);
 		ArrayList<AUnit> result = new ArrayList<AUnit>();
 		result.addAll(moves);
 		return result;
@@ -468,37 +493,99 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 */
 	public int manhattanDistance(int x1, int y1, int x2, int y2) {
 		return Math.abs(x1-x2) + Math.abs(y1-y2);
-
 	}
 	
-	public void init() {
-		this.setPosition(this.x*this.game.tileSize, this.y*this.game.tileSize);
-		//this.initializeText(this.energy, this.currentHealth);
-		this.setOffsetCenter(0, 0);
-		this.game.attachChild(this);
-		this.game.registerTouchArea(this);
-		
-		healthBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize, this.maxHealth);
-		healthBar.setProgressColor(1, 0, 0, .5f);
-		healthBar.setProgress(this.energy);
-		healthBar.setVisible(false);
-		game.attachChild(healthBar);
-		
-		energyBar = new ProgressBar(this.game, this.x*this.game.tileSize, this.y*this.game.tileSize, 100);
-		energyBar.setProgressColor(0, 0, 1, .5f);
-		energyBar.setProgress(this.energy);
-		energyBar.setVisible(false);
-		game.attachChild(energyBar);
-		
-		// TODO: make tiles within sight range visible
+	// ------------------------------------------
+	//      Energy & Health Modes Code
+	// ------------------------------------------
+	
+	public void switchMode(int newMode) {
+		switch(newMode) {
+			case (GameScene.SPRITE_MODE):
+				//this.setVisible(true);
+				healthBar.setVisible(false);
+				energyBar.setVisible(false);
+				break;
+			case (GameScene.HEALTH_MODE):
+				//this.setVisible(true);
+				healthBar.setVisible(true);
+				energyBar.setVisible(false);
+				break;
+			case (GameScene.ENERGY_MODE):
+				//this.setVisible(false);
+				healthBar.setVisible(false);
+				energyBar.setVisible(true);
+				break;
+			default:
+				break;
+			
+		}		
 	}
 	
+	// ------------------------------------------
+	//      Animation Code
+	// ------------------------------------------
+	
+	/**
+	 * Default texture frame for this unit.
+	 */
+	public int start_frame = 0;
+	
+	/** 
+	 * Start and end frames for idling.
+	 */
+	protected int IDLE_START_FRAME;
+	protected int IDLE_END_FRAME;
+	
+	/** 
+	 * Start and end frames for walking to the right.
+	 */
+	protected int WALK_RIGHT_START_FRAME;
+	protected int WALK_RIGHT_END_FRAME;
+	
+	/**
+	 * Start and end frames for walking to the left.
+	 */
+	protected int WALK_LEFT_START_FRAME;
+	protected int WALK_LEFT_END_FRAME;
+	
+	/**
+	 * Start and end frames for walking up.
+	 */
+	protected int WALK_UP_START_FRAME;
+	protected int WALK_UP_END_FRAME;
+	
+	/**
+	 * Start and end frames for walking down.
+	 */
+	protected int WALK_DOWN_START_FRAME;
+	protected int WALK_DOWN_END_FRAME;
+	
+	/**
+	 * Frame for guarding.
+	 */
+	protected int GUARD_FRAME;
+	
+	/**
+	 * Start and end frames for being attacked.
+	 */
+	protected int ATTACKED_START_FRAME;
+	protected int ATTACKED_END_FRAME;
+	
+	/**
+	 * Animates this unit being idle.
+	 */
 	public void idleAnimate() {
 		if(this.getType().equals("Base"))
 			return;
 		this.animate(new long[] { 100, 100 }, start_frame + IDLE_START_FRAME, start_frame + IDLE_END_FRAME, true);
 	}
 	
+	/**
+	 * Animates this unit walking
+	 * @param xDirection indicates left of right (1 or -1)
+	 * @param yDirection indicates up or down (1 or -1)
+	 */
 	public void walkAnimate(int xDirection, int yDirection) {
 		if(this.getType().equals("Base"))
 			return;
@@ -518,12 +605,21 @@ public class AUnit extends CharacterSprite implements IUnit {
 		}
 	}
 	
+	/**
+	 * Animates this unit guarding.
+	 */
 	public void guardAnimate() {
 		if(this.getType().equals("Base"))
 			return;
 		this.setCurrentTileIndex(start_frame + GUARD_FRAME);
 	}
 	
+	/**
+	 * Animates this unit being attacked.
+	 * @param computerPlayer null if local, player if online
+	 * @param unit who attacked this unit
+	 * @param attack cost in energy
+	 */
 	public void attackedAnimate(final ComputerPlayer computerPlayer, final AUnit unit, final int attack) {
 		if(this.getType().equals("Base")){
 			unit.reduceHealth(attack);
@@ -568,39 +664,18 @@ public class AUnit extends CharacterSprite implements IUnit {
 	        }));
 		}
 	}
-
 	
-	public void switchMode(int newMode) {
-		switch(newMode) {
-			case (GameScene.SPRITE_MODE):
-				this.setVisible(true);
-				healthBar.setVisible(false);
-				energyBar.setVisible(false);
-				break;
-			case (GameScene.HEALTH_MODE):
-				this.setVisible(true);
-				healthBar.setVisible(true);
-				energyBar.setVisible(false);
-				break;
-			case (GameScene.ENERGY_MODE):
-				this.setVisible(false);
-				healthBar.setVisible(false);
-				energyBar.setVisible(true);
-				break;
-			default:
-				break;
-			
-		}		
-	}
-
-	
-	public String getType(){
-		return this.unitType;
-	}
-
-	public void walkAlongPath(ArrayList<Point> path, boolean computer, final int cost) {
+	/**
+	 * Animates this unit to walk along a given path.
+	 * @param path to walk along
+	 * @param computer boolean to indicate local versus computer player
+	 * @param cost energy used to walk on this path
+	 */
+	public void walkAnimateAlongPath(ArrayList<Point> path, boolean computer, final int cost) {
 		
 		IEntityModifierListener animationListener;
+		
+		Log.d("AndEngine", "Creating walk animation...");
 		
 		if (computer) {
 			animationListener = new IEntityModifierListener() {
@@ -610,6 +685,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 					game.animating = true;
 					game.camera.setChaseEntity(pItem);
 					ResourcesManager.getInstance().walking_sound.play();
+					Log.d("AndEngine", "Started animating walk...");
 					
 				}
 				@Override
@@ -619,7 +695,10 @@ public class AUnit extends CharacterSprite implements IUnit {
 					ResourcesManager.getInstance().walking_sound.pause();
 					((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
 					game.setEventText("Moved using "+cost+" energy.");
-					((ComputerPlayer)player).performNext(); // finished this action, call next
+					
+					((AUnit)pItem).animatePoints(-cost, "blue");
+					Log.d("AndEngine", "Finished animating walk, calling perform next!");
+					((ComputerPlayer)player).performNext();
 				}
 			};
 		} else {
@@ -630,6 +709,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 					Log.d("AndEngine", "animation modifier started.");
 					game.animating = true;
 					game.camera.setChaseEntity(pItem);
+					Log.d("AndEngine", "position is now "+pItem.getX()+", "+pItem.getY());
 					game.resourcesManager.walking_sound.play();
 				}
 				@Override
@@ -639,6 +719,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 					game.animating = false;
 					game.camera.setChaseEntity(null);
 					((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
+					((AUnit)pItem).animatePoints(-cost, "blue");
+					Log.d("AndEngine", "position is now "+pItem.getX()+", "+pItem.getY());
 					game.resourcesManager.walking_sound.pause();
 				}
 			};
@@ -661,7 +743,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		SequenceEntityModifier seq = new SequenceEntityModifier(animationListener, walks);
 		
-		clearEntityModifiers();
+		//clearEntityModifiers();
 		
 		registerEntityModifier(seq);
 		
