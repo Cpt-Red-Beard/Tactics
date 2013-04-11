@@ -1026,13 +1026,34 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			Point a = path.get(i);
 			Point b = path.get(i+1);
 			
-			arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize + 32, 20, vbom);
+			if (i == path.size() - 2) {
+				if (a.x == b.x){ // horizontal
+					if (a.y > b.y){  // coming from above
+						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize + tileSize, 20, vbom);
+					} else { // coming from below
+						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize, 20, vbom);
+					}
+				}
+				if (a.y == b.y){  // vertical 
+					if (a.x > b.x){  // coming the right
+						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + tileSize, b.y*tileSize + 32, 20, vbom);
+					}else { // coming from the left
+						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize, b.y*tileSize + 32, 20, vbom);
+					}
+					
+				}
+			} else {
+				arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize + 32, 20, vbom);
+			}
 		}
 		
 		for (Line l : arrowPath) {
 			l.setColor(Color.BLUE);
 			this.attachChild(l);
+			l.setZIndex(SQUARE_Z);
 		}
+		
+		sortChildren();
 	}
 	
 	public void removePath() {
