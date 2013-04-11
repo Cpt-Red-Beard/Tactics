@@ -152,8 +152,7 @@ public class TutorialScene extends BaseScene {
 
 	@Override
 	public void onHomeKeyPressed() {
-		// TODO Auto-generated method stub
-		
+		resourcesManager.pause_music();
 	}
 
 	@Override

@@ -975,8 +975,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 	@Override
 	public void onHomeKeyPressed() {
-		// TODO Auto-generated method stub
-		
+		resourcesManager.pause_music();
 	}
 
 	public AGame getGame() {

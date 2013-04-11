@@ -80,6 +80,7 @@ public class SetupScene extends BaseScene {
 	}
 
 	private void createButtons() {
+		
 		play = new ButtonSprite(240, 350, resourcesManager.continue_region, vbom, new OnClickListener() {
 
 			@Override
@@ -226,6 +227,7 @@ public class SetupScene extends BaseScene {
 	@Override
 	public void onHomeKeyPressed() {
 		// TODO Auto-generated method stub
+		resourcesManager.pause_music();
 		
 	}
 
