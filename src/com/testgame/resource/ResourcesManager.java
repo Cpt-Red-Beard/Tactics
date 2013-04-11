@@ -339,6 +339,9 @@ public class ResourcesManager {
     public BitmapTextureAtlas map_tiles_atlas;
     public TiledTextureRegion map_tiles;
     
+    public BitmapTextureAtlas stone_tile_atlas;
+    public ITextureRegion stone_tile;
+    
     public void loadGameResources()
     {
         loadGameGraphics();
@@ -405,6 +408,10 @@ public class ResourcesManager {
     	map_tiles_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
     	map_tiles = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(map_tiles_atlas, activity, "maptiles.png", 0, 0, 11, 2);
     	map_tiles_atlas.load();
+    	
+    	stone_tile_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+    	stone_tile = BitmapTextureAtlasTextureRegionFactory.createFromAsset(stone_tile_atlas, activity, "stonetile.jpg", 0, 0);
+    	stone_tile_atlas.load();
     }
     
     private void loadGameFonts()
