@@ -15,6 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.testgame.scene.SceneManager.SceneType;
@@ -23,6 +25,7 @@ public class SetupScene extends BaseScene {
 	
 	//Jocks = 0, Nerds = 1, Ditz = 2
 	
+	JSONArray first;
 	
 	/**
 	 * Total units, jocks, nerds, and ditzes.
@@ -98,11 +101,11 @@ public class SetupScene extends BaseScene {
 				resourcesManager.select_sound.play();
 				
 				if(!resourcesManager.isLocal){
-					JSONArray array = new JSONArray();
+					first = new JSONArray();
 					for(int i : units){
-						array.put(i);
+						first.put(i);
 					}
-					
+					Log.d("Array", first.toString());
 					
 					
 					ParseObject turns = new ParseObject("Turns");
@@ -110,8 +113,9 @@ public class SetupScene extends BaseScene {
 					turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+0);
 					turns.put("GameId", resourcesManager.gameId);
 					turns.put("Device", resourcesManager.deviceID);
-					turns.put("Init", array);
+					turns.put("InitArray", first);
 					turns.saveInBackground();
+					Log.d("Save", "Saved in background");
 				}
 				if(!twice){
 					resourcesManager.unitArray = new ArrayList<Integer>(units);

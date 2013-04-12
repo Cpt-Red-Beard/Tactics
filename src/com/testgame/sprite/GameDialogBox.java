@@ -9,13 +9,6 @@ import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.adt.align.HorizontalAlign;
-import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
-import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.text.Text;
-import org.andengine.opengl.texture.region.ITextureRegion;
-
-import android.util.Log;
-
 import com.testgame.resource.ResourcesManager;
 
 public class GameDialogBox {
@@ -44,7 +37,7 @@ public class GameDialogBox {
 		this.setHeight(background.getHeight());
 		
 		// Attach Background		
-		
+		hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background, resourcesManager.vbom));
 		hud.attachChild(messageText = new Text(240, 450, resourcesManager.font, message, new TextOptions(AutoWrap.WORDS, backgroundSprite.getWidth(), HorizontalAlign.CENTER, Text.LEADING_DEFAULT), resourcesManager.vbom));
 		
 		

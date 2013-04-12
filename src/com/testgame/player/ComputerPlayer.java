@@ -18,6 +18,7 @@ import com.testgame.mechanics.unit.Nerd;
 public class ComputerPlayer extends APlayer {
 	
 	JSONArray actionsToPerform;
+	JSONArray array;
 	OnlineGame game;
 	
 	public ComputerPlayer(String name) {
@@ -137,12 +138,8 @@ public class ComputerPlayer extends APlayer {
 		
 	}
 	
-	public void init(JSONObject object) {
+	public void init(JSONArray array) {
 		
-		JSONArray array;
-		
-		try {
-			array = object.getJSONArray("Init");
 		
 		
 		Point[] spawns;
@@ -153,7 +150,7 @@ public class ComputerPlayer extends APlayer {
 		else{
 			spawns = game.resourcesManager.getSpawn2(game.resourcesManager.mapString);
 		}
-		
+		try{
 			int j = 0;
 			for(Point i : spawns){
 				if(j == spawns.length-1){
@@ -179,12 +176,13 @@ public class ComputerPlayer extends APlayer {
 					game.getCompPlayer().addUnit(unit);
 
 				}
-				
+				j++;
 		 	}
-		}catch(Exception e){
+		}
+		catch(Exception e){
 			e.printStackTrace();
 		}
-			
+		
 		
 		
 		game.incrementCount();

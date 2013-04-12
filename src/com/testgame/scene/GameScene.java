@@ -700,27 +700,21 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		    public void done(List<ParseObject> itemList, ParseException e) {
 		        if (e == null) {
 		           Log.d("Items", itemList.size()+""); 
-
 		            for(ParseObject ob : itemList){ 	
 		            	if (ob.getString("Device").equals(resourcesManager.opponentDeviceID)) {
-
 			            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
 			            		if(getGame().getCount() != 0){
 			            			Log.d("Turns", "Found turn data");
 					        		JSONArray array = ob.getJSONArray("Moves");
 					        		Log.d("Array", array.toString());
 					        		deselectCharacter(false);
-
 					            	((OnlineGame)getGame()).getCompPlayer().startTurn( array);
-
 					            	ob.deleteInBackground();
 					            	return;
 					        	}
 					        	else{
-					        		JSONObject object = ob.getJSONObject("Init");
-
 					        		deselectCharacter(false);
-					            	((OnlineGame)getGame()).getCompPlayer().init(object);
+					            	((OnlineGame)getGame()).getCompPlayer().init(ob.getJSONArray("InitArray"));
 					            	ob.deleteInBackground();
 					            	return;
 
