@@ -89,71 +89,71 @@ public class LocalGame extends AGame {
 		
 		super.init();
 		
-		int jocks = resourcesManager.unitArray.get(0);
-		int nerds = resourcesManager.unitArray.get(1);
-		int ditz = resourcesManager.unitArray.get(2);
 
 		
 		Point[] spawns = resourcesManager.getSpawn1(resourcesManager.mapString);
 		
+		int j = 0;
 		for(Point i : spawns){
-				if(nerds > 0){
-					AUnit unit = new Nerd(gameMap, i.x, i.y, gameScene, "blue");
-					unit.init(); 
-					player.addUnit(unit);
-					nerds--;
-				}
-				else if(ditz > 0){
-					AUnit unit = new Ditz(gameMap, i.x, i.y, gameScene, "blue");
-					unit.init(); 
-					player.addUnit(unit);
-					ditz--;
-				}
-				else if(jocks > 0){
-					AUnit unit = new Jock(gameMap, i.x, i.y, gameScene, "blue");
-					unit.init(); 
-					player.addUnit(unit);
-					jocks--;
-				}
-				else{
+				if(j == spawns.length-1){
 					AUnit unitbase = new Base(gameMap, i.x, i.y, gameScene, "blue");
 					unitbase.init();
 					player.setBase(unitbase);
 				}
+			
+				else if(resourcesManager.unitArray.get(j) == 1){
+					AUnit unit = new Nerd(gameMap, i.x, i.y, gameScene, "blue");
+					unit.init(); 
+					player.addUnit(unit);
+					
+				}
+				else if(resourcesManager.unitArray.get(j) == 2){
+					AUnit unit = new Ditz(gameMap, i.x, i.y, gameScene, "blue");
+					unit.init(); 
+					player.addUnit(unit);
+					
+				}
+				else if(resourcesManager.unitArray.get(j) == 0){
+					AUnit unit = new Jock(gameMap, i.x, i.y, gameScene, "blue");
+					unit.init(); 
+					player.addUnit(unit);
+					
+				}
+
+				j++;
 			}
 		
 		
-		jocks = resourcesManager.unitArray2.get(0);
-		nerds = resourcesManager.unitArray2.get(1);
-		ditz = resourcesManager.unitArray2.get(2);
+		
 
 		spawns = resourcesManager.getSpawn2(resourcesManager.mapString);
 
-
+		j = 0;
 		for(Point i : spawns){
-				if(nerds > 0){
-					AUnit unit = new Nerd(gameMap, i.x, i.y, gameScene, "red");
-					unit.init(); 
-					player2.addUnit(unit);
-					nerds--;
-				}
-				else if(ditz > 0){
-					AUnit unit = new Ditz(gameMap, i.x, i.y, gameScene, "red");
-					unit.init(); 
-					player2.addUnit(unit);
-					ditz--;
-				}
-				else if(jocks > 0){
-					AUnit unit = new Jock(gameMap, i.x, i.y, gameScene, "red");
-					unit.init(); 
-					player2.addUnit(unit);
-					jocks--;
-				}
-				else{
+				if(j == spawns.length-1){
 					AUnit unitbase2 = new Base(gameMap, i.x, i.y, gameScene, "red");
 					unitbase2.init();
 					player2.setBase(unitbase2);
 				}
+				else if(resourcesManager.unitArray2.get(j) == 1){
+					AUnit unit = new Nerd(gameMap, i.x, i.y, gameScene, "red");
+					unit.init(); 
+					player2.addUnit(unit);
+					
+				}
+				else if(resourcesManager.unitArray2.get(j) == 2){
+					AUnit unit = new Ditz(gameMap, i.x, i.y, gameScene, "red");
+					unit.init(); 
+					player2.addUnit(unit);
+					
+				}
+				else if(resourcesManager.unitArray2.get(j) == 0){
+					AUnit unit = new Jock(gameMap, i.x, i.y, gameScene, "red");
+					unit.init(); 
+					player2.addUnit(unit);
+					
+				}
+				j++;
 			}
 		
 		

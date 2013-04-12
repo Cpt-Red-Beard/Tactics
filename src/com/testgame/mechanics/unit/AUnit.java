@@ -245,6 +245,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		walkAnimateAlongPath(path, true, energy);
 
+
 		/*
 		int destX = this.game.getTileSceneX(xNew, yNew);
 		int destY = this.game.getTileSceneY(xNew, yNew);

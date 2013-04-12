@@ -173,6 +173,7 @@ public class ResourcesManager {
     // Button texture regions
     private BuildableBitmapTextureAtlas menuTextureAtlas;
     public ITextureRegion quit_region, newgame_region, options_region, continue_region, login_region, reset_region, blank_region, howtoplay_region, logout_region, play_region;
+
     public Music menu_background_music, select_sound;
 
     public Font font;
@@ -207,6 +208,7 @@ public class ResourcesManager {
     	menu_background_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "menu.png");
     	
     	quit_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "quitbutton.png");
+
     	newgame_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "newgamebutton.png");
     	options_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "optionsbutton.png");
     	login_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "loginbutton.png");
@@ -232,7 +234,7 @@ public class ResourcesManager {
     	
     	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
     	
-    	dialog_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+    	dialog_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 1500, 1500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
     	dialog_background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "dialogbackground.png", 0, 0);
     	dialog_atlas.load();
     	
@@ -449,6 +451,7 @@ public class ResourcesManager {
     	bottom_bar_atlas.unload();
     	top_bar_atlas.unload();
     	map_tiles_atlas.unload();
+
         
     }
 
@@ -464,7 +467,7 @@ public class ResourcesManager {
 	public ArrayList<Point> obstacles;
 	
 	public void setMap(String mapName) {
-		Log.d("AndEngine", "[ResourcesManager] setting map");
+		
 		this.mapString = mapName;
 		this.obstacles = new ArrayList<Point>();
     	try {
@@ -474,10 +477,8 @@ public class ResourcesManager {
 						TMXTiledMap pTMXTiledMap, TMXLayer pTMXLayer,
 						TMXTile pTMXTile,
 						TMXProperties<TMXTileProperty> pTMXTileProperties) {
-					// TODO make this work.
-					Log.d("AndEngine", "found tile property");
+					
 					for (TMXTileProperty tp : pTMXTileProperties) {
-						Log.d("AndEngine", pTMXTile.getTileColumn()+"x"+pTMXTile.getTileRow()+" -> "+tp.getName() + " : " + tp.getValue());
 						obstacles.add(new Point(pTMXTile.getTileColumn(), pTMXTile.getTileRow()));
 					}
 					
@@ -486,7 +487,7 @@ public class ResourcesManager {
             
             this.tiledMap = tmxLoader.loadFromAsset("tmx/"+mapString);
             
-            Log.d("AndEngine", "[ResourcesManager] successfully loaded map");
+           
         } 
     	catch (final TMXLoadException e) {
              Debug.e(e);

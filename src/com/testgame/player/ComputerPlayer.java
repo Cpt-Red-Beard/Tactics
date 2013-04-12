@@ -18,6 +18,7 @@ import com.testgame.mechanics.unit.Nerd;
 public class ComputerPlayer extends APlayer {
 	
 	JSONArray actionsToPerform;
+	JSONArray array;
 	OnlineGame game;
 	
 	public ComputerPlayer(String name) {
@@ -137,20 +138,9 @@ public class ComputerPlayer extends APlayer {
 		
 	}
 	
-	public void init(JSONObject object) {
-		int nerds = 0;
-		int jocks = 0;
-		int ditz = 0;
+	public void init(JSONArray array) {
 		
 		
-		try {
-			ditz = object.getInt("Ditzes");
-			nerds = object.getInt("Nerds");
-			jocks = object.getInt("Jocks");
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		Point[] spawns;
 		
@@ -160,35 +150,39 @@ public class ComputerPlayer extends APlayer {
 		else{
 			spawns = game.resourcesManager.getSpawn2(game.resourcesManager.mapString);
 		}
-		
-		
+		try{
+			int j = 0;
 			for(Point i : spawns){
-				if(nerds > 0){
-					AUnit unit = new Nerd(game.gameMap, i.x, i.y, game.getGameScene(), "red");
-					unit.init(); 
-					game.getCompPlayer().addUnit(unit);
-					nerds--;
-				}
-				else if(ditz > 0){
-					AUnit unit = new Ditz(game.gameMap, i.x, i.y, game.getGameScene(), "red");
-					unit.init();
-					game.getCompPlayer().addUnit(unit);
-					ditz--;
-				}
-				else if(jocks > 0){
-					AUnit unit = new Jock(game.gameMap, i.x, i.y, game.getGameScene(), "red");
-					unit.init(); 
-					game.getCompPlayer().addUnit(unit);
-					jocks--;
-				}
-				else{
+				if(j == spawns.length-1){
 					AUnit unitbase = new Base(game.gameMap, i.x, i.y, game.getGameScene(), "red");
 					unitbase.init();
 					game.getCompPlayer().setBase(unitbase);
 				}
+				else if(array.getInt(j) == 1){
+					AUnit unit = new Nerd(game.gameMap, i.x, i.y, game.getGameScene(), "red");
+					unit.init(); 
+					game.getCompPlayer().addUnit(unit);
+					
+				}
+				else if(array.getInt(j) == 2){
+					AUnit unit = new Ditz(game.gameMap, i.x, i.y, game.getGameScene(), "red");
+					unit.init();
+					game.getCompPlayer().addUnit(unit);
+					
+				}
+				else if(array.getInt(j) == 0){
+					AUnit unit = new Jock(game.gameMap, i.x, i.y, game.getGameScene(), "red");
+					unit.init(); 
+					game.getCompPlayer().addUnit(unit);
+
+				}
+				j++;
 		 	}
-			
-			
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
 		
 		
 		game.incrementCount();

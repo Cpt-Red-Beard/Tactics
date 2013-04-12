@@ -13,6 +13,7 @@ import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
+
 import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
@@ -60,17 +61,21 @@ import com.testgame.mechanics.map.GameMap;
 import com.testgame.mechanics.unit.AUnit;
 import com.testgame.player.APlayer;
 import com.testgame.player.ComputerPlayer;
+
 import com.testgame.resource.ResourcesManager;
 import com.testgame.scene.SceneManager.SceneType;
 import com.testgame.sprite.CharacterSprite;
 import com.testgame.sprite.GameDialogBox;
+
 import com.testgame.sprite.HighlightedSquare;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinchZoomDetectorListener {
 
 	public final static int SQUARE_Z = 1;
 	public final static int SPRITE_Z = 2;
-	public final static int TEXT_Z = 3;
+
+	public final int TEXT_Z = 3;
+
 	
 	public final static int SPRITE_MODE = 0;
 	public final static int HEALTH_MODE = 1;
@@ -81,7 +86,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public boolean working = false;
 
 	private float mTouchX = 0, mTouchY = 0, mTouchOffsetX = 0, mTouchOffsetY = 0;
+
 	private GameDialogBox pausemenu;
+
 	private Rectangle currentTileRectangle;
 	private AUnit selectedCharacter;
 	
@@ -90,7 +97,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	public IEntityModifierListener animationListener;
 	//public IEntityModifierListener computerAnimationListener;
-	boolean start;
+
 	public AGame game;
 	
 	public HUD hud;
@@ -174,6 +181,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.mPinchZoomDetector = new PinchZoomDetector(this);
 		setBackground(new Background(Color.GREEN));
 		
+		
 		this.mode = SPRITE_MODE;
 		
 		this.animationListener = new IEntityModifierListener() {
@@ -227,8 +235,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			this.setGame(new LocalGame(new APlayer("One's"), new APlayer("Two's"), widthInTiles, heightInTiles, this));
 		}
 		
-	
-		
+
 		createHUD();
 	    
 		// Initialize selection rectangle.
@@ -237,6 +244,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		currentTileRectangle.setColor(1, 0, 0, 0);
 		
 		attachChild(currentTileRectangle);
+
 
 		this.registerUpdateHandler(new TimerHandler(5f, true, new ITimerCallback(){
 
@@ -248,11 +256,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			
 		}));
 			
+
 		
+
 
 		currentTileRectangle.setZIndex(SQUARE_Z);
 		sortChildren();
-		
+
 		
 	}
 	
@@ -393,7 +403,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	    ((BoundCamera)camera).setBoundsEnabled(false);
 	    ((SmoothCamera) camera).setZoomFactor(1.0f);
 	    resourcesManager.unloadGameTextures();
-	    // TODO: unload all of the graphics
+	    
 	}
 	
 	public void activateAndSelect(final CharacterSprite sprite) {
@@ -518,7 +528,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		if(tmxTile != null) {
 			int x = tmxTile.getTileColumn();
 			int y = tmxTile.getTileRow();
-			// TODO: check if a possible move..
+			
 			
 			for (HighlightedSquare h : this.highlightedSquares) {
 				if (tmxTile == h.tile) {
@@ -699,21 +709,23 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 					        		JSONArray array = ob.getJSONArray("Moves");
 					        		Log.d("Array", array.toString());
 					        		deselectCharacter(false);
-					            	((OnlineGame)getGame()).getCompPlayer().startTurn(array);
+					            	((OnlineGame)getGame()).getCompPlayer().startTurn( array);
 					            	ob.deleteInBackground();
 					            	return;
 					        	}
 					        	else{
-					        		JSONObject object = ob.getJSONObject("Init");
 					        		deselectCharacter(false);
-					            	((OnlineGame)getGame()).getCompPlayer().init(object);
+					            	((OnlineGame)getGame()).getCompPlayer().init(ob.getJSONArray("InitArray"));
 					            	ob.deleteInBackground();
 					            	return;
+
 					        	}
 			            	}
 			            	ob.deleteInBackground();
 		            	} 
+
 		            } 
+
 		        } 
 		    }
 		});
@@ -727,6 +739,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		LinearLayout ll = new LinearLayout(activity);
 		ll.setOrientation(LinearLayout.VERTICAL);
 		
+
 		Button b1 = new Button(activity);
         b1.setText("End Turn");
         b1.setOnClickListener(new View.OnClickListener() {
@@ -840,34 +853,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		quitDialog.show();
 	}
 	
-	/*public void quitDialog(String Text){
-		final Dialog pausemenu = new Dialog(activity);
-		pausemenu.setTitle(Text);
-		LinearLayout ll = new LinearLayout(activity);
-		ll.setOrientation(LinearLayout.VERTICAL);
-		
-		Button b1 = new Button(activity);
-        b1.setText("Return to Main Menu");
-        b1.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				pausemenu.dismiss();
-				disposeScene();
-		    	SceneManager.getInstance().loadMenuScene(engine);
-		    	resourcesManager.resetGame();
-				
-			}
-        });        
-        ll.addView(b1);
-
-       
-        
-        pausemenu.setContentView(ll);      
-        pausemenu.setCanceledOnTouchOutside(false);
-        pausemenu.show();        
-		
-	}*/
 	public void quitDialog(String Text) {
 		
 		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
@@ -882,12 +868,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			}
 		});
 		ButtonSprite[] buttons = {okay};
-		pausemenu = new GameDialogBox(camera.getHUD(), Text, buttons);
+		pausemenu = new GameDialogBox(camera.getHUD(), Text, 1, true, buttons);
+
 	}
 
 	@Override
 	public void onHomeKeyPressed() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -922,9 +909,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		this.mode = newMode;
 	}
-	
-	
-	
+
 
 	private Line[] arrowPath;
 	
@@ -966,6 +951,5 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		}
 		return cost;
 	}
-	
-	
+
 }
