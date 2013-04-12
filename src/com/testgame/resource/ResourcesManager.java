@@ -467,7 +467,7 @@ public class ResourcesManager {
 	public ArrayList<Point> obstacles;
 	
 	public void setMap(String mapName) {
-		Log.d("AndEngine", "[ResourcesManager] setting map");
+		
 		this.mapString = mapName;
 		this.obstacles = new ArrayList<Point>();
     	try {
@@ -477,10 +477,8 @@ public class ResourcesManager {
 						TMXTiledMap pTMXTiledMap, TMXLayer pTMXLayer,
 						TMXTile pTMXTile,
 						TMXProperties<TMXTileProperty> pTMXTileProperties) {
-					// TODO make this work.
-					Log.d("AndEngine", "found tile property");
+					
 					for (TMXTileProperty tp : pTMXTileProperties) {
-						Log.d("AndEngine", pTMXTile.getTileColumn()+"x"+pTMXTile.getTileRow()+" -> "+tp.getName() + " : " + tp.getValue());
 						obstacles.add(new Point(pTMXTile.getTileColumn(), pTMXTile.getTileRow()));
 					}
 					
@@ -489,7 +487,7 @@ public class ResourcesManager {
             
             this.tiledMap = tmxLoader.loadFromAsset("tmx/"+mapString);
             
-            Log.d("AndEngine", "[ResourcesManager] successfully loaded map");
+           
         } 
     	catch (final TMXLoadException e) {
              Debug.e(e);

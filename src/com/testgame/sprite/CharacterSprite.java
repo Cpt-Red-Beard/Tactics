@@ -123,7 +123,7 @@ public class CharacterSprite extends AnimatedSprite {
 		
 		message.setZIndex(game.TEXT_Z);
 		
-		final CharacterSprite sprite = this;
+		
 		
 		message.registerEntityModifier(new MoveModifier(1.5f, message.getX(), message.getY(), message.getX(), message.getY() + 25) {
 			@Override

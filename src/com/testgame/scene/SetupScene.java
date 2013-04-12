@@ -12,9 +12,6 @@ import org.andengine.entity.text.TextOptions;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.adt.align.HorizontalAlign;
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.util.Log;
 
 import com.parse.ParseObject;

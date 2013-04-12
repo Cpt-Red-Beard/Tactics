@@ -19,7 +19,6 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 
 import org.andengine.opengl.util.GLState;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -420,7 +419,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
             public void onClick(DialogInterface dialog, int whichButton) {
             				try {
 								resourcesManager.opponentDeviceID = object.getString("deviceId");
-								Log.d("Map", object.getString("map"));
+								
 								resourcesManager.setMap(object.getString("map"));
 							} catch (JSONException e) {
 								

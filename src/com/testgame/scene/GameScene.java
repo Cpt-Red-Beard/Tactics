@@ -18,7 +18,6 @@ import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
-import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.AutoWrap;
@@ -73,7 +72,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 	public final static int SQUARE_Z = 1;
 	public final static int SPRITE_Z = 2;
-	public final static int TEXT_Z = 3;
+	public final int TEXT_Z = 3;
 	
 	public final static int SPRITE_MODE = 0;
 	public final static int HEALTH_MODE = 1;
@@ -402,7 +401,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	    ((BoundCamera)camera).setBoundsEnabled(false);
 	    ((SmoothCamera) camera).setZoomFactor(1.0f);
 	    resourcesManager.unloadGameTextures();
-	    // TODO: unload all of the graphics
+	    
 	}
 	
 	public void activateAndSelect(final CharacterSprite sprite) {
@@ -527,7 +526,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		if(tmxTile != null) {
 			int x = tmxTile.getTileColumn();
 			int y = tmxTile.getTileRow();
-			// TODO: check if a possible move..
+			
 			
 			for (HighlightedSquare h : this.highlightedSquares) {
 				if (tmxTile == h.tile) {
@@ -873,7 +872,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 	@Override
 	public void onHomeKeyPressed() {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
