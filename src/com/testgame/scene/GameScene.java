@@ -867,7 +867,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			}
 		});
 		ButtonSprite[] buttons = {okay};
-		pausemenu = new GameDialogBox(camera.getHUD(), Text, buttons);
+		pausemenu = new GameDialogBox(camera.getHUD(), Text, 1, true, buttons);
 
 	}
 

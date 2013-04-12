@@ -19,6 +19,7 @@ import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 
 import org.andengine.opengl.util.GLState;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -307,7 +308,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 			}
 		});
 		ButtonSprite[] buttons = {okayButton};
-		welcome = new GameDialogBox(camera.getHUD(), "Welcome \n"+name+"!", buttons);
+		welcome = new GameDialogBox(camera.getHUD(), "Welcome \n"+name+"!", 1, true, buttons);
 
 
 	}

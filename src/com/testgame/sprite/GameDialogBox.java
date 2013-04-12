@@ -23,7 +23,7 @@ public class GameDialogBox {
 	private Text messageText;
 	private ButtonSprite okayButton;
 	
-	public GameDialogBox(HUD hud, String message, ButtonSprite ... buttons) {
+	public GameDialogBox(HUD hud, String message, int back, boolean text, ButtonSprite ... buttons) {
 		super();
 		this.buttons = buttons;	
 
@@ -38,7 +38,8 @@ public class GameDialogBox {
 		
 		// Attach Background		
 		hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background, resourcesManager.vbom));
-		hud.attachChild(messageText = new Text(240, 450, resourcesManager.font, message, new TextOptions(AutoWrap.WORDS, backgroundSprite.getWidth(), HorizontalAlign.CENTER, Text.LEADING_DEFAULT), resourcesManager.vbom));
+		
+		hud.attachChild(messageText = new Text(240, 450, resourcesManager.font, message, new TextOptions(AutoWrap.WORDS, backgroundSprite.getWidth()-10, HorizontalAlign.CENTER, Text.LEADING_DEFAULT), resourcesManager.vbom));
 		
 		
 		int i = 0;
