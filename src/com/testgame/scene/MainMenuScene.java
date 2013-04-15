@@ -67,7 +67,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	private static AlertDialog loading;
 	private static AlertDialog invitation;
-	private static AlertDialog gameOptionsDialog;
+
 	private static AlertDialog textDialog;
 	private static AlertDialog acceptDialog;
 	private static AlertDialog mapDialog;
@@ -75,10 +75,12 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static String selectedMapName = "Default"; 
 	private static ButtonSprite okayButton;
 	private static GameDialogBox welcome;
+	private static GameDialogBox gameOptionsDialog;
 	
 
 	@Override
 	public void createScene() {
+		camera.setHUD(new HUD());
 		createBackground();
 		createMenuChildScene();
 		usernames = new HashMap<String, String>();
@@ -295,7 +297,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		}
 	
 	private void welcomeDialog() {
-		camera.setHUD(new HUD());
+		
 		logoutMenuItem.setVisible(true);
 
 		okayButton = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
@@ -355,13 +357,23 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	}
 	
 	public void gameOptions() {
-		final AlertDialog.Builder gameOptions = new AlertDialog.Builder(activity);
-		gameOptions.setTitle("Would you like to play an online or local game?");
 		
-		gameOptions.setNegativeButton("Local", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				// launch a local game.	
-				
+		ButtonSprite onlineButton = new ButtonSprite(240, 350, resourcesManager.online_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				gameOptionsDialog.dismiss();
+				activity.runOnUiThread(new Runnable () {
+					@Override
+					public void run() {
+						createMapDialog();
+					}
+				});
+			}
+		});
+		
+		ButtonSprite localButton = new ButtonSprite(240, 350, resourcesManager.local_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				resourcesManager.isLocal = true;
 				gameOptionsDialog.dismiss();
 				activity.runOnUiThread(new Runnable () {
@@ -370,27 +382,14 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 						createMapDialog();
 					}
 				});
-				
-			}
-		});
-
-		gameOptions.setNeutralButton("Online", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				// Launch an online game.
-				
-				gameOptionsDialog.dismiss();
-				activity.runOnUiThread(new Runnable () {
-					@Override
-					public void run() {
-						createMapDialog();
-					}
-				});
 			}
 		});
 		
-		gameOptionsDialog = gameOptions.create();
-		gameOptionsDialog.setCanceledOnTouchOutside(false);
-		gameOptionsDialog.show();
+		ButtonSprite[] buttons = {onlineButton, localButton};
+
+		gameOptionsDialog = new GameDialogBox(camera.getHUD(), "", 1, false, buttons);
+		
+		
 	}
 	
 	public void createInvite(final JSONObject object){
