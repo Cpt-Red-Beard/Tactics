@@ -22,6 +22,8 @@ public class GameDialogBox {
 	
 	private float textHeight;
 	
+	private float j;
+	
 	
 	public GameDialogBox(HUD hud, String message, int back, boolean text, ButtonSprite ... buttons) {
 		super();
@@ -39,13 +41,17 @@ public class GameDialogBox {
 				hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background2, resourcesManager.vbom));
 				break;
 		}
-		textHeight = 400+ (backgroundSprite.getHeight()/2) - 50;
-		
-		hud.attachChild(messageText = new Text(240, textHeight , resourcesManager.cartoon_font_white, message, new TextOptions(AutoWrap.WORDS, backgroundSprite.getWidth()-10, HorizontalAlign.CENTER, Text.LEADING_DEFAULT), resourcesManager.vbom));
-		
+		if(text){
+			textHeight = 400+ (backgroundSprite.getHeight()/2) - 50;
+			j = textHeight - messageText.getHeight() / 2 - 50;
+			hud.attachChild(messageText = new Text(240, textHeight , resourcesManager.cartoon_font_white, message, new TextOptions(AutoWrap.WORDS, backgroundSprite.getWidth()-10, HorizontalAlign.CENTER, Text.LEADING_DEFAULT), resourcesManager.vbom));
+		}
+		else {
+			 j = 400+ (backgroundSprite.getHeight()/2) - 50;
+		}
 		
 		int i = 0;
-		float j = textHeight - messageText.getHeight() / 2 - 50;
+		
 		for(ButtonSprite button : buttons){
 			hud.attachChild(button);
 			button.setPosition(240, j - (100*i));
