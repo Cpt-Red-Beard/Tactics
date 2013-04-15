@@ -1,6 +1,7 @@
 package com.testgame.scene;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.andengine.entity.IEntity;
@@ -70,7 +71,9 @@ import com.testgame.sprite.GameDialogBox;
 import com.testgame.sprite.HighlightedSquare;
 
 public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinchZoomDetectorListener {
-
+	
+	HashSet<Point> stoneTiles;
+	
 	public final static int SQUARE_Z = 1;
 	public final static int SPRITE_Z = 2;
 
@@ -217,6 +220,20 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		attachChild(resourcesManager.tiledMap);
 		resourcesManager.tiledMap.setOffsetCenter(0, 0);
+		resourcesManager.tiledMap.setPosition(0, 0);
+		
+		Line[] border = new Line[4];
+		
+		border[0] = new Line(0, -5, 0, heightInTiles * tileSize + 5, 10, vbom);
+		border[1] = new Line(0, 0, widthInTiles * tileSize, 0, 10, vbom);
+		border[2] = new Line(widthInTiles*tileSize, - 5, widthInTiles*tileSize, heightInTiles*tileSize + 5, 10, vbom);
+		border[3] = new Line(0, heightInTiles * tileSize, widthInTiles * tileSize, heightInTiles*tileSize, 10, vbom);
+		
+		for (int i = 0 ; i < 4 ; i ++) {
+			border[i].setColor(Color.BLACK);
+			attachChild(border[i]);
+			border[i].setZIndex(TEXT_Z);
+		}
 		
 		// Initialize highlighted squares list.
 		this.highlightedSquares = new ArrayList<HighlightedSquare>();
@@ -246,6 +263,26 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		attachChild(currentTileRectangle);
 
 
+		
+		currentTileRectangle.setZIndex(SQUARE_Z);
+		sortChildren();
+		
+		// Add in initial stone tiles.. 
+		
+		Log.d("AndEngine", "Camera dimenstions = " +  camera.getCameraSceneHeight() + " " + camera.getCameraSceneWidth());
+		Log.d("AndEngine", "Map dimensions = " +  widthInTiles*64 + " " + heightInTiles*64);
+		
+		//drawStoneTiles();
+		
+		this.registerUpdateHandler(new TimerHandler(.01f, new ITimerCallback(){
+
+			@Override
+			public void onTimePassed(TimerHandler pTimerHandler) {
+				drawStoneTiles();
+				
+			}}));
+		
+
 		this.registerUpdateHandler(new TimerHandler(5f, true, new ITimerCallback(){
 
 			@Override
@@ -255,17 +292,56 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			}
 			
 		}));
-			
-
-		
-
-
-		currentTileRectangle.setZIndex(SQUARE_Z);
-		sortChildren();
-
-		
 	}
 	
+	private void drawStoneTiles() {
+		
+		float centerX = camera.getCenterX();
+		float centerY = camera.getCenterY();
+		
+		Log.d("AndEngine", "Center = " + centerX + ", " + centerY);
+		
+		float cameraHeight = ((SmoothCamera)camera).getHeight();
+		float cameraWidth = ((SmoothCamera)camera).getWidth();
+		
+		
+		Log.d("AndEngine", "Dimensions = "+ cameraWidth + ", " + cameraHeight);
+		
+		int leftXDiff =  (int) (Math.floor((centerX - cameraWidth/2)/tileSize) * tileSize);
+		int rightXDiff =  (int) (Math.floor((centerX + cameraHeight/2)/tileSize) * tileSize);
+		int downYDiff =  (int) (Math.floor((centerY - cameraHeight/2)/tileSize) * tileSize);
+		int upYDiff = (int) (Math.floor((centerY + cameraHeight/2)/tileSize) * tileSize);
+	
+		if (stoneTiles == null) stoneTiles = new HashSet<Point>();
+		
+		Log.d("AndEngine", "left =" + leftXDiff + ", right ="+rightXDiff+", up ="+upYDiff+", down ="+downYDiff);
+		
+		for (int i = leftXDiff; i < rightXDiff; i = i + tileSize) {
+			
+			
+			
+			for (int j = downYDiff; j < upYDiff; j = j + tileSize) {
+				
+				if (i >= 0 && i < widthInTiles*tileSize) {
+					if (j >= 0 && j < heightInTiles*tileSize) continue;
+				}
+				
+				Point tilePoint = new Point(i, j);
+				
+				if (!stoneTiles.contains(tilePoint)) {
+					Sprite newStoneTile = new Sprite(i, j, resourcesManager.stone_tile.deepCopy(), vbom);
+					newStoneTile.setOffsetCenter(0, 0);
+					attachChild(newStoneTile);
+					newStoneTile.setZIndex(SQUARE_Z);
+					stoneTiles.add(new Point(i, j));
+				}
+				
+			}
+		}
+		
+		sortChildren();
+	}
+
 	protected void createHUD() {
 		
 		this.hud = new HUD();
@@ -593,6 +669,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
                       
             mTouchX = newX;
             mTouchY = newY;
+            
+            drawStoneTiles();
 
             return true;
         }
@@ -610,6 +688,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
     		float newZoom = this.mPinchZoomStartedCameraZoomFactor * pZoomFactor;
     		if (newZoom > ZOOM_FACTOR_MAX || newZoom < ZOOM_FACTOR_MIN) return;
             ((SmoothCamera) this.camera).setZoomFactor(this.mPinchZoomStartedCameraZoomFactor * pZoomFactor);
+            this.drawStoneTiles();
     }
 
     @Override
@@ -617,6 +696,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
     	float newZoom = this.mPinchZoomStartedCameraZoomFactor * pZoomFactor;
 		if (newZoom > ZOOM_FACTOR_MAX || newZoom < ZOOM_FACTOR_MIN) return; 
     	((SmoothCamera) this.camera).setZoomFactor(this.mPinchZoomStartedCameraZoomFactor * pZoomFactor);
+    	this.drawStoneTiles();
     }
     
 
@@ -874,8 +954,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 	@Override
 	public void onHomeKeyPressed() {
-		
-		
+		resourcesManager.pause_music();
 	}
 
 	public AGame getGame() {
@@ -924,13 +1003,34 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			Point a = path.get(i);
 			Point b = path.get(i+1);
 			
-			arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize + 32, 20, vbom);
+			if (i == path.size() - 2) {
+				if (a.x == b.x){ // horizontal
+					if (a.y > b.y){  // coming from above
+						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize + tileSize, 20, vbom);
+					} else { // coming from below
+						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize, 20, vbom);
+					}
+				}
+				if (a.y == b.y){  // vertical 
+					if (a.x > b.x){  // coming the right
+						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + tileSize, b.y*tileSize + 32, 20, vbom);
+					}else { // coming from the left
+						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize, b.y*tileSize + 32, 20, vbom);
+					}
+					
+				}
+			} else {
+				arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize + 32, 20, vbom);
+			}
 		}
 		
 		for (Line l : arrowPath) {
 			l.setColor(Color.BLUE);
 			this.attachChild(l);
+			l.setZIndex(SQUARE_Z);
 		}
+		
+		sortChildren();
 	}
 	
 	public void removePath() {
