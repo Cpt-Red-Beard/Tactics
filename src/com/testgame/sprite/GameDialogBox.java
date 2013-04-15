@@ -8,7 +8,6 @@ import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.entity.text.AutoWrap;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
-import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.adt.align.HorizontalAlign;
 
 import android.util.Log;
@@ -18,14 +17,13 @@ import com.testgame.resource.ResourcesManager;
 public class GameDialogBox {
 	
 	private HUD hud;
-	private float width;
-	private float height;
+	
 
 	private ButtonSprite[] buttons;
 
 	private Sprite backgroundSprite;
 	private Text messageText;
-	private ButtonSprite okayButton;
+	
 	
 	public GameDialogBox(HUD hud, String message, int back, ButtonSprite ... buttons) {
 		super();
