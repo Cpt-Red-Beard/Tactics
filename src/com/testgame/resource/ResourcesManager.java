@@ -175,6 +175,9 @@ public class ResourcesManager {
     public ITextureRegion online_region, local_region, quit_region, newgame_region, options_region, continue_region, login_region, reset_region, blank_region, howtoplay_region, logout_region, play_region;
 
     public Music menu_background_music, select_sound;
+    
+    private BuildableBitmapTextureAtlas dialog_atlas;
+    public ITextureRegion dialog_background, dialog_background2, dialogbackground3;
 
     public Font font;
     
@@ -224,6 +227,8 @@ public class ResourcesManager {
     	play_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "playbutton.png");
     	
     	
+    	
+    	
 
     	try {
     	    this.menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
@@ -235,9 +240,16 @@ public class ResourcesManager {
     	
     	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
     	
-    	dialog_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 1500, 1500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-    	dialog_background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "dialogbackground.png", 0, 0);
-    	dialog_background2 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "button3.png", 0, 0);
+    	dialog_atlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1500, 1500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+    	
+    	dialog_background2 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "button3.png");
+    	dialog_background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "dialogbackground.png");
+    	try {
+			dialog_atlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
+		} catch (TextureAtlasBuilderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     	dialog_atlas.load();
     	
     }
@@ -337,8 +349,7 @@ public class ResourcesManager {
     
     public Music walking_sound, attack_sound, touch_sound;
     
-    private BitmapTextureAtlas dialog_atlas;
-    public ITextureRegion dialog_background, dialog_background2, dialogbackground3;
+   
     
     public BitmapTextureAtlas map_tiles_atlas;
     public TiledTextureRegion map_tiles;

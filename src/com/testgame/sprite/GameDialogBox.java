@@ -36,13 +36,17 @@ public class GameDialogBox {
 		ResourcesManager resourcesManager = ResourcesManager.getInstance();
 		
 		// Attach Background
-		switch (back){
+		switch (back){ 
+			
 			case 1:
 				hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background, resourcesManager.vbom));
 				break;
 				
 			case 2:
 				hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background2, resourcesManager.vbom));
+				break;
+				
+			default:
 				break;
 		}
 		if(text){
@@ -74,6 +78,7 @@ public class GameDialogBox {
 			@Override
 			public void run() {
 				hud.detachChild(backgroundSprite);
+				backgroundSprite = null;
 				if(text)
 					hud.detachChild(messageText);
 
