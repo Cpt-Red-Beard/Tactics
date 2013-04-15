@@ -478,7 +478,7 @@ public class ResourcesManager {
 						TMXTile pTMXTile,
 						TMXProperties<TMXTileProperty> pTMXTileProperties) {
 					
-					for (TMXTileProperty tp : pTMXTileProperties) {
+					for (@SuppressWarnings("unused") TMXTileProperty tp : pTMXTileProperties) {
 						obstacles.add(new Point(pTMXTile.getTileColumn(), pTMXTile.getTileRow()));
 					}
 					
