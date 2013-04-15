@@ -30,6 +30,7 @@ public class ComputerPlayer extends APlayer {
 		Log.d("Array", array.length()+"");
 		this.actionsToPerform = array;
 		this.beginTurn();
+		
 		performNext(); // perform all of the animations
 		
 		
@@ -91,8 +92,8 @@ public class ComputerPlayer extends APlayer {
 					int unitX = nextAction.getInt("UnitX");
 					int unitY = nextAction.getInt("UnitY");
 					
-					//Log.d("Unitx", unitX+"");
-					//Log.d("Unity", unitY+"");
+					Log.d("Unitx", unitX+"");
+					Log.d("Unity", unitY+"");
 					AUnit unit = game.gameMap.getOccupyingUnit(unitX, unitY);
 					
 					
@@ -104,7 +105,9 @@ public class ComputerPlayer extends APlayer {
 						int energy = nextAction.getInt("Energy");
 						
 						actionsToPerform.put(i, null); // finished action, clear it out
-						
+						if(unit == null){
+							Log.d("Unit", "Null");
+						}
 						unit.computerMove(destX, destY, energy, this);
 					}
 					
@@ -119,11 +122,7 @@ public class ComputerPlayer extends APlayer {
 						AUnit target = game.gameMap.getOccupyingUnit(targetX, targetY);
 						
 						actionsToPerform.put(i, null); // finished action, clear it out
-						Log.d("Target", target+"");
-						Log.d("Attack", attack+"");
-						Log.d("Unit", unit+"");
-						Log.d("Energy", energy+"");
-						Log.d("Unit2", this+"");
+						
 						unit.computerAttack(target, attack, energy, this);
 					}
 					

@@ -65,11 +65,12 @@ public class HighlightedSquare extends Rectangle {
 				ResourcesManager.getInstance().touch_sound.play();
 				
 				if (touched) {
+					this.touched = false;
 					Log.d("AndEngine", "already selected, calling gamescne");
 					this.removeBorder();
 					game.removePath();
 					this.game.squareTouched(this, pSceneTouchEvent);
-					this.touched = false;
+					
 					this.game.currentlySelectedMoveTile = null;
 					return true;
 				} else {

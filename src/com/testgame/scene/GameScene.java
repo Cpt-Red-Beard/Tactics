@@ -182,7 +182,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		this.setOnSceneTouchListener(this);
 		this.engine.setTouchController(new MultiTouchController());
 		this.mPinchZoomDetector = new PinchZoomDetector(this);
-		setBackground(new Background(Color.GREEN));
+		//setBackground(new Background(Color.GREEN));
 		
 		
 		this.mode = SPRITE_MODE;
@@ -787,7 +787,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			            		if(getGame().getCount() != 0){
 			            			Log.d("Turns", "Found turn data");
 					        		JSONArray array = ob.getJSONArray("Moves");
-					        		Log.d("Array", array.toString());
 					        		deselectCharacter(false);
 					            	((OnlineGame)getGame()).getCompPlayer().startTurn( array);
 					            	ob.deleteInBackground();
