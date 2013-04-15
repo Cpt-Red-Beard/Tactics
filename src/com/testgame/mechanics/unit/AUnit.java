@@ -686,8 +686,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		SequenceEntityModifier seq = new SequenceEntityModifier(animationListener, walks);
 		
-		//clearEntityModifiers();
-		
 		registerEntityModifier(seq);
 		
 	}
