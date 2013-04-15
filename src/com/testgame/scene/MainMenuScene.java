@@ -76,6 +76,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static ButtonSprite okayButton;
 	private static GameDialogBox welcome;
 	private static GameDialogBox gameOptionsDialog;
+	private boolean click = true;
 	
 
 	@Override
@@ -160,7 +161,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        switch(pMenuItem.getID())
 	        {
 	        case MENU_QUIT:
-	        	
+	        	if(!click)
+	        		return true;
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
@@ -172,7 +174,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	return true;
 	        
 	        case MENU_LOGIN:
-	        	
+	        	if(!click)
+	        		return true;
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
@@ -213,6 +216,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	            return true;
 	        case MENU_PLAY:
+	        	if(!click)
+	        		return true;
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
@@ -225,13 +230,16 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	            return true;
 	        
 	        case MENU_HOWTOPLAY:
+	        	if(!click)
+	        		return true;
 	        	SceneManager.getInstance().previousScene = this.getSceneType();
 	        	SceneManager.getInstance().loadTutorialScene(engine);
 	        	//SceneManager.getInstance().loadSetupScene(engine);
 	        	return true;
 	        	
 	        case MENU_LOGOUT:
-	        	if(!logoutMenuItem.isVisible()){
+	        	
+	        	if(!logoutMenuItem.isVisible() || !click){
 	        		return true;
 	        	}
 
@@ -299,13 +307,14 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private void welcomeDialog() {
 		
 		logoutMenuItem.setVisible(true);
-
+		click = false;
 		okayButton = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				Log.d("AndEngine", "dismissing dialog box");
 				ResourcesManager.getInstance().select_sound.play();
 				welcome.dismiss();
+				click = true;
 			}
 		});
 		ButtonSprite[] buttons = {okayButton};
@@ -357,7 +366,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	}
 	
 	public void gameOptions() {
-		
+		click = false;
 		ButtonSprite onlineButton = new ButtonSprite(240, 350, resourcesManager.online_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
@@ -365,6 +374,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				activity.runOnUiThread(new Runnable () {
 					@Override
 					public void run() {
+						click = true;
 						createMapDialog();
 					}
 				});
@@ -379,6 +389,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 				activity.runOnUiThread(new Runnable () {
 					@Override
 					public void run() {
+						click = true;
 						createMapDialog();
 					}
 				});
