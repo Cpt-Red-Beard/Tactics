@@ -21,7 +21,7 @@ public class TutorialScene extends BaseScene {
 	
 	private Text basicText, controlText, unitText;
 	
-	private ButtonSprite basicsButton, controlsButton, unitsButton;
+	private ButtonSprite basicsButton, controlsButton, unitsButton, guideButton;
 	
 	private boolean inMenu; 
 	
@@ -30,6 +30,7 @@ public class TutorialScene extends BaseScene {
 	private final int BASICS = 0;
 	private final int CONTROLS = 1;
 	private final int UNITS = 2;
+	private final int GUIDE = 3;
 	
 	private int which;
 	
@@ -101,11 +102,21 @@ public class TutorialScene extends BaseScene {
 			}
 		});
 		
+		guideButton = new ButtonSprite(245, 400, resourcesManager.blank_region, vbom, new OnClickListener() {
+
+			@Override
+			public void onClick(ButtonSprite pButtonSprite,
+					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				SceneManager.getInstance().loadGuideScene(engine);
+			}
+		});
+		
 	    inMenu = true;
 	    
 	    attachChild(basicsButton); registerTouchArea(basicsButton);
 	    attachChild(controlsButton); registerTouchArea(controlsButton);
 	    attachChild(unitsButton); registerTouchArea(unitsButton);
+	    attachChild(guideButton); registerTouchArea(guideButton);
 	}
 	
 	
@@ -148,6 +159,8 @@ public class TutorialScene extends BaseScene {
 		registerTouchArea(controlsButton);
 		attachChild(unitsButton);
 		registerTouchArea(unitsButton);
+		attachChild(guideButton);
+		registerTouchArea(guideButton);
 	}
 
 	@Override
@@ -183,6 +196,8 @@ public class TutorialScene extends BaseScene {
 				tutorial.unregisterTouchArea(controlsButton);
 				tutorial.detachChild(unitsButton);
 				tutorial.unregisterTouchArea(unitsButton);
+				tutorial.detachChild(guideButton);
+				tutorial.unregisterTouchArea(guideButton);
 			}
 	
 

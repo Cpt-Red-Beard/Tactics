@@ -56,6 +56,10 @@ public class ResourcesManager {
 	
 	Point[] classroom2 = {new Point(2,6), new Point(4,6), new Point(6,6), new Point(8,6), new Point(4, 7)};
 	
+	Point[] guide1 = {new Point(1, 1), new Point(1, 2), new Point(1,3), new Point(0, 2)};
+	
+	Point[] guide2 = {new Point(3, 1), new Point(3, 2), new Point(3, 3), new Point(4, 2)};
+	
 	Point[] defaultSpawns = {};
 	
 	
@@ -542,6 +546,9 @@ public class ResourcesManager {
 		else if(map.equals("classroom.tmx")){
 				return 4;
 		}
+		else if (map.equals("guide.tmx")) {
+			return 3;
+		}
 		return -1;
 						
 	}
@@ -553,7 +560,9 @@ public class ResourcesManager {
 		}
 		else if(map.equals("classroom.tmx")){
 				return classroom1;
-		} else
+		} else if (map.equals("guide.tmx")) {
+			return guide1;
+		}else
 			return defaultSpawns;
 		
 						
@@ -565,6 +574,8 @@ public class ResourcesManager {
 		}
 		else if(map.equals("classroom.tmx")){
 				return classroom2;
+		} else if (map.equals("guide.tmx")) {
+			return guide2;
 		}
 		return defaultSpawns;
 						

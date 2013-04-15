@@ -7,6 +7,8 @@ import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.ui.IGameInterface.OnCreateSceneCallback;
 
+import android.util.Log;
+
 import com.testgame.resource.ResourcesManager;
 
 public class SceneManager {
@@ -17,6 +19,7 @@ public class SceneManager {
     private BaseScene loadingScene;
     private BaseScene setupScene;
     private BaseScene tutorialScene;
+    private BaseScene guideScene;
     
     public SceneType previousScene;
     
@@ -39,7 +42,8 @@ public class SceneManager {
         SCENE_GAME,
         SCENE_LOADING,
         SCENE_SETUP,
-        SCENE_TUTORIAL;
+        SCENE_TUTORIAL,
+        SCENE_GUIDE;
     }
     
     //---------------------------------------------
@@ -83,6 +87,7 @@ public class SceneManager {
                 break;
             case SCENE_SETUP:
             	setScene(setupScene);
+            	break;
             case SCENE_TUTORIAL:
             	TutorialScene t = (TutorialScene) getTutorialScene();
             	((BoundCamera)t.camera).setBoundsEnabled(false);
@@ -90,7 +95,12 @@ public class SceneManager {
             	t.camera.setHUD(null);
             	((SmoothCamera)t.camera).setCenterDirect(240, 400);
             	
-            	setScene(tutorialScene);
+            	setScene(t);
+            	break;
+            case SCENE_GUIDE:
+            	setScene(guideScene);
+            	break;
+            	
             default:
                 break;
         }
@@ -198,6 +208,23 @@ public class SceneManager {
                 ResourcesManager.getInstance().loadTutorialResources();
                 tutorialScene = new TutorialScene();
                 setScene(tutorialScene.getSceneType());
+            }
+        }));
+    }
+    
+    public void loadGuideScene(final Engine mEngine) {
+    	
+    	Log.d("AndEngine", "loading guide scene...");
+    	setScene(loadingScene.getSceneType());
+    	
+    	mEngine.registerUpdateHandler(new TimerHandler(0.1f, new ITimerCallback() 
+        {
+            public void onTimePassed(final TimerHandler pTimerHandler) 
+            {
+                mEngine.unregisterUpdateHandler(pTimerHandler);
+                ResourcesManager.getInstance().loadGameResources();
+                guideScene = new GuideScene();
+                setScene(guideScene.getSceneType());
             }
         }));
     }
