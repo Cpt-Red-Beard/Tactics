@@ -44,17 +44,18 @@ public class GameDialogBox {
 				hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background2, resourcesManager.vbom));
 				break;
 		}
-		hud.attachChild(messageText = new Text(240, 450, resourcesManager.cartoon_font_white, message, new TextOptions(AutoWrap.WORDS, backgroundSprite.getWidth()-10, HorizontalAlign.CENTER, Text.LEADING_DEFAULT), resourcesManager.vbom));
+		hud.attachChild(messageText = new Text(240, 400+ (backgroundSprite.getHeight()/2) - 50, resourcesManager.cartoon_font_white, message, new TextOptions(AutoWrap.WORDS, backgroundSprite.getWidth()-10, HorizontalAlign.CENTER, Text.LEADING_DEFAULT), resourcesManager.vbom));
 		
 		
 		int i = 0;
-		if (buttons != null) {
-			for(ButtonSprite button : buttons){
-				hud.attachChild(button);
-				button.setPosition(240, 340-(100*i));
-				hud.registerTouchArea(button);
-				i++;
-			}
+
+		float j = 400 + (backgroundSprite.getHeight()/2 - 50) - messageText.getHeight() / 2 - 50;
+		for(ButtonSprite button : buttons){
+			hud.attachChild(button);
+			button.setPosition(240, j - (100*i));
+			hud.registerTouchArea(button);
+			i++;
+
 		}
 		
 		final GameDialogBox box = this;
