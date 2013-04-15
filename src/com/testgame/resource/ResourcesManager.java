@@ -236,6 +236,7 @@ public class ResourcesManager {
     	
     	dialog_atlas = new BitmapTextureAtlas(activity.getTextureManager(), 1500, 1500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
     	dialog_background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "dialogbackground.png", 0, 0);
+    	dialog_background2 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "button3.png", 0, 0);
     	dialog_atlas.load();
     	
     }
@@ -336,7 +337,7 @@ public class ResourcesManager {
     public Music walking_sound, attack_sound, touch_sound;
     
     private BitmapTextureAtlas dialog_atlas;
-    public ITextureRegion dialog_background;
+    public ITextureRegion dialog_background, dialog_background2, dialogbackground3;
     
     public BitmapTextureAtlas map_tiles_atlas;
     public TiledTextureRegion map_tiles;

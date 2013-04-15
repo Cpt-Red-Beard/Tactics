@@ -31,14 +31,15 @@ public class GameDialogBox {
 		
 		ResourcesManager resourcesManager = ResourcesManager.getInstance();
 		
-		ITextureRegion background = resourcesManager.dialog_background;
-		
-		this.setWidth(background.getWidth());
-		this.setHeight(background.getHeight());
-		
-		// Attach Background		
-		hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background, resourcesManager.vbom));
-		
+		// Attach Background
+		switch (back){
+			case 1:
+				hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background, resourcesManager.vbom));
+				break;
+			case 2:
+				hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background2, resourcesManager.vbom));
+				break;
+		}
 		hud.attachChild(messageText = new Text(240, 450, resourcesManager.cartoon_font_white, message, new TextOptions(AutoWrap.WORDS, backgroundSprite.getWidth()-10, HorizontalAlign.CENTER, Text.LEADING_DEFAULT), resourcesManager.vbom));
 		
 		
@@ -61,7 +62,6 @@ public class GameDialogBox {
 			@Override
 			public void run() {
 				hud.detachChild(backgroundSprite);
-				hud.unregisterTouchArea(okayButton);
 				hud.detachChild(messageText);
 
 				for(ButtonSprite button: buttons){
@@ -74,19 +74,5 @@ public class GameDialogBox {
 		});
 	}
 
-	public float getWidth() {
-		return width;
-	}
-
-	public void setWidth(float width) {
-		this.width = width;
-	}
-
-	public float getHeight() {
-		return height;
-	}
-
-	public void setHeight(float height) {
-		this.height = height;
-	}
+	
 }

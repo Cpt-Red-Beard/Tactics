@@ -20,17 +20,20 @@ public class ComputerPlayer extends APlayer {
 	JSONArray actionsToPerform;
 	JSONArray array;
 	OnlineGame game;
+	private boolean turn = false;
 	
 	public ComputerPlayer(String name) {
 		super(name);
 	}
 	
 	public void startTurn(JSONArray array){
+		if(turn)
+			return;
+		turn = true;
 		Log.d("Array", array.toString());
 		Log.d("Array", array.length()+"");
 		this.actionsToPerform = array;
 		this.beginTurn();
-		
 		performNext(); // perform all of the animations
 		
 		
@@ -41,6 +44,7 @@ public class ComputerPlayer extends APlayer {
 	
 	public void performNext() {
 		if(actionsToPerform.length() == 0){
+			turn = false;
 			if(game.isFirstTurn()) 
 				game.incrementCount();
 			this.endTurn();
@@ -49,11 +53,10 @@ public class ComputerPlayer extends APlayer {
 			}
 			
 			 // this calls turn init on all the units
-			
 			game.getGameScene().activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
-        	    	game.getGameScene().textMenu("Your Turn!");
+        	    	game.getGameScene().endTurnDialog("Your Turn!");
           			 
         	    }
         	});
@@ -70,11 +73,11 @@ public class ComputerPlayer extends APlayer {
 					 // this calls turn init on all the units
 					if(game.endGame())
 						return;
-					
+					turn = false;
 					game.getGameScene().activity.runOnUiThread(new Runnable() {
 		        	    @Override
 		        	    public void run() {
-		        	    	game.getGameScene().textMenu("Your Turn!");
+		        	    	game.getGameScene().endTurnDialog("Your Turn!");
 		          			 
 		        	    }
 		        	});
@@ -190,7 +193,7 @@ public class ComputerPlayer extends APlayer {
 			game.getGameScene().activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
-        	    	game.getGameScene().textMenu("Your Turn!");
+        	    	game.getGameScene().endTurnDialog("Your Turn!");
           			 
         	    }
         	});

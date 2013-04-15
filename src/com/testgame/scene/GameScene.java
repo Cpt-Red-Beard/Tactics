@@ -90,7 +90,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 	private float mTouchX = 0, mTouchY = 0, mTouchOffsetX = 0, mTouchOffsetY = 0;
 
-	private GameDialogBox pausemenu;
+	private GameDialogBox winDialog;
+	private GameDialogBox endTurnDialog;
 
 	private Rectangle currentTileRectangle;
 	private AUnit selectedCharacter;
@@ -785,7 +786,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		            	if (ob.getString("Device").equals(resourcesManager.opponentDeviceID)) {
 			            	if(ob.getString("GameId").equals(resourcesManager.gameId)){
 			            		if(getGame().getCount() != 0){
-			            			Log.d("Turns", "Found turn data");
+			            			
 					        		JSONArray array = ob.getJSONArray("Moves");
 					        		deselectCharacter(false);
 					            	((OnlineGame)getGame()).getCompPlayer().startTurn( array);
@@ -864,37 +865,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 	}
 
-	public void textMenu(String text){
-		
-		
-		
-		
-		
-		
-		
-		final Dialog pausemenu = new Dialog(activity);
-		pausemenu.setTitle(text);
-		LinearLayout ll = new LinearLayout(activity);
-		ll.setOrientation(LinearLayout.VERTICAL);
-		
-		Button b1 = new Button(activity);
-        b1.setText("Ok");
-        b1.setOnClickListener(new View.OnClickListener() {
-
+	public void endTurnDialog(String text){
+		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
-			public void onClick(View v) {
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				game.getPlayer().beginTurn();
-				pausemenu.dismiss();
-				
+				endTurnDialog.dismiss();
 			}
-        });        
-        ll.addView(b1);
-
-       
+		});
+		ButtonSprite[] buttons = {okay};
+	
         
-        pausemenu.setContentView(ll);      
-        pausemenu.setCanceledOnTouchOutside(false);
-        pausemenu.show(); 
+        endTurnDialog = new GameDialogBox(camera.getHUD(), text, 2, true, buttons); 
+      
 		
 	}
 
@@ -940,14 +923,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				Log.d("AndEngine", "dismissing dialog box");
 				ResourcesManager.getInstance().select_sound.play();
-				pausemenu.dismiss();
+				winDialog.dismiss();
 				disposeScene();
 		    	SceneManager.getInstance().loadMenuScene(engine);
 		    	resourcesManager.resetGame();
 			}
 		});
 		ButtonSprite[] buttons = {okay};
-		pausemenu = new GameDialogBox(camera.getHUD(), Text, 1, true, buttons);
+		winDialog = new GameDialogBox(camera.getHUD(), Text, 2, true, buttons);
 
 	}
 
