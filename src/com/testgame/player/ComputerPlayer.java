@@ -56,7 +56,7 @@ public class ComputerPlayer extends APlayer {
 			game.getGameScene().activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
-        	    	game.getGameScene().endTurnDialog("Your Turn!");
+        	    	game.getGameScene().endTurnDialog("Begin Turn!");
           			 
         	    }
         	});
@@ -77,7 +77,7 @@ public class ComputerPlayer extends APlayer {
 					game.getGameScene().activity.runOnUiThread(new Runnable() {
 		        	    @Override
 		        	    public void run() {
-		        	    	game.getGameScene().endTurnDialog("Your Turn!");
+		        	    	game.getGameScene().endTurnDialog("Begin Turn!");
 		          			 
 		        	    }
 		        	});
