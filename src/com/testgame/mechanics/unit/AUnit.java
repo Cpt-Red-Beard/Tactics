@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 
+import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
 import org.andengine.entity.IEntity;
@@ -15,7 +16,7 @@ import org.andengine.util.modifier.IModifier;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.graphics.Point;
-import android.util.Log;
+
 
 import com.testgame.mechanics.map.GameMap;
 import com.testgame.player.APlayer;
@@ -221,11 +222,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	
 	public void computerMove(int xNew, int yNew, final int energy, final ComputerPlayer player){
 		
-		Log.d("Moving", "In computer move method");
-		//Log.d("xOld", x+"");
-		//Log.d("yOld", y+"");
-		//Log.d("xNew", xNew+"");
-		//Log.d("yNew", yNew+"");
+		
 		ArrayList<Point> path = map.computePath(new Point(x, y), new Point(xNew, yNew));
 		map.setUnoccupied(x, y);
 		this.x = xNew;
@@ -233,7 +230,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 		map.setOccupied(x, y, this);
 		this.reduceEnergy(energy);
 
-		Log.d("Path", path.toString());
 
 		int destX = this.game.getTileSceneX(xNew, yNew);
 		int destY = this.game.getTileSceneY(xNew, yNew);
@@ -241,47 +237,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 		energyBar.setPosition(destX, destY);
 		healthBar.setPosition(destX, destY);
 		
-		//ArrayList<Point> path = map.computePath(new Point(oldX, oldY), new Point(xNew, yNew));
 		
 		walkAnimateAlongPath(path, true, energy);
 
-
-		/*
-		int destX = this.game.getTileSceneX(xNew, yNew);
-		int destY = this.game.getTileSceneY(xNew, yNew);
-		
-		float timePerTile = .2f; 
-		float numTilesX = Math.abs(this.getX() - destX) / game.tileSize;
-		float numTilesY = Math.abs(this.getY() - destY) / game.tileSize;
-		
-		
-		WalkMoveModifier one = new WalkMoveModifier(timePerTile*numTilesX + .1f, this.getX(), this.getY(), destX, this.getY(), true);
-		WalkMoveModifier two = new WalkMoveModifier(timePerTile*numTilesY + .1f, destX, this.getY(), destX, destY, false);
-				
-		SequenceEntityModifier seq = new SequenceEntityModifier(new IEntityModifierListener() {
-			@Override
-			public void onModifierStarted(IModifier<IEntity> pModifier,
-					IEntity pItem) {
-				game.animating = true;
-				game.camera.setChaseEntity(pItem);
-				ResourcesManager.getInstance().walking_sound.play();
-				
-			}
-			@Override
-			public void onModifierFinished(IModifier<IEntity> pModifier, IEntity pItem) {
-				game.animating = false;
-				game.camera.setChaseEntity(null);
-				ResourcesManager.getInstance().walking_sound.pause();
-				((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
-				game.setEventText("Moved using "+energy+" energy.");
-				player.performNext(); // finished this action, call next
-			}
-		}, one, two);
-		
-		//this.clearEntityModifiers();
-		this.registerEntityModifier(seq);
-		
-		*/
 	}
 	
 	@Override
@@ -323,23 +281,6 @@ public class AUnit extends CharacterSprite implements IUnit {
 			
 			walkAnimateAlongPath(path, false, cost);
 			
-			/*
-			float timePerTile = .2f; 
-			float numTilesX = Math.abs(this.getX() - destX) / game.tileSize;
-			float numTilesY = Math.abs(this.getY() - destY) / game.tileSize;
-			
-			
-			
-			WalkMoveModifier one = new WalkMoveModifier(timePerTile*numTilesX + .1f, this.getX(), this.getY(), destX, this.getY(), true);
-			WalkMoveModifier two = new WalkMoveModifier(timePerTile*numTilesY + .1f, destX, this.getY(), destX, destY, false);
-			
-			SequenceEntityModifier seq = new SequenceEntityModifier(game.animationListener, one, two);
-			
-			this.clearEntityModifiers();
-			
-			this.registerEntityModifier(seq);
-			
-			this.game.setEventText("Moved using "+eCost+" energy.");*/
 
         	
 	}
@@ -638,6 +579,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		final AUnit u = this;
 		if (computerPlayer != null) {
+			((SmoothCamera)game.camera).setCenterDirect(unit.x, unit.y);
 			this.registerUpdateHandler(new TimerHandler(0.5f, new ITimerCallback() 
 	        {
 	            public void onTimePassed(final TimerHandler pTimerHandler) 
@@ -676,7 +618,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		IEntityModifierListener animationListener;
 		
-		Log.d("AndEngine", "Creating walk animation...");
+		
 		
 		if (computer) {
 			animationListener = new IEntityModifierListener() {
@@ -686,7 +628,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 					game.animating = true;
 					game.camera.setChaseEntity(pItem);
 					ResourcesManager.getInstance().walking_sound.play();
-					Log.d("AndEngine", "Started animating walk...");
+					
 					
 				}
 				@Override
@@ -698,7 +640,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 					game.setEventText("Moved using "+cost+" energy.");
 					
 					((AUnit)pItem).animatePoints(-cost, "blue");
-					Log.d("AndEngine", "Finished animating walk, calling perform next!");
+					
 					((ComputerPlayer)player).performNext();
 				}
 			};
@@ -707,21 +649,21 @@ public class AUnit extends CharacterSprite implements IUnit {
 				@Override
 				public void onModifierStarted(IModifier<IEntity> pModifier,
 						IEntity pItem) {
-					Log.d("AndEngine", "animation modifier started.");
+					
 					game.animating = true;
 					game.camera.setChaseEntity(pItem);
-					Log.d("AndEngine", "position is now "+pItem.getX()+", "+pItem.getY());
+					
 					game.resourcesManager.walking_sound.play();
 				}
 				@Override
 				public void onModifierFinished(IModifier<IEntity> pModifier,
 						IEntity pItem) {
-					Log.d("AndEngine", "animation modifier ended.");
+					
 					game.animating = false;
 					game.camera.setChaseEntity(null);
 					((AUnit)pItem).setCurrentTileIndex(((AUnit)pItem).start_frame);
 					((AUnit)pItem).animatePoints(-cost, "blue");
-					Log.d("AndEngine", "position is now "+pItem.getX()+", "+pItem.getY());
+					
 					game.resourcesManager.walking_sound.pause();
 				}
 			};
