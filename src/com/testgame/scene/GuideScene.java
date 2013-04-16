@@ -43,12 +43,19 @@ public class GuideScene extends GameScene {
 		
 		switch(currentPhase) {
 		case SELECT_CHARACTER:
+			// disable moves/attacks
+			
 			break;
 		case MOVE_UNIT:
+			// restore moves... ? 
+			
 			break;
 		case ATTACK_UNIT:
+			// restore attacks... ? 
+			
 			break;
 		case END_TURN:
+			
 			break;
 		case WIN_GAME:
 			break;
