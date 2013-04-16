@@ -175,7 +175,7 @@ public class TutorialScene extends BaseScene {
 
 	@Override
 	public void disposeScene() {
-		// TODO Auto-generated method stub
+		resourcesManager.unloadTutorialResources();
 		
 	}
 	

@@ -81,6 +81,7 @@ public class SceneManager {
         	    ((SmoothCamera) l.camera).setZoomFactor(1.0f);
         	    
             	l.camera.setHUD(null);
+
             	((SmoothCamera)l.camera).setCenterDirect(240, 400);
             	
                 setScene(loadingScene);

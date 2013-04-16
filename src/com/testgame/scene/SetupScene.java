@@ -11,14 +11,18 @@ import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.opengl.util.GLState;
 import org.andengine.util.adt.align.HorizontalAlign;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.JSONArray;
+import android.util.Log;
 
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.testgame.scene.SceneManager.SceneType;
 
 public class SetupScene extends BaseScene {
+	
+	//Jocks = 0, Nerds = 1, Ditz = 2
+	
+	JSONArray first;
 	
 	/**
 	 * Total units, jocks, nerds, and ditzes.
@@ -30,6 +34,8 @@ public class SetupScene extends BaseScene {
 	 */
 	private Text jockText, nerdText, ditzText, totText;
 
+	private ArrayList<Integer> units;
+	
 	private boolean twice = false;
 	
 	/**
@@ -45,6 +51,7 @@ public class SetupScene extends BaseScene {
 	
 	@Override
 	public void createScene() {
+		units = new ArrayList<Integer>();
 		MAX_UNITS = resourcesManager.getNumber(resourcesManager.mapString);
 		twice = false;
 		attachChild(new Sprite(240, 400, resourcesManager.setup_background, vbom)
@@ -91,36 +98,28 @@ public class SetupScene extends BaseScene {
 				
 				resourcesManager.select_sound.play();
 				
-				ArrayList<Integer> unitList = new ArrayList<Integer>();
-				unitList.add(jocks);
-				unitList.add(nerds);
-				unitList.add(ditzes);
-				
 				if(!resourcesManager.isLocal){
-					JSONObject object = new JSONObject();
-					
-					
-					try {
-						object.put("Nerds", nerds);
-						object.put("Jocks", jocks);
-						object.put("Ditzes", ditzes);
-					} catch (JSONException e) {
-						
-						e.printStackTrace();
+					first = new JSONArray();
+					for(int i : units){
+						first.put(i);
 					}
+					Log.d("Array", first.toString());
+					
 					
 					ParseObject turns = new ParseObject("Turns");
 					turns.put("PlayerId", "user_"+ParseUser.getCurrentUser().getObjectId());
 					turns.put("Player", "user_"+ParseUser.getCurrentUser().getObjectId()+"_"+0);
 					turns.put("GameId", resourcesManager.gameId);
 					turns.put("Device", resourcesManager.deviceID);
-					turns.put("Init", object);
+					turns.put("InitArray", first);
 					turns.saveInBackground();
+					Log.d("Save", "Saved in background");
 				}
 				if(!twice){
-					resourcesManager.unitArray = unitList;
+					resourcesManager.unitArray = new ArrayList<Integer>(units);
 					twice = true;
 					tot = 0; jocks = 0; nerds = 0; ditzes = 0;
+					units.clear();
 					setupText.setText(resourcesManager.getLocalName());
 					updateText();
 					
@@ -129,7 +128,7 @@ public class SetupScene extends BaseScene {
 					}
 				}
 				else{
-					resourcesManager.unitArray2 = unitList;
+					resourcesManager.unitArray2 = new ArrayList<Integer>(units);
 					SceneManager.getInstance().loadGameScene(engine);
 				}
 
@@ -143,6 +142,7 @@ public class SetupScene extends BaseScene {
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				resourcesManager.select_sound.play();
 				tot = 0; jocks = 0; nerds = 0; ditzes = 0;
+				units.clear();
 				updateText();
 			}
 		
@@ -154,7 +154,7 @@ public class SetupScene extends BaseScene {
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				if (tot < MAX_UNITS) {
 					resourcesManager.touch_sound.play();
-					jocks++; tot++;
+					jocks++; tot++; units.add(0);
 					updateText();
 				}
 			}
@@ -167,7 +167,7 @@ public class SetupScene extends BaseScene {
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				if (tot < MAX_UNITS) {
 					resourcesManager.touch_sound.play();
-					nerds++; tot++;
+					nerds++; tot++; units.add(1);
 					updateText();
 				}
 			}
@@ -180,7 +180,7 @@ public class SetupScene extends BaseScene {
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				if (tot < MAX_UNITS) {
 					resourcesManager.touch_sound.play();
-					ditzes++; tot++;
+					ditzes++; tot++; units.add(2);
 					updateText();
 				}
 			}
