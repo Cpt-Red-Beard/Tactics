@@ -55,7 +55,7 @@ public class GameDialogBox {
 			j = textHeight - messageText.getHeight() / 2 - 50;
 		}
 		else {
-			 j = 400+ (backgroundSprite.getHeight()/2) - 50;
+			 j = 400 + (backgroundSprite.getHeight()/2) - 50;
 		}
 		
 		int i = 0;
