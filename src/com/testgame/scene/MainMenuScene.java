@@ -319,7 +319,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 			}
 		});
 		ButtonSprite[] buttons = {okayButton};
-
+		camera.setHUD(new HUD());
 		welcome = new GameDialogBox(camera.getHUD(), "Welcome "+name+"!", 2,true,  buttons);
 
 
@@ -398,7 +398,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		});
 		
 		ButtonSprite[] buttons = {onlineButton, localButton};
-
+		camera.setHUD(new HUD());
 		gameOptionsDialog = new GameDialogBox(camera.getHUD(), "Play locally or online!", 1, true, buttons);
 		
 		

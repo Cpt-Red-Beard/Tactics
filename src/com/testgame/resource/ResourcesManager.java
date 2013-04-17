@@ -257,7 +257,7 @@ public class ResourcesManager {
     	
     	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
     	
-    	dialog_atlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+    	dialog_atlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1500, 1500, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
     	dialog_background3 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "button1.png");
     	dialog_background2 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "button3.png");
     	dialog_background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "dialogbackground.png");

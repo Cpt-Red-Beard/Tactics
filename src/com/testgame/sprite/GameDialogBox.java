@@ -47,6 +47,10 @@ public class GameDialogBox {
 				break;
 				
 			case 2:
+				if(resourcesManager.dialog_background2 == null){
+					Log.d("Null", "null");
+				}
+				
 				hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background2, resourcesManager.vbom));
 				break;
 				
