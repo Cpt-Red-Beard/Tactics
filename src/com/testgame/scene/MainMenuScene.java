@@ -90,9 +90,10 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void onBackKeyPressed() {
+		onHomeKeyPressed();
 		//PushService.unsubscribe(activity, resourcesManager.userString);
 		//loggedin = false;
-		resourcesManager.menu_background_music.pause();
+		//resourcesManager.menu_background_music.pause();
 		//Session.getActiveSession().closeAndClearTokenInformation();
 		//System.exit(0);
 
