@@ -90,7 +90,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void onBackKeyPressed() {
-		onHomeKeyPressed();
+		//onHomeKeyPressed();
 		//PushService.unsubscribe(activity, resourcesManager.userString);
 		//loggedin = false;
 		//resourcesManager.menu_background_music.pause();
@@ -399,7 +399,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 		ButtonSprite[] buttons = {onlineButton, localButton};
 
-		gameOptionsDialog = new GameDialogBox(camera.getHUD(), "", 1, false, buttons);
+		gameOptionsDialog = new GameDialogBox(camera.getHUD(), "Play locally or online!", 1, true, buttons);
 		
 		
 	}

@@ -50,6 +50,9 @@ public class GameDialogBox {
 				hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background2, resourcesManager.vbom));
 				break;
 				
+			case 3:
+				hud.attachChild(backgroundSprite = new Sprite(240, 400, resourcesManager.dialog_background3, resourcesManager.vbom));
+				break;
 			default:
 				break;
 		}
@@ -59,7 +62,8 @@ public class GameDialogBox {
 			j = textHeight - messageText.getHeight() / 2 - 50;
 		}
 		else {
-			 j = 400 + (backgroundSprite.getHeight() - (buttons.length * 100))/2;
+			float h = buttons[0].getHeight();
+			 j = 400 + ((buttons.length  * 100)/2);
 		}
 		
 		int i = 0;
@@ -71,7 +75,7 @@ public class GameDialogBox {
 
 		}
 		
-		final GameDialogBox box = this;
+		
 		
 		
 		

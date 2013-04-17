@@ -183,7 +183,7 @@ public class ResourcesManager {
     public Music menu_background_music, select_sound;
     
     private BuildableBitmapTextureAtlas dialog_atlas;
-    public ITextureRegion dialog_background, dialog_background2, dialogbackground3;
+    public ITextureRegion dialog_background, dialog_background2, dialog_background3;
 
     public Font font;
     
@@ -243,7 +243,7 @@ public class ResourcesManager {
 
     	//online_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "onlinebutton.png");
 
-    	//resume_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "resumebutton.png");
+    	resume_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "resumebutton.png");
 
 
 
@@ -258,7 +258,7 @@ public class ResourcesManager {
     	BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
     	
     	dialog_atlas = new BuildableBitmapTextureAtlas(activity.getTextureManager(), 1024, 1024, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-    	
+    	dialog_background3 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "button1.png");
     	dialog_background2 = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "button3.png");
     	dialog_background = BitmapTextureAtlasTextureRegionFactory.createFromAsset(dialog_atlas, activity, "dialogbackground.png");
     	try {

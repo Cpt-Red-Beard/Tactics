@@ -88,7 +88,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public boolean working = false;
 
 	private float mTouchX = 0, mTouchY = 0, mTouchOffsetX = 0, mTouchOffsetY = 0;
-
+	private GameDialogBox pausemenu;
 	private GameDialogBox winDialog;
 	private GameDialogBox endTurnDialog;
 
@@ -766,41 +766,29 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 	}
 	
-	private void pauseMenu(){
-		final Dialog pausemenu = new Dialog(activity);
-		deselectCharacter(true);
-		pausemenu.setTitle("Paused! Turn: "+getGame().getCount());
-		LinearLayout ll = new LinearLayout(activity);
-		ll.setOrientation(LinearLayout.VERTICAL);
+	
+	public void pauseMenu() {
 		
-
-		Button b1 = new Button(activity);
-        b1.setText("End Turn");
-        b1.setOnClickListener(new View.OnClickListener() {
-
+		ButtonSprite endTurnButton = new ButtonSprite(240, 350, resourcesManager.endturn_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
-			public void onClick(View v) {
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				getGame().nextTurn();
 				pausemenu.dismiss();
-				
 			}
-        });        
-        ll.addView(b1);
-
-        Button b2 = new Button(activity);
-        b2.setText("Resume");
-        b2.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                pausemenu.dismiss();
-            }
-        });
-        ll.addView(b2);
-        
-        Button b3 = new Button(activity);
-        b3.setText("Quit");
-        b3.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                pausemenu.dismiss();
+		});
+		
+		ButtonSprite resumeButton = new ButtonSprite(240, 350, resourcesManager.resume_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				
+				pausemenu.dismiss();
+			}
+		});
+		
+		ButtonSprite quitButton = new ButtonSprite(240, 350, resourcesManager.quit_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				pausemenu.dismiss();
                 activity.runOnUiThread(new Runnable() {
             	    @Override
             	    public void run() {
@@ -808,17 +796,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
               			 
             	    }
             	});
-            }
-        });
-        ll.addView(b3);
+			}
+		});
+		
+		ButtonSprite[] buttons = {endTurnButton, resumeButton, quitButton};
 
-        pausemenu.setContentView(ll);      
-        pausemenu.setCanceledOnTouchOutside(false);
-        pausemenu.show();        
+		pausemenu = new GameDialogBox(camera.getHUD(), "Paused", 3, true, buttons);
 		
 		
 	}
-
 	public void endTurnDialog(String text){
 		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
