@@ -143,6 +143,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 */
 	protected Random rand;
 	
+	public boolean movementEnabled = true;
+	public boolean attackEnabled = true;
+	
 	// -----------------------------------------
 	//     Getter & Setters
 	// -----------------------------------------
@@ -216,6 +219,14 @@ public class AUnit extends CharacterSprite implements IUnit {
 		return this.unitType;
 	}
 
+	public void setCanMove(boolean bool) {
+		movementEnabled = bool;
+	}
+	
+	public void setCanAttack(boolean bool) {
+		attackEnabled = bool;
+	}
+	
 	// --------------------------------------
 	//          Game Code
 	// --------------------------------------
@@ -402,6 +413,8 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 */
 	public ArrayList<Point> availableMoves() {
 
+		if (!movementEnabled) return new ArrayList<Point>();
+		
 		if (unitType.equals("Base")) return new ArrayList<Point>();
 		
 		HashSet<Point> moves = map.bfs(new Point(x , y), energy / movementRange);
@@ -417,6 +430,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 	 * @return list of units this unit can attack
 	 */
 	public ArrayList<AUnit> availableTargets() {
+		
+		if (!attackEnabled) return new ArrayList<AUnit>();
+		
 		if (unitType.equals("Base")) return new ArrayList<AUnit>();
 		if(this.energy < this.attackEnergy) return new ArrayList<AUnit>();	
 		HashSet<AUnit> moves = map.bfsTarget(new Point(x , y), attackRange, player);

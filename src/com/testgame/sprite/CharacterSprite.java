@@ -86,7 +86,7 @@ public class CharacterSprite extends AnimatedSprite {
 					}
 					game.working = true;
 					
-					
+					game.alertForAttack();
 					((AUnit) this.game.getSelectedCharacter()).attack((AUnit) this);
 				} else {
 					
