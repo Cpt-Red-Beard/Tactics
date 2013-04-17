@@ -73,17 +73,7 @@ public class GameDialogBox {
 		
 		final GameDialogBox box = this;
 		
-		okayButton = new ButtonSprite(240, 340 -(100*i), resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
-			@Override
-			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				Log.d("AndEngine", "dismissing dialog box");
-				ResourcesManager.getInstance().select_sound.play();
-				box.dismiss();
-			}
-		});
 		
-		hud.attachChild(okayButton);
-		hud.registerTouchArea(okayButton);
 		
 		//hud.registerTouchArea(okayButton);
 	}
