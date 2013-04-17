@@ -4,11 +4,15 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.sprite.ButtonSprite;
 
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.entity.text.AutoWrap;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.adt.align.HorizontalAlign;
+
+import android.util.Log;
+
 import com.testgame.resource.ResourcesManager;
 
 public class GameDialogBox {
@@ -23,7 +27,7 @@ public class GameDialogBox {
 	private Text messageText;
 	private ButtonSprite okayButton;
 	
-	public GameDialogBox(HUD hud, String message, int back, boolean text, ButtonSprite ... buttons) {
+	public GameDialogBox(HUD hud, String message, int back, ButtonSprite ... buttons) {
 		super();
 		this.buttons = buttons;	
 
@@ -44,14 +48,28 @@ public class GameDialogBox {
 		
 		
 		int i = 0;
-		for(ButtonSprite button : buttons){
-			hud.attachChild(button);
-			button.setPosition(240, 340-(100*i));
-			hud.registerTouchArea(button);
-			i++;
+		if (buttons != null) {
+			for(ButtonSprite button : buttons){
+				hud.attachChild(button);
+				button.setPosition(240, 340-(100*i));
+				hud.registerTouchArea(button);
+				i++;
+			}
 		}
 		
+		final GameDialogBox box = this;
 		
+		okayButton = new ButtonSprite(240, 340 -(100*i), resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				Log.d("AndEngine", "dismissing dialog box");
+				ResourcesManager.getInstance().select_sound.play();
+				box.dismiss();
+			}
+		});
+		
+		hud.attachChild(okayButton);
+		hud.registerTouchArea(okayButton);
 		
 		//hud.registerTouchArea(okayButton);
 	}
@@ -63,10 +81,14 @@ public class GameDialogBox {
 			public void run() {
 				hud.detachChild(backgroundSprite);
 				hud.detachChild(messageText);
+				hud.detachChild(okayButton);
+				hud.unregisterTouchArea(okayButton);
 
-				for(ButtonSprite button: buttons){
-					hud.detachChild(button);
-					hud.unregisterTouchArea(button);
+				if (buttons != null) {
+					for(ButtonSprite button: buttons){
+						hud.detachChild(button);
+						hud.unregisterTouchArea(button);
+					}
 				}
 				
 

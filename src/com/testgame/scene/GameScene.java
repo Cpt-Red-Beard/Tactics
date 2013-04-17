@@ -223,19 +223,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		resourcesManager.tiledMap.setOffsetCenter(0, 0);
 		resourcesManager.tiledMap.setPosition(0, 0);
 		
-		Line[] border = new Line[4];
-		
-		border[0] = new Line(0, -5, 0, heightInTiles * tileSize + 5, 10, vbom);
-		border[1] = new Line(0, 0, widthInTiles * tileSize, 0, 10, vbom);
-		border[2] = new Line(widthInTiles*tileSize, - 5, widthInTiles*tileSize, heightInTiles*tileSize + 5, 10, vbom);
-		border[3] = new Line(0, heightInTiles * tileSize, widthInTiles * tileSize, heightInTiles*tileSize, 10, vbom);
-		
-		for (int i = 0 ; i < 4 ; i ++) {
-			border[i].setColor(Color.BLACK);
-			attachChild(border[i]);
-			border[i].setZIndex(TEXT_Z);
-		}
-		
 		// Initialize highlighted squares list.
 		this.highlightedSquares = new ArrayList<HighlightedSquare>();
 		
@@ -273,16 +260,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		Log.d("AndEngine", "Camera dimenstions = " +  camera.getCameraSceneHeight() + " " + camera.getCameraSceneWidth());
 		Log.d("AndEngine", "Map dimensions = " +  widthInTiles*64 + " " + heightInTiles*64);
 		
-		//drawStoneTiles();
-		
-		this.registerUpdateHandler(new TimerHandler(.01f, new ITimerCallback(){
-
-			@Override
-			public void onTimePassed(TimerHandler pTimerHandler) {
-				drawStoneTiles();
-				
-			}}));
-		
+		drawStoneTiles();
 
 		this.registerUpdateHandler(new TimerHandler(5f, true, new ITimerCallback(){
 
@@ -296,32 +274,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 	
 	private void drawStoneTiles() {
-		
-		float centerX = camera.getCenterX();
-		float centerY = camera.getCenterY();
-		
-		Log.d("AndEngine", "Center = " + centerX + ", " + centerY);
-		
-		float cameraHeight = ((SmoothCamera)camera).getHeight();
-		float cameraWidth = ((SmoothCamera)camera).getWidth();
-		
-		
-		Log.d("AndEngine", "Dimensions = "+ cameraWidth + ", " + cameraHeight);
-		
-		int leftXDiff =  (int) (Math.floor((centerX - cameraWidth/2)/tileSize) * tileSize);
-		int rightXDiff =  (int) (Math.floor((centerX + cameraHeight/2)/tileSize) * tileSize);
-		int downYDiff =  (int) (Math.floor((centerY - cameraHeight/2)/tileSize) * tileSize);
-		int upYDiff = (int) (Math.floor((centerY + cameraHeight/2)/tileSize) * tileSize);
 	
 		if (stoneTiles == null) stoneTiles = new HashSet<Point>();
+	
 		
-		Log.d("AndEngine", "left =" + leftXDiff + ", right ="+rightXDiff+", up ="+upYDiff+", down ="+downYDiff);
-		
-		for (int i = leftXDiff; i < rightXDiff; i = i + tileSize) {
+		for (int i = -640; i < widthInTiles * tileSize + 640; i = i + tileSize) {
 			
-			
-			
-			for (int j = downYDiff; j < upYDiff; j = j + tileSize) {
+			for (int j = -640; j < heightInTiles * tileSize + 640; j = j + tileSize) {
 				
 				if (i >= 0 && i < widthInTiles*tileSize) {
 					if (j >= 0 && j < heightInTiles*tileSize) continue;
@@ -670,8 +629,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
                       
             mTouchX = newX;
             mTouchY = newY;
-            
-            drawStoneTiles();
 
             return true;
         }
@@ -689,7 +646,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
     		float newZoom = this.mPinchZoomStartedCameraZoomFactor * pZoomFactor;
     		if (newZoom > ZOOM_FACTOR_MAX || newZoom < ZOOM_FACTOR_MIN) return;
             ((SmoothCamera) this.camera).setZoomFactor(this.mPinchZoomStartedCameraZoomFactor * pZoomFactor);
-            this.drawStoneTiles();
     }
 
     @Override
@@ -697,7 +653,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
     	float newZoom = this.mPinchZoomStartedCameraZoomFactor * pZoomFactor;
 		if (newZoom > ZOOM_FACTOR_MAX || newZoom < ZOOM_FACTOR_MIN) return; 
     	((SmoothCamera) this.camera).setZoomFactor(this.mPinchZoomStartedCameraZoomFactor * pZoomFactor);
-    	this.drawStoneTiles();
     }
     
 
@@ -876,7 +831,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		ButtonSprite[] buttons = {okay};
 	
         
-        endTurnDialog = new GameDialogBox(camera.getHUD(), text, 2, true, buttons); 
+        endTurnDialog = new GameDialogBox(camera.getHUD(), text, 2, buttons); 
       
 		
 	}
@@ -930,7 +885,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			}
 		});
 		ButtonSprite[] buttons = {okay};
-		winDialog = new GameDialogBox(camera.getHUD(), Text, 2, true, buttons);
+		winDialog = new GameDialogBox(camera.getHUD(), Text, 2, buttons);
 
 	}
 
@@ -1034,4 +989,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		return cost;
 	}
 
+	public void alertForAttack() {}
+	
 }

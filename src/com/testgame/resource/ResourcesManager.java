@@ -177,7 +177,8 @@ public class ResourcesManager {
     // Button texture regions
     private BuildableBitmapTextureAtlas menuTextureAtlas;
     public ITextureRegion quit_region, newgame_region, options_region, continue_region, login_region, reset_region, blank_region, howtoplay_region, logout_region, play_region;
-
+    public ITextureRegion cancel_region, endturn_region, guide_region, local_region, online_region, resume_region;
+    
     public Music menu_background_music, select_sound;
 
     public Font font;
@@ -226,7 +227,18 @@ public class ResourcesManager {
     	
     	play_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "playbutton.png");
     	
-    	
+    	cancel_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "cancelbutton.png");
+
+    	endturn_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "endturnbutton.png");
+
+    	guide_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "guidebutton.png");
+
+    	local_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "localbutton.png");
+
+    	//online_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "onlinebutton.png");
+
+    	//resume_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "resumebutton.png");
+
 
     	try {
     	    this.menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));

@@ -30,7 +30,6 @@ public class TutorialScene extends BaseScene {
 	private final int BASICS = 0;
 	private final int CONTROLS = 1;
 	private final int UNITS = 2;
-	private final int GUIDE = 3;
 	
 	private int which;
 	
@@ -102,7 +101,7 @@ public class TutorialScene extends BaseScene {
 			}
 		});
 		
-		guideButton = new ButtonSprite(245, 400, resourcesManager.blank_region, vbom, new OnClickListener() {
+		guideButton = new ButtonSprite(245, 400, resourcesManager.guide_region, vbom, new OnClickListener() {
 
 			@Override
 			public void onClick(ButtonSprite pButtonSprite,
