@@ -319,7 +319,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		});
 		ButtonSprite[] buttons = {okayButton};
 
-		welcome = new GameDialogBox(camera.getHUD(), "Welcome "+name+"!", 2, buttons);
+		welcome = new GameDialogBox(camera.getHUD(), "Welcome "+name+"!", 2,true,  buttons);
 
 
 	}

@@ -31,7 +31,7 @@ public class GameDialogBox {
 	private boolean text;
 	
 	
-	public GameDialogBox(HUD hud, String message, int back, ButtonSprite ... buttons) {
+	public GameDialogBox(HUD hud, String message, int back, boolean text, ButtonSprite ... buttons) {
 		super();
 		this.buttons = buttons;	
 		this.hud = hud;
