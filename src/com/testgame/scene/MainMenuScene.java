@@ -67,7 +67,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	private static AlertDialog loading;
 	private static AlertDialog invitation;
-	private static AlertDialog gameOptionsDialog;
+
 	private static AlertDialog textDialog;
 	private static AlertDialog acceptDialog;
 	private static AlertDialog mapDialog;
@@ -75,10 +75,13 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static String selectedMapName = "Default"; 
 	private static ButtonSprite okayButton;
 	private static GameDialogBox welcome;
+	private static GameDialogBox gameOptionsDialog;
+	private boolean click = true;
 	
 
 	@Override
 	public void createScene() {
+		camera.setHUD(new HUD());
 		createBackground();
 		createMenuChildScene();
 		usernames = new HashMap<String, String>();
@@ -158,7 +161,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        switch(pMenuItem.getID())
 	        {
 	        case MENU_QUIT:
-	        	
+	        	if(!click)
+	        		return true;
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
@@ -170,7 +174,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	return true;
 	        
 	        case MENU_LOGIN:
-	        	
+	        	if(!click)
+	        		return true;
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
@@ -211,6 +216,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	
 	            return true;
 	        case MENU_PLAY:
+	        	if(!click)
+	        		return true;
 	        	activity.runOnUiThread(new Runnable() {
 	        	    @Override
 	        	    public void run() {
@@ -223,13 +230,16 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	            return true;
 	        
 	        case MENU_HOWTOPLAY:
+	        	if(!click)
+	        		return true;
 	        	SceneManager.getInstance().previousScene = this.getSceneType();
 	        	SceneManager.getInstance().loadTutorialScene(engine);
 	        	//SceneManager.getInstance().loadSetupScene(engine);
 	        	return true;
 	        	
 	        case MENU_LOGOUT:
-	        	if(!logoutMenuItem.isVisible()){
+	        	
+	        	if(!logoutMenuItem.isVisible() || !click){
 	        		return true;
 	        	}
 
@@ -295,20 +305,21 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		}
 	
 	private void welcomeDialog() {
-		camera.setHUD(new HUD());
+		
 		logoutMenuItem.setVisible(true);
-
+		click = false;
 		okayButton = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				Log.d("AndEngine", "dismissing dialog box");
 				ResourcesManager.getInstance().select_sound.play();
 				welcome.dismiss();
+				click = true;
 			}
 		});
 		ButtonSprite[] buttons = {okayButton};
 
-		welcome = new GameDialogBox(camera.getHUD(), "Welcome "+name+"!", 2, buttons);
+		welcome = new GameDialogBox(camera.getHUD(), "Welcome "+name+"!", 2,true,  buttons);
 
 
 	}
@@ -355,42 +366,41 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	}
 	
 	public void gameOptions() {
-		final AlertDialog.Builder gameOptions = new AlertDialog.Builder(activity);
-		gameOptions.setTitle("Would you like to play an online or local game?");
+		click = false;
+		ButtonSprite onlineButton = new ButtonSprite(240, 350, resourcesManager.online_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				gameOptionsDialog.dismiss();
+				activity.runOnUiThread(new Runnable () {
+					@Override
+					public void run() {
+						click = true;
+						createMapDialog();
+					}
+				});
+			}
+		});
 		
-		gameOptions.setNegativeButton("Local", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				// launch a local game.	
-				
+		ButtonSprite localButton = new ButtonSprite(240, 350, resourcesManager.local_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				resourcesManager.isLocal = true;
 				gameOptionsDialog.dismiss();
 				activity.runOnUiThread(new Runnable () {
 					@Override
 					public void run() {
-						createMapDialog();
-					}
-				});
-				
-			}
-		});
-
-		gameOptions.setNeutralButton("Online", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				// Launch an online game.
-				
-				gameOptionsDialog.dismiss();
-				activity.runOnUiThread(new Runnable () {
-					@Override
-					public void run() {
+						click = true;
 						createMapDialog();
 					}
 				});
 			}
 		});
 		
-		gameOptionsDialog = gameOptions.create();
-		gameOptionsDialog.setCanceledOnTouchOutside(false);
-		gameOptionsDialog.show();
+		ButtonSprite[] buttons = {onlineButton, localButton};
+
+		gameOptionsDialog = new GameDialogBox(camera.getHUD(), "", 1, false, buttons);
+		
+		
 	}
 	
 	public void createInvite(final JSONObject object){

@@ -50,7 +50,7 @@ public class GuideScene extends GameScene {
 			disableAllMoves();
 			disableAllAttacks();
 			
-			new GameDialogBox(this.hud, "Welcome to the guide! To view a unit's information, just tap on their picture.", 2, null);
+			new GameDialogBox(this.hud, "Welcome to the guide! To view a unit's information, just tap on their picture.", 2,true,  null);
 			
 			break;
 		case MOVE_UNIT:
@@ -100,7 +100,7 @@ public class GuideScene extends GameScene {
 			currentPhase = GuidePhase.WIN_GAME;
 			switchToCurrentPhase();
 			
-			new GameDialogBox(this.hud, "Fantastic! You've learned all the moves! Keep playing til you win. :)", 2, null);
+			new GameDialogBox(this.hud, "Fantastic! You've learned all the moves! Keep playing til you win. :)", 2, true, null);
 		}
 	}
 	
@@ -112,7 +112,7 @@ public class GuideScene extends GameScene {
 			currentPhase = GuidePhase.ATTACK_UNIT;
 			switchToCurrentPhase();
 			
-			new GameDialogBox(this.hud, "Nice! Next, try attacking by selecting one of your characters and then hitting a red highlighted unit.", 2, null);
+			new GameDialogBox(this.hud, "Nice! Next, try attacking by selecting one of your characters and then hitting a red highlighted unit.", 2, true, null);
 
 		}
 	}
@@ -124,7 +124,7 @@ public class GuideScene extends GameScene {
 			currentPhase = GuidePhase.MOVE_UNIT;
 			switchToCurrentPhase();
 			
-			new GameDialogBox(this.hud, "Great job! To move a character, select a blue unit and then double tap on a blue square to move.", 2, null);
+			new GameDialogBox(this.hud, "Great job! To move a character, select a blue unit and then double tap on a blue square to move.", 2, true,  null);
 		}
 		
 		super.setSelectedCharacter(selectedCharacter);
