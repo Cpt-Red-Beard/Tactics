@@ -80,7 +80,7 @@ public class TutorialScene extends BaseScene {
 		basicsButton = new ButtonSprite(245, 700, resourcesManager.basics_region, vbom, new OnClickListener() {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				
+				resourcesManager.select_sound.play();
 				showBasics();
 			}
 		});
@@ -88,7 +88,7 @@ public class TutorialScene extends BaseScene {
 		controlsButton = new ButtonSprite(245, 600, resourcesManager.controls_region, vbom, new OnClickListener() {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				
+				resourcesManager.select_sound.play();
 				showControls();
 			}
 		});
@@ -96,7 +96,7 @@ public class TutorialScene extends BaseScene {
 		unitsButton = new ButtonSprite(245, 500, resourcesManager.units_region, vbom, new OnClickListener() {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				
+				resourcesManager.select_sound.play();
 				showUnits();
 			}
 		});
@@ -106,6 +106,7 @@ public class TutorialScene extends BaseScene {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite,
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				resourcesManager.select_sound.play();
 				SceneManager.getInstance().loadGuideScene(engine);
 			}
 		});
