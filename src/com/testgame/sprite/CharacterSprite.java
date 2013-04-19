@@ -56,7 +56,7 @@ public class CharacterSprite extends AnimatedSprite {
 		
 		APlayer p = this.player;
 		boolean isTurn = p.isTurn();
-		
+		if(!game.click)return true;
 		if (game.animating) return true;
 		if(game.working) return true;
 		

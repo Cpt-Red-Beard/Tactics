@@ -48,6 +48,7 @@ public class GuideScene extends GameScene {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite,
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				click = true;
 				dialogBox.dismiss();
 			}});
 		
@@ -65,6 +66,7 @@ public class GuideScene extends GameScene {
 			disableAllAttacks();
 			
 			ButtonSprite[] buttons = {okayButton};
+			click = false;
 			dialogBox = new GameDialogBox(this.hud, "Welcome to the guide! To view a unit's information, just tap on their picture.", 2,true,  buttons);
 			
 			break;
@@ -116,6 +118,7 @@ public class GuideScene extends GameScene {
 			switchToCurrentPhase();
 			
 			ButtonSprite[] buttons = {okayButton};
+			click = false;
 			dialogBox = new GameDialogBox(this.hud, "Fantastic! You've learned all the moves! Keep playing til you win. :)", 2, true, buttons);
 		}
 	}
@@ -129,6 +132,7 @@ public class GuideScene extends GameScene {
 			switchToCurrentPhase();
 			
 			ButtonSprite[] buttons = {okayButton};
+			click = false;
 			dialogBox = new GameDialogBox(this.hud, "Nice! Next, try attacking by selecting one of your characters and then hitting a red highlighted unit.", 2, true, buttons);
 
 		}
@@ -142,6 +146,7 @@ public class GuideScene extends GameScene {
 			switchToCurrentPhase();
 			
 			ButtonSprite[] buttons = {okayButton};
+			click = false;
 			dialogBox = new GameDialogBox(this.hud, "Great job! To move a character, select a blue unit and then double tap on a blue square to move.", 2, true,  buttons);
 		}
 		
