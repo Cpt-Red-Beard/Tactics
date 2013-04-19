@@ -27,7 +27,7 @@ public class ComputerPlayer extends APlayer {
 	}
 	
 	public void startTurn(JSONArray array){
-		if(turn && isTurn())
+		if(turn || game.getPlayer().isTurn())
 			return;
 		turn = true;
 		Log.d("Array", array.toString());
