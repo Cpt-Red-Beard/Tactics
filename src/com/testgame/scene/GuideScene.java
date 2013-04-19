@@ -13,7 +13,6 @@ import com.testgame.sprite.HighlightedSquare;
 
 public class GuideScene extends GameScene {
 	
-	
 	private ButtonSprite okayButton;
 	private GameDialogBox dialogBox;
 
@@ -108,7 +107,6 @@ public class GuideScene extends GameScene {
 			u.setCanMove(false);
 		}
 	}
-
 	
 	@Override 
 	public void alertForAttack() {

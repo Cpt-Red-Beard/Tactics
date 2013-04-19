@@ -772,6 +772,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		ButtonSprite endTurnButton = new ButtonSprite(240, 350, resourcesManager.endturn_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				resourcesManager.select_sound.play();
 				getGame().nextTurn();
 				pausemenu.dismiss();
 			}
@@ -780,7 +781,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		ButtonSprite resumeButton = new ButtonSprite(240, 350, resourcesManager.resume_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				
+				resourcesManager.select_sound.play();
 				pausemenu.dismiss();
 			}
 		});
@@ -788,6 +789,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		ButtonSprite quitButton = new ButtonSprite(240, 350, resourcesManager.quit_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				resourcesManager.select_sound.play();
 				pausemenu.dismiss();
                 activity.runOnUiThread(new Runnable() {
             	    @Override
@@ -802,13 +804,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		ButtonSprite[] buttons = {endTurnButton, resumeButton, quitButton};
 
 		pausemenu = new GameDialogBox(camera.getHUD(), "Paused", 3, true, buttons);
-		
-		
 	}
 	public void endTurnDialog(String text){
 		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				resourcesManager.select_sound.play();
+
 				game.getPlayer().beginTurn();
 				endTurnDialog.dismiss();
 			}
@@ -862,6 +864,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				Log.d("AndEngine", "dismissing dialog box");
+				
 				ResourcesManager.getInstance().select_sound.play();
 				winDialog.dismiss();
 				disposeScene();
