@@ -261,7 +261,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		Log.d("AndEngine", "Camera dimenstions = " +  camera.getCameraSceneHeight() + " " + camera.getCameraSceneWidth());
 		Log.d("AndEngine", "Map dimensions = " +  widthInTiles*64 + " " + heightInTiles*64);
 		
-		drawStoneTiles();
+		//drawStoneTiles();
 
 		this.registerUpdateHandler(new TimerHandler(5f, true, new ITimerCallback(){
 
