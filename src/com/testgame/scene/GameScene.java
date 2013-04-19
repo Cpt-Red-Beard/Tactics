@@ -774,6 +774,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		ButtonSprite endTurnButton = new ButtonSprite(240, 350, resourcesManager.endturn_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				deselectCharacter(true);
 				resourcesManager.select_sound.play();
 				getGame().nextTurn();
 				pausemenu.dismiss();
@@ -821,7 +822,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-
+				
 				resourcesManager.select_sound.play();
 
 

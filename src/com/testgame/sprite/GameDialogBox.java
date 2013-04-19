@@ -70,7 +70,7 @@ public class GameDialogBox {
 			
 			
 			
-			j = 400 + backgroundSprite.getHeight()/2 - 50 - messageText.getHeight();
+			j = 400 + backgroundSprite.getHeight()/2 - 75 - messageText.getHeight();
 			
 		}
 		else {
