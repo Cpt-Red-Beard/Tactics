@@ -925,15 +925,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			Point a = path.get(i);
 			Point b = path.get(i+1);
 			
-			if (i == path.size() - 2) {
-				if (a.x == b.x){ // horizontal
+			if (i == path.size() - 2) { // last line! 
+				if (a.x == b.x){ // vertical
 					if (a.y > b.y){  // coming from above
 						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize + tileSize, 20, vbom);
 					} else { // coming from below
 						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize, 20, vbom);
 					}
 				}
-				if (a.y == b.y){  // vertical 
+				if (a.y == b.y){  // horizontal 
 					if (a.x > b.x){  // coming the right
 						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + tileSize, b.y*tileSize + 32, 20, vbom);
 					}else { // coming from the left
@@ -941,8 +941,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 					}
 					
 				}
-			} else {
-				arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 32, b.x*tileSize + 32, b.y*tileSize + 32, 20, vbom);
+			} else { // normal line
+				if (a.x == b.x){ // vertical
+					if (a.y > b.y){  // coming from above
+						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 38, b.x*tileSize + 32, b.y*tileSize + 26, 20, vbom);
+					} else { // coming from below
+						arrowPath[i] = new Line(a.x*tileSize + 32, a.y*tileSize + 26, b.x*tileSize + 32, b.y*tileSize + 38, 20, vbom);
+					}
+				}
+				if (a.y == b.y){  // horizontal 
+					if (a.x > b.x){  // coming the right
+						arrowPath[i] = new Line(a.x*tileSize + 38, a.y*tileSize + 32, b.x*tileSize + 26, b.y*tileSize + 32, 20, vbom);
+					}else { // coming from the left
+						arrowPath[i] = new Line(a.x*tileSize + 26, a.y*tileSize + 32, b.x*tileSize + 38, b.y*tileSize + 32, 20, vbom);
+					}
+				}
+				
 			}
 		}
 		
