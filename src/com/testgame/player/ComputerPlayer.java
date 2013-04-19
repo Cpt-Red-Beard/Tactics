@@ -27,7 +27,7 @@ public class ComputerPlayer extends APlayer {
 	}
 	
 	public void startTurn(JSONArray array){
-		if(turn)
+		if(turn || game.getPlayer().isTurn())
 			return;
 		turn = true;
 		Log.d("Array", array.toString());
@@ -44,7 +44,6 @@ public class ComputerPlayer extends APlayer {
 	
 	public void performNext() {
 		if(actionsToPerform.length() == 0){
-			turn = false;
 			if(game.isFirstTurn()) 
 				game.incrementCount();
 			this.endTurn();
@@ -57,6 +56,7 @@ public class ComputerPlayer extends APlayer {
         	    @Override
         	    public void run() {
         	    	game.getGameScene().endTurnDialog("Begin Turn!");
+        	    	turn = false;
           			 
         	    }
         	});
@@ -73,11 +73,11 @@ public class ComputerPlayer extends APlayer {
 					 // this calls turn init on all the units
 					if(game.endGame())
 						return;
-					turn = false;
 					game.getGameScene().activity.runOnUiThread(new Runnable() {
 		        	    @Override
 		        	    public void run() {
 		        	    	game.getGameScene().endTurnDialog("Begin Turn!");
+		        	    	turn = false;
 		          			 
 		        	    }
 		        	});

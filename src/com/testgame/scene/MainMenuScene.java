@@ -148,7 +148,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    quitMenuItem.setPosition(0, -125);
 	    logoutMenuItem.setPosition(0, -325); // place log out all the way at the bottom.
 	    logoutMenuItem.setVisible(false);
-	    menuChildScene.unregisterTouchArea(logoutMenuItem);
+	    //menuChildScene.unregisterTouchArea(logoutMenuItem);
 	    //optionsMenuItem.disabled(true);
 	    
 	    menuChildScene.setOnMenuItemClickListener(this);
@@ -239,11 +239,9 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	        	return true;
 	        	
 	        case MENU_LOGOUT:
-	        	
-	        	if(!logoutMenuItem.isVisible() || !click){
+	        	if(!logoutMenuItem.isVisible() ){
 	        		return true;
 	        	}
-
 	        	PushService.unsubscribe(activity, resourcesManager.userString);
 	    		Session.getActiveSession().closeAndClearTokenInformation();
 	    		logoutMenuItem.setVisible(false);

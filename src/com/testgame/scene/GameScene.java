@@ -143,6 +143,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	private Sprite bottomBar;
 	
+	public boolean click = true;
+	
 	@Override
 	public void onBackKeyPressed() {
 		
@@ -259,7 +261,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		Log.d("AndEngine", "Camera dimenstions = " +  camera.getCameraSceneHeight() + " " + camera.getCameraSceneWidth());
 		Log.d("AndEngine", "Map dimensions = " +  widthInTiles*64 + " " + heightInTiles*64);
 		
-		drawStoneTiles();
+		//drawStoneTiles();
 
 		this.registerUpdateHandler(new TimerHandler(5f, true, new ITimerCallback(){
 
@@ -331,7 +333,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 			@Override
 			public void onClick(ButtonSprite pButtonSprite,float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				
+				if(!click)return;
 				if (animating) return;
 				
 				resourcesManager.select_sound.play();
@@ -351,7 +353,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             @Override
             public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX,
                             float pTouchAreaLocalY) {
-            	
+            	if(!click)return;
             	if (animating) return;
             	
             	resourcesManager.select_sound.play();
@@ -372,7 +374,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			@Override
 			public void onClick(ButtonSprite pButtonSprite,
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				
+				if(!click)return;
 				if (animating) return;
 				
 				resourcesManager.select_sound.play();
@@ -389,7 +391,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			@Override
 			public void onClick(ButtonSprite pButtonSprite,
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
-				
+				if(!click)return;
 				if (animating) return;
 				
 				resourcesManager.select_sound.play();
@@ -598,7 +600,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public boolean onSceneTouchEvent(Scene pScene, TouchEvent pTouchEvent) {
 		
 		if (this.hud.getChildScene() != null) return false; // tutorial menu is up, don't move around!
-		
+		if(!click)return false;
 		if (animating) return false; // If we're moving, don't recognize touch
 		
 		this.mPinchZoomDetector.onTouchEvent(pTouchEvent);
@@ -768,20 +770,25 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	
 	public void pauseMenu() {
-		
+		click = false;
 		ButtonSprite endTurnButton = new ButtonSprite(240, 350, resourcesManager.endturn_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				resourcesManager.select_sound.play();
 				getGame().nextTurn();
 				pausemenu.dismiss();
+				click = true;
 			}
 		});
 		
 		ButtonSprite resumeButton = new ButtonSprite(240, 350, resourcesManager.resume_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+
 				resourcesManager.select_sound.play();
+
+				click = true;
+
 				pausemenu.dismiss();
 			}
 		});
@@ -789,7 +796,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		ButtonSprite quitButton = new ButtonSprite(240, 350, resourcesManager.quit_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+
 				resourcesManager.select_sound.play();
+
+				click = true;
+
 				pausemenu.dismiss();
                 activity.runOnUiThread(new Runnable() {
             	    @Override
@@ -806,10 +817,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		pausemenu = new GameDialogBox(camera.getHUD(), "Paused", 3, true, buttons);
 	}
 	public void endTurnDialog(String text){
+		click = false;
 		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+
 				resourcesManager.select_sound.play();
+
+
+				click = true;
 
 				game.getPlayer().beginTurn();
 				endTurnDialog.dismiss();
@@ -859,10 +875,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 
 	public void quitDialog(String Text) {
-		
+		click = false;
 		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				click = true;
 				Log.d("AndEngine", "dismissing dialog box");
 				
 				ResourcesManager.getInstance().select_sound.play();

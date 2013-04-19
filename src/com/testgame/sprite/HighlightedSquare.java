@@ -57,7 +57,7 @@ public class HighlightedSquare extends Rectangle {
 	@Override
     public boolean onAreaTouched(final TouchEvent pSceneTouchEvent, final float pTouchAreaLocalX, final float pTouchAreaLocalY) {
 		Log.d("AndEngine", "Square touched!");
-
+		if(!game.click)return true;
 		if(!game.onSceneTouchEvent(game, pSceneTouchEvent)){
 
 			if (pSceneTouchEvent.getAction() == TouchEvent.ACTION_DOWN) {
