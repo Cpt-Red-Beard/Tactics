@@ -48,6 +48,7 @@ public class GuideScene extends GameScene {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite,
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				resourcesManager.select_sound.play();
 				dialogBox.dismiss();
 			}});
 		
@@ -65,7 +66,7 @@ public class GuideScene extends GameScene {
 			disableAllAttacks();
 			
 			ButtonSprite[] buttons = {okayButton};
-			dialogBox = new GameDialogBox(this.hud, "Welcome to the guide! To view a unit's information, just tap on their picture.", 2,true,  buttons);
+			dialogBox = new GameDialogBox(this.hud, "Welcome to the guide! To view a unit's information, just tap on their picture.", 1, true, buttons);
 			
 			break;
 		case MOVE_UNIT:
@@ -116,7 +117,7 @@ public class GuideScene extends GameScene {
 			switchToCurrentPhase();
 			
 			ButtonSprite[] buttons = {okayButton};
-			dialogBox = new GameDialogBox(this.hud, "Fantastic! You've learned all the moves! Keep playing til you win. :)", 2, true, buttons);
+			dialogBox = new GameDialogBox(this.hud, "Fantastic! You've learned all the moves! Keep playing til you win. :)", 1, true, buttons);
 		}
 	}
 	
@@ -129,7 +130,7 @@ public class GuideScene extends GameScene {
 			switchToCurrentPhase();
 			
 			ButtonSprite[] buttons = {okayButton};
-			dialogBox = new GameDialogBox(this.hud, "Nice! Next, try attacking by selecting one of your characters and then hitting a red highlighted unit.", 2, true, buttons);
+			dialogBox = new GameDialogBox(this.hud, "Nice! Next, try attacking by selecting one of your characters and then hitting a red highlighted unit.", 1, true, buttons);
 
 		}
 	}
@@ -142,7 +143,7 @@ public class GuideScene extends GameScene {
 			switchToCurrentPhase();
 			
 			ButtonSprite[] buttons = {okayButton};
-			dialogBox = new GameDialogBox(this.hud, "Great job! To move a character, select a blue unit and then double tap on a blue square to move.", 2, true,  buttons);
+			dialogBox = new GameDialogBox(this.hud, "Great job! To move a character, select a blue unit and then double tap on a blue square to move.", 1, true,  buttons);
 		}
 		
 		super.setSelectedCharacter(selectedCharacter);
