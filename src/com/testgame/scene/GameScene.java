@@ -873,7 +873,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		ButtonSprite[] buttons = {okay, quit};
 		
-		quitDialog = new GameDialogBox(camera.getHUD(), "Are you sure you wish to quit the game? All progress will be lost!", 1, true,  buttons);
+		quitDialog = new GameDialogBox(camera.getHUD(), "Are you sure you wish to quit the game? All progress will be lost!", 3, true,  buttons);
 		
 	}
 	

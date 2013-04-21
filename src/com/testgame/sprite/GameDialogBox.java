@@ -65,16 +65,22 @@ public class GameDialogBox {
 			messageText = new Text(240, 400, resourcesManager.cartoon_font_white, message, new TextOptions(AutoWrap.WORDS, backgroundSprite.getWidth()-100, HorizontalAlign.CENTER, Text.LEADING_DEFAULT), resourcesManager.vbom);
 			
 			hud.attachChild(messageText);
+			if(400 + (backgroundSprite.getHeight() / 2) - 50 + (messageText.getHeight()/2) > 400 + backgroundSprite.getHeight()/2){
+				messageText.setPosition(240, 400 + backgroundSprite.getHeight() / 2 - 100);
+				j = 400 + (backgroundSprite.getHeight()/2 - 100) - messageText.getHeight()- 25;
+			}
+			else{
+				messageText.setPosition(240, 400 + backgroundSprite.getHeight() / 2 - 50);
+				j = 400 + (backgroundSprite.getHeight()/2 - 50) - messageText.getHeight()- 25;
+			}
+				
 			
-			messageText.setPosition(240, 400 + backgroundSprite.getHeight() / 2 - 50);
 			
 			
 			
-			j = 400 + (backgroundSprite.getHeight()/2 - 50) - messageText.getHeight();
 			
 		}
 		else {
-			float h = buttons[0].getHeight();
 			 j = 400 + ((buttons.length  * 100)/2);
 		}
 		

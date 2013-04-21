@@ -461,13 +461,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 		
 		
-		final AlertDialog.Builder invite = new AlertDialog.Builder(activity);
-		try {
-			invite.setTitle(object.getString("name")+" wants to play!");
-		} catch (JSONException e) {
-			
-			e.printStackTrace();
-		}
+		
 		
 		
 		
@@ -479,7 +473,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 		camera.setHUD(new HUD());
 		try {
-			invitation = new GameDialogBox(camera.getHUD(), object.getString("name")+" wants to play!", 1, true, buttons);
+			invitation = new GameDialogBox(camera.getHUD(), object.getString("name")+" wants to play!", 3, true, buttons);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -591,7 +585,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		
 		ButtonSprite[] buttons = {okay, quit};
 		
-		quitDialog = new GameDialogBox(camera.getHUD(), "Are you sure you wish to quit the game?", 1, true,  buttons);
+		quitDialog = new GameDialogBox(camera.getHUD(), "Are you sure you wish to quit the game?", 3, true,  buttons);
 		
 	}
 	
