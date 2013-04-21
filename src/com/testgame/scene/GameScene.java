@@ -40,15 +40,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-
 import com.parse.ParseException;
 import com.parse.FindCallback;
 import com.parse.ParseObject;
@@ -274,7 +269,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		}));
 	}
 	
-	private void drawStoneTiles() {
+	/*private void drawStoneTiles() {
 	
 		if (stoneTiles == null) stoneTiles = new HashSet<Point>();
 	
@@ -301,7 +296,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		}
 		
 		sortChildren();
-	}
+	}*/
 
 	protected void createHUD() {
 		
