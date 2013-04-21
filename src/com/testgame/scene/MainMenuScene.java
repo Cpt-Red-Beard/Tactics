@@ -63,13 +63,13 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	private static IMenuItem logoutMenuItem;
 	private static List<String> userslist = new ArrayList<String>();
 	private AlertDialog dialog;
-	private AlertDialog quitDialog;
+	private GameDialogBox quitDialog;
 
 	private static AlertDialog loading;
-	private static AlertDialog invitation;
+	private static GameDialogBox invitation;
 
-	private static AlertDialog textDialog;
-	private static AlertDialog acceptDialog;
+	private static GameDialogBox textDialog;
+	private static GameDialogBox acceptDialog;
 	private static AlertDialog mapDialog;
 	private static Map<String, String> usernames;
 	private static String selectedMapName = "Default"; 
@@ -93,7 +93,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		//onHomeKeyPressed();
 		//PushService.unsubscribe(activity, resourcesManager.userString);
 		//loggedin = false;
-		//resourcesManager.menu_background_music.pause();
+		resourcesManager.menu_background_music.pause();
 		//Session.getActiveSession().closeAndClearTokenInformation();
 		//System.exit(0);
 
@@ -403,16 +403,12 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	}
 	
 	public void createInvite(final JSONObject object){
-		final AlertDialog.Builder invite = new AlertDialog.Builder(activity);
-		try {
-			invite.setTitle(object.getString("name")+" wants to play!");
-		} catch (JSONException e) {
-			
-			e.printStackTrace();
-		}
-		invite.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-            	try {
+		
+		click = false;
+		ButtonSprite cancelButton = new ButtonSprite(240, 350, resourcesManager.cancel_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				try {
 					JSONObject data = new JSONObject("{\"alert\": \"Invitation Denied\", \"action\": \"com.testgame.CANCEL\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
 					 ParsePush push = new ParsePush();
 		             push.setChannel("user_"+object.getString("userid")); 
@@ -421,91 +417,116 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
                 } catch (JSONException e) { 
 					e.printStackTrace();
 				}	
+			click = true;
            	 invitation.dismiss();
             }
-        });
+		});
 		
-		invite.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-            				try {
-								resourcesManager.opponentDeviceID = object.getString("deviceId");
-								
-								resourcesManager.setMap(object.getString("map"));
-							} catch (JSONException e) {
-								
-								e.printStackTrace();
-							}
-            				resourcesManager.isLocal = false;
-            				resourcesManager.inGame = true;
-        		        	resourcesManager.gameId = UUID.randomUUID().toString();
-        		        	Random rand = new Random();
-        	            	boolean h;
-        	            	if (rand.nextDouble() > 0.5)
-        	        			h = true;
-        	        		else{
-        	        			h = false;
-        	        			resourcesManager.turn = true;
-        	        		}
-        	            	
-        	            	try {
-        	            		resourcesManager.opponent = object.getString("name");
-        						resourcesManager.opponentString = object.getString("userid");
-        					} catch (JSONException e1) {
-        						
-        						e1.printStackTrace();
-        					}
-        	            	try {
-        						JSONObject data = new JSONObject("{\"alert\": \"Invitation Accepted\", \"action\": \"com.testgame.ACCEPT\", \"GameId\": \""+resourcesManager.gameId+"\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"turn\": \""+h+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
-        						 ParsePush push = new ParsePush();
-        			             push.setChannel("user_"+object.getString("userid"));
-        			             push.setData(data);
-        			             push.sendInBackground();
-        	                } catch (JSONException t) {
-        						t.printStackTrace();
-        					}	 
-        	            	
-        	           	 invitation.dismiss();
-        	           	 SceneManager.getInstance().loadSetupScene(engine);
+		ButtonSprite continueButton = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				try {
+					resourcesManager.opponentDeviceID = object.getString("deviceId");
+					
+					resourcesManager.setMap(object.getString("map"));
+				} catch (JSONException e) {
+					
+					e.printStackTrace();
+				}
+				resourcesManager.isLocal = false;
+				resourcesManager.inGame = true;
+	        	resourcesManager.gameId = UUID.randomUUID().toString();
+	        	Random rand = new Random();
+            	boolean h;
+            	if (rand.nextDouble() > 0.5)
+        			h = true;
+        		else{
+        			h = false;
+        			resourcesManager.turn = true;
+        		}
+            	
+            	try {
+            		resourcesManager.opponent = object.getString("name");
+					resourcesManager.opponentString = object.getString("userid");
+				} catch (JSONException e1) {
+					
+					e1.printStackTrace();
+				}
+            	try {
+					JSONObject data = new JSONObject("{\"alert\": \"Invitation Accepted\", \"action\": \"com.testgame.ACCEPT\", \"GameId\": \""+resourcesManager.gameId+"\", \"deviceId\": \""+resourcesManager.deviceID+"\", \"turn\": \""+h+"\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
+					 ParsePush push = new ParsePush();
+		             push.setChannel("user_"+object.getString("userid"));
+		             push.setData(data);
+		             push.sendInBackground();
+                } catch (JSONException t) {
+					t.printStackTrace();
+				}	 
+            click = true;	
+           	 invitation.dismiss();
+           	 SceneManager.getInstance().loadSetupScene(engine);
+            }
+		});
+		
+		
+		
+		final AlertDialog.Builder invite = new AlertDialog.Builder(activity);
+		try {
+			invite.setTitle(object.getString("name")+" wants to play!");
+		} catch (JSONException e) {
+			
+			e.printStackTrace();
+		}
+		
+		
+		
 		          
 
-            }
-        });
+		ButtonSprite[] buttons = {continueButton, cancelButton};
 		
 		
 		
-		invitation = invite.create();
-		invitation.setCanceledOnTouchOutside(false);
-		invitation.show();
+		camera.setHUD(new HUD());
+		try {
+			invitation = new GameDialogBox(camera.getHUD(), object.getString("name")+" wants to play!", 1, true, buttons);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public void createDialog(String text){
 		
-		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
-		dia.setTitle(text);
-		dia.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {	
+		click = false;
+		ButtonSprite confirmButton = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {	
+			click = true;
            	 textDialog.dismiss();
             }
-        });
+		});
 		
-		textDialog = dia.create();
-		textDialog.setCanceledOnTouchOutside(false);
-		textDialog.show();
+		
+		
+		
+		ButtonSprite[] buttons = {confirmButton};
+		
+		
+		
+		camera.setHUD(new HUD());
+		textDialog = new GameDialogBox(camera.getHUD(), text, 1, true, buttons);
+		
 		
 		
 	}
 	
 	public void createAcceptDialog(final JSONObject object){
-		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
-		try {
-			dia.setTitle(object.getString("name")+ " accepted the invitation!");
-		} catch (JSONException e) {
-			
-			e.printStackTrace();
-		}
-		dia.setNeutralButton("Start Game", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) { 
-        		try {
+		
+		click = false;
+		ButtonSprite confirmButton = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				try {
 					
         			if(object.getString("turn").equals("true")){
 						resourcesManager.turn = true;
@@ -524,41 +545,62 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 					
 					e.printStackTrace();
 				}
+				click = true;
+           	 acceptDialog.dismiss();
             }
-        });
+		});
 		
-		acceptDialog = dia.create();
-		acceptDialog.setCanceledOnTouchOutside(false);
-		acceptDialog.show();
+		
+		
+		
+		ButtonSprite[] buttons = {confirmButton};
+		
+		
+		
+		camera.setHUD(new HUD());
+		try {
+			acceptDialog = new GameDialogBox(camera.getHUD(), object.getString("name")+ " accepted the invitation!", 1, true, buttons);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+	
 	}
 	
 	public void createQuit(){
-		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
 		
-			dia.setTitle("Are you sure you wish to quit?");
+		click = false;
 		
-		dia.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) { 
-        		if(logoutMenuItem.isVisible()){
+		
+		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				click = true;
+				if(logoutMenuItem.isVisible()){
         			PushService.unsubscribe(activity, resourcesManager.userString);
     	    		Session.getActiveSession().closeAndClearTokenInformation();
         		}
         		System.exit(0);
-            }
-        });
-		dia.setNegativeButton("No", new DialogInterface.OnClickListener(){
-
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				quitDialog.dismiss();
-				
 			}
-			
+		});
+		ButtonSprite quit = new ButtonSprite(240, 350, resourcesManager.cancel_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				click = true;
+				quitDialog.dismiss();
+			}
 		});
 		
-		quitDialog = dia.create();
-		quitDialog.setCanceledOnTouchOutside(false);
-		quitDialog.show();
+		
+		
+		ButtonSprite[] buttons = {okay, quit};
+		
+		quitDialog = new GameDialogBox(camera.getHUD(), "Are you sure you wish to quit the game?", 1, true,  buttons);
+		
 	}
 	
 	public void createMapDialog(){

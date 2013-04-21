@@ -86,6 +86,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	private GameDialogBox pausemenu;
 	private GameDialogBox winDialog;
 	private GameDialogBox endTurnDialog;
+	private GameDialogBox quitDialog;
 
 	private Rectangle currentTileRectangle;
 	private AUnit selectedCharacter;
@@ -121,7 +122,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	private TutorialScene tutorial;
 	
-	private AlertDialog quitDialog;
+	
 	
 	private Text endGameMessage;
 	
@@ -836,11 +837,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 
 	public void createQuitDialog(){
-		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
-		dia.setTitle("Are you sure you wish to quit the game? All progress will be lost!");
-		dia.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-            	if(!resourcesManager.isLocal){
+		click = false;
+		
+		
+		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				click = true;
+				if(!resourcesManager.isLocal){
 	            	try {
 						JSONObject data = new JSONObject("{\"alert\": \"Game Ended\", \"action\": \"com.testgame.QUIT\",  \"gameId\": \""+resourcesManager.gameId+"\"}");
 						 ParsePush push = new ParsePush();
@@ -855,18 +859,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             	disposeScene();
             	resourcesManager.resetGame();
 		    	SceneManager.getInstance().loadMenuScene(engine);
-            	
-            }
-        });
-		dia.setNegativeButton("No", new DialogInterface.OnClickListener(){
-			public void onClick(DialogInterface dialog, int whichButton){
+			}
+		});
+		ButtonSprite quit = new ButtonSprite(240, 350, resourcesManager.cancel_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				click = true;
 				quitDialog.dismiss();
 			}
 		});
 		
-		quitDialog = dia.create();
-		quitDialog.setCanceledOnTouchOutside(false);
-		quitDialog.show();
+		
+		
+		ButtonSprite[] buttons = {okay, quit};
+		
+		quitDialog = new GameDialogBox(camera.getHUD(), "Are you sure you wish to quit the game? All progress will be lost!", 1, true,  buttons);
+		
 	}
 	
 

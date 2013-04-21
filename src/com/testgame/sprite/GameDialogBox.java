@@ -66,11 +66,11 @@ public class GameDialogBox {
 			
 			hud.attachChild(messageText);
 			
-			messageText.setPosition(240, 400 + backgroundSprite.getHeight() / 2 - 75);
+			messageText.setPosition(240, 400 + backgroundSprite.getHeight() / 2 - 50);
 			
 			
 			
-			j = 400 + backgroundSprite.getHeight()/2 - 75 - messageText.getHeight();
+			j = 400 + (backgroundSprite.getHeight()/2 - 50) - messageText.getHeight();
 			
 		}
 		else {
