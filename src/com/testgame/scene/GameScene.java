@@ -783,11 +783,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		pausemenu = new GameDialogBox(camera.getHUD(), "Paused", 3, true, buttons);
 	}
 	public void endTurnDialog(String text){
+		
+	//	if(textb){
+		//	return;
+	//	}
 		clearDialogs();
-		if(textb){
-			return;
-		}
-		textb = true;;
+		textb = true;
 		click = false;
 		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
@@ -989,13 +990,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void alertForAttack() {}
 	
 	private void clearDialogs(){
-		if(pausemenu != null)
+		if(pausemenu != null && !pausemenu.dismissed())
 			pausemenu.dismiss();
-		if(winDialog != null)
+		if(winDialog != null && !winDialog.dismissed())
 			winDialog.dismiss();
-		if(endTurnDialog != null)
+		if(endTurnDialog != null && !endTurnDialog.dismissed())
 			endTurnDialog.dismiss();
-		if(quitDialog != null)
+		if(quitDialog != null && !quitDialog.dismissed())
 			quitDialog.dismiss();
 	}
 }

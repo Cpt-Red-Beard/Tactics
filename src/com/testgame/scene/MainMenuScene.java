@@ -648,20 +648,20 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		}
 		if(textDialog != null){
 			textDialog.dismiss();
-			return true;
+			
 		}
 		if(acceptDialog != null && !acceptDialog.dismissed())
 			return false;
+		
 		if(welcome != null){
 			welcome.dismiss();
 		}
 		if(gameOptionsDialog != null){
 			gameOptionsDialog.dismiss();
-			return true;
+			
 		}
 		if(quitDialog != null){
-			quitDialog.dismiss();
-			return true;		
+			quitDialog.dismiss();		
 		}
 		return true;
 	}

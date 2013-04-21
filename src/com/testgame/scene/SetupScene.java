@@ -103,7 +103,7 @@ public class SetupScene extends BaseScene {
 					for(int i : units){
 						first.put(i);
 					}
-					Log.d("Array", first.toString());
+					
 					
 					
 					ParseObject turns = new ParseObject("Turns");
