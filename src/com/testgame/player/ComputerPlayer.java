@@ -30,6 +30,7 @@ public class ComputerPlayer extends APlayer {
 		if(turn || game.getPlayer().isTurn())
 			return;
 		turn = true;
+		Log.d("Array", "Count "+game.getCount()); 
 		Log.d("Array", array.toString());
 		Log.d("Array", array.length()+"");
 		this.actionsToPerform = array;
@@ -44,18 +45,19 @@ public class ComputerPlayer extends APlayer {
 	
 	public void performNext() {
 		if(actionsToPerform.length() == 0){
-			if(game.isFirstTurn()) 
-				game.incrementCount();
-			this.endTurn();
-			if(game.endGame()){
-				return;
-			}
+			Log.d("Here", "Here");
 			
 			 // this calls turn init on all the units
 			game.getGameScene().activity.runOnUiThread(new Runnable() {
         	    @Override
         	    public void run() {
         	    	game.getGameScene().endTurnDialog("Begin Turn!");
+        	    	if(game.isFirstTurn()) 
+        				game.incrementCount();
+        			endTurn();
+        			if(game.endGame()){
+        				return;
+        			}
         	    	turn = false;
           			 
         	    }
@@ -67,21 +69,24 @@ public class ComputerPlayer extends APlayer {
 
 			if (actionsToPerform.isNull(i)) {
 				if (i == actionsToPerform.length() - 1) {
-					if(game.isFirstTurn()) 
-						game.incrementCount();
-					
-					this.endTurn();
-					 // this calls turn init on all the units
-					if(game.endGame())
-						return;
+					Log.d("Here", "Here2");
 					game.getGameScene().activity.runOnUiThread(new Runnable() {
 		        	    @Override
 		        	    public void run() {
 		        	    	game.getGameScene().endTurnDialog("Begin Turn!");
+		        	    	game.getGameScene().endTurnDialog("Begin Turn!");
+		        	    	if(game.isFirstTurn()) 
+		        				game.incrementCount();
+		        			endTurn();
+		        			if(game.endGame()){
+		        				return;
+		        			}
+		        	    	
 		        	    	turn = false;
 		          			 
 		        	    }
 		        	});
+					return;
 				}
 				else continue; // performed this action already.
 			}

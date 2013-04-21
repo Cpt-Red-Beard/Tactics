@@ -264,7 +264,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
-				if(!game.getPlayer().isTurn() || game.getCount() == 0)
+				if(game.getCount() == 0 )
 					startCompTurn();
 			}
 			
@@ -729,7 +729,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void startCompTurn(){
 		
 		ParseQuery query = new ParseQuery("Turns");
-		
+		Log.d("Count", getGame().getCount()+"");
 		query.whereEqualTo("Player", "user_"+resourcesManager.opponentString+"_"+getGame().getCount());
 		query.findInBackground(new FindCallback() {
 		    public void done(List<ParseObject> itemList, ParseException e) {
