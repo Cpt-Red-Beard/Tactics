@@ -90,13 +90,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	@Override
 	public void onBackKeyPressed() {
-		//onHomeKeyPressed();
-		//PushService.unsubscribe(activity, resourcesManager.userString);
-		//loggedin = false;
 		resourcesManager.menu_background_music.pause();
-		//Session.getActiveSession().closeAndClearTokenInformation();
-		//System.exit(0);
-
 	}
 
 	@Override
@@ -148,8 +142,6 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	    quitMenuItem.setPosition(0, -125);
 	    logoutMenuItem.setPosition(0, -325); // place log out all the way at the bottom.
 	    logoutMenuItem.setVisible(false);
-	    //menuChildScene.unregisterTouchArea(logoutMenuItem);
-	    //optionsMenuItem.disabled(true);
 	    
 	    menuChildScene.setOnMenuItemClickListener(this);
 	    setChildScene(menuChildScene, false, false, false);
