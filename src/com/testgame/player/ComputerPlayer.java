@@ -21,7 +21,7 @@ public class ComputerPlayer extends APlayer {
 	JSONArray array;
 	OnlineGame game;
 	private boolean turn = false;
-	
+	private boolean setup = false;
 	public ComputerPlayer(String name) {
 		super(name);
 	}
@@ -149,7 +149,9 @@ public class ComputerPlayer extends APlayer {
 	public void init(JSONArray array) {
 		
 		
-		
+		if(setup)
+			return;
+		setup = true;
 		Point[] spawns;
 		
 		if(game.isFirstTurn()){
