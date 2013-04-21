@@ -4,7 +4,6 @@ import org.andengine.engine.camera.hud.HUD;
 import org.andengine.entity.sprite.ButtonSprite;
 
 import org.andengine.entity.sprite.Sprite;
-import org.andengine.entity.sprite.ButtonSprite.OnClickListener;
 import org.andengine.entity.text.AutoWrap;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
@@ -23,8 +22,6 @@ public class GameDialogBox {
 	private Sprite backgroundSprite;
 	
 	private Text messageText;
-	
-	private float textHeight;
 	
 	private float j;
 	
