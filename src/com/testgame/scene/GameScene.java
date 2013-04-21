@@ -68,6 +68,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	HashSet<Point> stoneTiles;
 	
+	private boolean textb = false;
 	public final static int SQUARE_Z = 1;
 	public final static int SPRITE_Z = 2;
 
@@ -814,6 +815,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		pausemenu = new GameDialogBox(camera.getHUD(), "Paused", 3, true, buttons);
 	}
 	public void endTurnDialog(String text){
+		if(textb){
+			return;
+		}
+		textb = true;;
 		click = false;
 		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
@@ -823,6 +828,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				endTurnDialog.dismiss();
 				game.getPlayer().beginTurn();
 				click = true;
+				textb = false;
 			}
 		});
 		ButtonSprite[] buttons = {okay};

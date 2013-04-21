@@ -60,6 +60,7 @@ public class ComputerPlayer extends APlayer {
           			 
         	    }
         	});
+			return;
 		}
 		for (int i = 0; i < actionsToPerform.length(); i++) {
 			
