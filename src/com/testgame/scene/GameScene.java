@@ -256,7 +256,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
-				if(game.getCount() == 0 ){
+				if(game.getCount() == 0 && !resourcesManager.isLocal){
 					startCompTurn();
 					unregisterUpdateHandler(handle);
 				}
