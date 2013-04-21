@@ -26,10 +26,12 @@ public class GameDialogBox {
 	private float j;
 	
 	private boolean text;
+	private boolean dismissed;
 	
 	
 	public GameDialogBox(HUD hud, String message, int back, boolean text, ButtonSprite ... buttons) {
 		super();
+		dismissed = false;
 		this.buttons = buttons;	
 		this.hud = hud;
 		this.text = text;
@@ -102,6 +104,7 @@ public class GameDialogBox {
 		ResourcesManager.getInstance().engine.runOnUpdateThread(new Runnable() {
 			@Override
 			public void run() {
+				dismissed = true;
 				hud.detachChild(backgroundSprite);
 
 				if(text)
@@ -120,5 +123,8 @@ public class GameDialogBox {
 		});
 	}
 
+	public boolean dismissed(){
+		return dismissed;
+	}
 	
 }

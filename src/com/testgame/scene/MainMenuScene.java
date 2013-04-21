@@ -67,15 +67,15 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 
 	private static AlertDialog loading;
 	private static GameDialogBox invitation;
-
 	private static GameDialogBox textDialog;
 	private static GameDialogBox acceptDialog;
+	private static GameDialogBox welcome;
+	private static GameDialogBox gameOptionsDialog;
 	private static AlertDialog mapDialog;
 	private static Map<String, String> usernames;
 	private static String selectedMapName = "Default"; 
 	private static ButtonSprite okayButton;
-	private static GameDialogBox welcome;
-	private static GameDialogBox gameOptionsDialog;
+	
 	private boolean click = true;
 	
 
@@ -296,7 +296,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 		}
 	
 	private void welcomeDialog() {
-		
+		if(!clearDialogs())
+			return;
 		logoutMenuItem.setVisible(true);
 		click = false;
 		okayButton = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
@@ -316,6 +317,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	}
 	
 	private void showDialog(){
+		if(!clearDialogs())
+			return;
 		final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle("Friends");
 		//userslist.add("TestUser");
@@ -357,6 +360,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	}
 	
 	public void gameOptions() {
+		if(!clearDialogs())
+			return;
 		click = false;
 		ButtonSprite onlineButton = new ButtonSprite(240, 350, resourcesManager.online_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
@@ -395,7 +400,18 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	}
 	
 	public void createInvite(final JSONObject object){
-		
+		if(resourcesManager.inGame || !clearDialogs()){
+			try {
+				JSONObject data = new JSONObject("{\"alert\": \"Invitation Denied\", \"action\": \"com.testgame.CANCEL\", \"name\": \""+ParseUser.getCurrentUser().getString("Name")+"\"}");
+				 ParsePush push = new ParsePush();
+	             push.setChannel("user_"+object.getString("userid")); 
+	             push.setData(data);
+	             push.sendInBackground();
+            } catch (JSONException e) { 
+				e.printStackTrace();
+			}	
+			return;
+		}
 		click = false;
 		ButtonSprite cancelButton = new ButtonSprite(240, 350, resourcesManager.cancel_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
@@ -482,7 +498,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	}
 	
 	public void createDialog(String text){
-		
+		if(!clearDialogs())
+			return;
 		click = false;
 		ButtonSprite confirmButton = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
@@ -507,7 +524,7 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	}
 	
 	public void createAcceptDialog(final JSONObject object){
-		
+		clearDialogs();
 		click = false;
 		ButtonSprite confirmButton = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
@@ -558,7 +575,8 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	}
 	
 	public void createQuit(){
-		
+		if(!clearDialogs())
+			return;
 		click = false;
 		
 		
@@ -607,8 +625,10 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 						}
 					});
 				}
-				else
+				else{
+					resourcesManager.inGame = true;
 					SceneManager.getInstance().loadSetupScene(engine);
+				}
 			}
 		});
 		
@@ -621,6 +641,29 @@ public class MainMenuScene extends BaseScene implements IOnMenuItemClickListener
 	@Override
 	public void onHomeKeyPressed() {
 		resourcesManager.pause_music();
+	}
+	private boolean clearDialogs(){
+		if(invitation != null && !invitation.dismissed()){
+			return false;
+		}
+		if(textDialog != null){
+			textDialog.dismiss();
+			return true;
+		}
+		if(acceptDialog != null && !acceptDialog.dismissed())
+			return false;
+		if(welcome != null){
+			welcome.dismiss();
+		}
+		if(gameOptionsDialog != null){
+			gameOptionsDialog.dismiss();
+			return true;
+		}
+		if(quitDialog != null){
+			quitDialog.dismiss();
+			return true;		
+		}
+		return true;
 	}
 
 }

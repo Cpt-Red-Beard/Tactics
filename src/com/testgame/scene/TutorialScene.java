@@ -106,6 +106,9 @@ public class TutorialScene extends BaseScene {
 			@Override
 			public void onClick(ButtonSprite pButtonSprite,
 					float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				Log.d("Check", resourcesManager.inGame+"");
+				if(resourcesManager.inGame)
+					return;
 				resourcesManager.select_sound.play();
 				SceneManager.getInstance().loadGuideScene(engine);
 			}
@@ -116,7 +119,9 @@ public class TutorialScene extends BaseScene {
 	    attachChild(basicsButton); registerTouchArea(basicsButton);
 	    attachChild(controlsButton); registerTouchArea(controlsButton);
 	    attachChild(unitsButton); registerTouchArea(unitsButton);
-	    attachChild(guideButton); registerTouchArea(guideButton);
+	    Log.d("Check", resourcesManager.inGame+"");
+		if(!resourcesManager.inGame)
+			attachChild(guideButton); registerTouchArea(guideButton);
 	}
 	
 	
