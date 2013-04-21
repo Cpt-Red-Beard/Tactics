@@ -820,12 +820,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
 				
 				resourcesManager.select_sound.play();
-
-
-				click = true;
-
-				game.getPlayer().beginTurn();
 				endTurnDialog.dismiss();
+				game.getPlayer().beginTurn();
+				click = true;
 			}
 		});
 		ButtonSprite[] buttons = {okay};
