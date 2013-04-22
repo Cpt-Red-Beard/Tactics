@@ -14,7 +14,6 @@ import org.andengine.engine.camera.SmoothCamera;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
-
 import org.andengine.entity.primitive.Line;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
@@ -39,8 +38,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -68,6 +65,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	HashSet<Point> stoneTiles;
 	
+	private boolean textb = false;
 	public final static int SQUARE_Z = 1;
 	public final static int SPRITE_Z = 2;
 
@@ -77,7 +75,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public final static int SPRITE_MODE = 0;
 	public final static int HEALTH_MODE = 1;
 	public final static int ENERGY_MODE = 2;
-	
+	TimerHandler handle;
 	public int mode;
 	
 	public boolean working = false;
@@ -86,6 +84,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	private GameDialogBox pausemenu;
 	private GameDialogBox winDialog;
 	private GameDialogBox endTurnDialog;
+	private GameDialogBox quitDialog;
 
 	private Rectangle currentTileRectangle;
 	private AUnit selectedCharacter;
@@ -121,7 +120,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	private TutorialScene tutorial;
 	
-	private AlertDialog quitDialog;
+	
 	
 	private Text endGameMessage;
 	
@@ -251,52 +250,25 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		currentTileRectangle.setZIndex(SQUARE_Z);
 		sortChildren();
 		
-		// Add in initial stone tiles.. 
 		
-		Log.d("AndEngine", "Camera dimenstions = " +  camera.getCameraSceneHeight() + " " + camera.getCameraSceneWidth());
-		Log.d("AndEngine", "Map dimensions = " +  widthInTiles*64 + " " + heightInTiles*64);
 		
-		//drawStoneTiles();
-
-		this.registerUpdateHandler(new TimerHandler(5f, true, new ITimerCallback(){
+		 handle = new TimerHandler(5f, true, new ITimerCallback(){
 
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {
-				if(!game.getPlayer().isTurn() || game.getCount() == 0)
+				if(game.getCount() == 0 && !resourcesManager.isLocal){
 					startCompTurn();
+					unregisterUpdateHandler(handle);
+				}
 			}
 			
-		}));
+		});
+
+		this.registerUpdateHandler(handle);
+		//startCompTurn();
 	}
 	
-	private void drawStoneTiles() {
 	
-		if (stoneTiles == null) stoneTiles = new HashSet<Point>();
-	
-		
-		for (int i = -640; i < widthInTiles * tileSize + 640; i = i + tileSize) {
-			
-			for (int j = -640; j < heightInTiles * tileSize + 640; j = j + tileSize) {
-				
-				if (i >= 0 && i < widthInTiles*tileSize) {
-					if (j >= 0 && j < heightInTiles*tileSize) continue;
-				}
-				
-				Point tilePoint = new Point(i, j);
-				
-				if (!stoneTiles.contains(tilePoint)) {
-					Sprite newStoneTile = new Sprite(i, j, resourcesManager.stone_tile.deepCopy(), vbom);
-					newStoneTile.setOffsetCenter(0, 0);
-					attachChild(newStoneTile);
-					newStoneTile.setZIndex(SQUARE_Z);
-					stoneTiles.add(new Point(i, j));
-				}
-				
-			}
-		}
-		
-		sortChildren();
-	}
 
 	protected void createHUD() {
 		
@@ -398,10 +370,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 				
 			}});
 	
-	    //hud.attachChild(turnMessage);
-	    //hud.attachChild(nextTurnButton);
-	    //hud.registerTouchArea(nextTurnButton);
-	    //hud.attachChild(eventsMessage);
+	    
 	    hud.attachChild(tutorialButton);
 		hud.registerTouchArea(tutorialButton);
 		
@@ -411,10 +380,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		hud.attachChild(energyModeButton);
 		hud.registerTouchArea(energyModeButton);
 		
-	   // hud.attachChild(turnMessage);
+	   
 	    hud.attachChild(pauseButton);
 	    hud.registerTouchArea(pauseButton);
-	    //hud.attachChild(eventsMessage);
+	   
 	    
 	    camera.setHUD(hud);
 	}
@@ -716,7 +685,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		/* Get the tile the feet of the player are currently waking on. */
 		final TMXTile tmxTile = tmxLayer.getTMXTileAt(playerFootCordinates[Constants.VERTEX_INDEX_X], playerFootCordinates[Constants.VERTEX_INDEX_Y]);
 		if(tmxTile != null) {
-			// tmxTile.setTextureRegion(null); <-- Eraser-style removing of tiles =D
+
 			currentTileRectangle.setPosition(tmxLayer.getTileX(tmxTile.getTileColumn()), tmxLayer.getTileY(tmxTile.getTileRow()));
 			currentTileRectangle.setColor(0, 1, 0, .5f);
 		}
@@ -727,7 +696,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	public void startCompTurn(){
 		
 		ParseQuery query = new ParseQuery("Turns");
-		
+		Log.d("Count", getGame().getCount()+"");
 		query.whereEqualTo("Player", "user_"+resourcesManager.opponentString+"_"+getGame().getCount());
 		query.findInBackground(new FindCallback() {
 		    public void done(List<ParseObject> itemList, ParseException e) {
@@ -756,7 +725,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		            	} 
 
 		            } 
-
+		            startCompTurn();
 		        } 
 		    }
 		});
@@ -765,10 +734,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	
 	
 	public void pauseMenu() {
+		clearDialogs();
 		click = false;
 		ButtonSprite endTurnButton = new ButtonSprite(240, 350, resourcesManager.endturn_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				deselectCharacter(true);
 				resourcesManager.select_sound.play();
 				getGame().nextTurn();
 				pausemenu.dismiss();
@@ -812,18 +783,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		pausemenu = new GameDialogBox(camera.getHUD(), "Paused", 3, true, buttons);
 	}
 	public void endTurnDialog(String text){
+		
+	//	if(textb){
+		//	return;
+	//	}
+		clearDialogs();
+		textb = true;
 		click = false;
 		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
 			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-
+				
 				resourcesManager.select_sound.play();
-
-
-				click = true;
-
-				game.getPlayer().beginTurn();
 				endTurnDialog.dismiss();
+				game.getPlayer().beginTurn();
+				click = true;
+				textb = false;
 			}
 		});
 		ButtonSprite[] buttons = {okay};
@@ -835,11 +810,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 	}
 
 	public void createQuitDialog(){
-		final AlertDialog.Builder dia = new AlertDialog.Builder(activity);
-		dia.setTitle("Are you sure you wish to quit the game? All progress will be lost!");
-		dia.setNeutralButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-            	if(!resourcesManager.isLocal){
+		clearDialogs();
+		click = false;
+		
+		
+		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				click = true;
+				if(!resourcesManager.isLocal){
 	            	try {
 						JSONObject data = new JSONObject("{\"alert\": \"Game Ended\", \"action\": \"com.testgame.QUIT\",  \"gameId\": \""+resourcesManager.gameId+"\"}");
 						 ParsePush push = new ParsePush();
@@ -854,22 +833,27 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
             	disposeScene();
             	resourcesManager.resetGame();
 		    	SceneManager.getInstance().loadMenuScene(engine);
-            	
-            }
-        });
-		dia.setNegativeButton("No", new DialogInterface.OnClickListener(){
-			public void onClick(DialogInterface dialog, int whichButton){
+			}
+		});
+		ButtonSprite quit = new ButtonSprite(240, 350, resourcesManager.cancel_region, resourcesManager.vbom, new OnClickListener(){
+			@Override
+			public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
+				click = true;
 				quitDialog.dismiss();
 			}
 		});
 		
-		quitDialog = dia.create();
-		quitDialog.setCanceledOnTouchOutside(false);
-		quitDialog.show();
+		
+		
+		ButtonSprite[] buttons = {okay, quit};
+		
+		quitDialog = new GameDialogBox(camera.getHUD(), "Are you sure you wish to quit the game? All progress will be lost!", 3, true,  buttons);
+		
 	}
 	
 
 	public void quitDialog(String Text) {
+		clearDialogs();
 		click = false;
 		ButtonSprite okay = new ButtonSprite(240, 350, resourcesManager.continue_region, resourcesManager.vbom, new OnClickListener(){
 			@Override
@@ -1005,4 +989,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 
 	public void alertForAttack() {}
 	
+	private void clearDialogs(){
+		if(pausemenu != null && !pausemenu.dismissed())
+			pausemenu.dismiss();
+		if(winDialog != null && !winDialog.dismissed())
+			winDialog.dismiss();
+		if(endTurnDialog != null && !endTurnDialog.dismissed())
+			endTurnDialog.dismiss();
+		if(quitDialog != null && !quitDialog.dismissed())
+			quitDialog.dismiss();
+	}
 }
