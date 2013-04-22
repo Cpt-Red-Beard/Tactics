@@ -709,6 +709,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 			            			
 					        		JSONArray array = ob.getJSONArray("Moves");
 					        		deselectCharacter(false);
+					        		switchMode(SPRITE_MODE);
 					            	((OnlineGame)getGame()).getCompPlayer().startTurn( array);
 					            	ob.deleteInBackground();
 					            	return;
