@@ -252,7 +252,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener, IPinc
 		
 		
 		
-		 handle = new TimerHandler(5f, true, new ITimerCallback(){
+		 handle = new TimerHandler(1f, true, new ITimerCallback(){
 
 			@Override
 			public void onTimePassed(TimerHandler pTimerHandler) {

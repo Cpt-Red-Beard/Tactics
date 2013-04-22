@@ -581,9 +581,9 @@ public class AUnit extends CharacterSprite implements IUnit {
 	public void attackedAnimate(final ComputerPlayer computerPlayer, final AUnit unit, final int attack) {
 		if(this.getType().equals("Base")){
 			unit.reduceHealth(attack);
-			if(game.resourcesManager.isLocal){
+			//if(game.resourcesManager.isLocal){
 				game.getGame().endGame();
-			}
+			//}
 			game.working = false;
 			if(computerPlayer != null){
 				computerPlayer.performNext();
@@ -595,7 +595,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		final AUnit u = this;
 		if (computerPlayer != null) {
-			((SmoothCamera)game.camera).setCenterDirect(unit.x, unit.y);
+			((SmoothCamera)game.camera).setChaseEntity(this);
 			this.registerUpdateHandler(new TimerHandler(0.5f, new ITimerCallback() 
 	        {
 	            public void onTimePassed(final TimerHandler pTimerHandler) 
