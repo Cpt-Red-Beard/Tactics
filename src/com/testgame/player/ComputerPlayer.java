@@ -30,9 +30,9 @@ public class ComputerPlayer extends APlayer {
 		if(turn || game.getPlayer().isTurn())
 			return;
 		turn = true;
-		Log.d("Array", "Count "+game.getCount()); 
-		Log.d("Array", array.toString());
-		Log.d("Array", array.length()+"");
+		//Log.d("Array", "Count "+game.getCount()); 
+		//Log.d("Array", array.toString());
+		//Log.d("Array", array.length()+"");
 		this.actionsToPerform = array;
 		this.beginTurn();
 		performNext(); // perform all of the animations

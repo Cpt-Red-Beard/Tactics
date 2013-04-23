@@ -595,7 +595,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 		
 		final AUnit u = this;
 		if (computerPlayer != null) {
-			((SmoothCamera)game.camera).setChaseEntity(this);
+			//b((SmoothCamera)game.camera).setChaseEntity(this);
 			this.registerUpdateHandler(new TimerHandler(0.5f, new ITimerCallback() 
 	        {
 	            public void onTimePassed(final TimerHandler pTimerHandler) 
@@ -614,7 +614,7 @@ public class AUnit extends CharacterSprite implements IUnit {
 	            public void onTimePassed(final TimerHandler pTimerHandler) 
 	            {
 	                u.stopAnimation();
-	                
+	             //   ((SmoothCamera)game.camera).setChaseEntity(null);
 	                u.setCurrentTileIndex(start_frame);
 	                unit.reduceHealth(attack);
 	                game.working = false;
